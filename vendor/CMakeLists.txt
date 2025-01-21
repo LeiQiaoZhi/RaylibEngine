@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(raylib-starter)
+project(raygui-example)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(vendor/raylib)
+add_subdirectory(raylib)
 
-file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE SOURCES "raygui/examples/animation_curve/*.c")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Add raylib include directory
-target_include_directories(${PROJECT_NAME} PRIVATE vendor/raylib/src)
+target_include_directories(${PROJECT_NAME} PRIVATE raylib/src)
 
 # Add raygui include directory
-target_include_directories(${PROJECT_NAME} PRIVATE vendor/raygui/src)
+target_include_directories(${PROJECT_NAME} PRIVATE raygui/src)
 
 
 # Define path to ANGLE libraries if using ANGLE

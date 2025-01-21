@@ -2,3 +2,5 @@ build/
 build_angle/
 vendor/angle/out
 .vscode/
+.idea
+**/cmake-build-debug/
