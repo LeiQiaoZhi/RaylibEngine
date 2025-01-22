@@ -1,16 +1,17 @@
-//
-// Created by Qiaozhi Lei on 1/20/25.
-//
-
 #include "GameSubView.h"
-
 #include <raygui.h>
 
-void GameSubView::Begin(const Camera &camera) const {
-    BeginTextureMode(render_texture_);
-    ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+#include "ScrollPanelRenderer.h"
+
+void GameSubView::Render(const Camera &camera, const Vector2 position) const {
+    renderer_->Begin();
     BeginMode3D(camera);
     DrawGrid(20, 20);
     EndMode3D();
-    EndTextureMode();
+    renderer_->End();
+    renderer_->Show(position, WHITE);
+}
+
+GameSubView::GameSubView(const int width, const int height) {
+    renderer_ = new RenderTextureRenderer(width, height);
 }

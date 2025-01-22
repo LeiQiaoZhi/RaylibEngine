@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(raylib)
 
-file(GLOB_RECURSE SOURCES "raygui/examples/animation_curve/*.c")
+file(GLOB_RECURSE SOURCES "raygui/examples/scroll_panel/*.c")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Add raylib include directory

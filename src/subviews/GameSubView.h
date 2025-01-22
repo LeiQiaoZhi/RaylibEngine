@@ -1,12 +1,15 @@
 #ifndef GAMESUBVIEW_H
 #define GAMESUBVIEW_H
-#include "SubView.h"
+#include "RenderTextureRenderer.h"
 
-
-class GameSubView : public SubView {
+class GameSubView {
 public:
-    GameSubView(const int width, const int height) : SubView(width, height) {}
-    void Begin(const Camera &camera) const;
+    GameSubView(int width, int height);
+
+    void Render(const Camera &camera, Vector2 position = {0, 0}) const;
+
+private:
+    ISubviewRenderer *renderer_;
 };
 
 
