@@ -8,6 +8,23 @@
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
+#include "luautils/LuaUtils.h"
+
+Logger logger;
+
+int LuaPrint(lua_State *L) {
+    const char *message = lua_tostring(L, 1); // get argument
+    if (!message) message = "(error: message is not a string)";
+
+    lua_Debug d;
+    if (lua_getstack(L, 1, &d)) {
+        lua_getinfo(L, "nSl", &d); // name, source, line
+        logger.Log(TextFormat("%s:%d: %s", d.short_src, d.currentline, message));
+    } else {
+        logger.Log(message);
+    }
+    return 0;
+}
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -15,14 +32,27 @@
 int main() {
     // Initialization
     //--------------------------------------------------------------------------------------
-    Logger logger;
 
-    constexpr int screenWidth = 1600;
-    constexpr int screenHeight = 900;
-    InitWindow(screenWidth, screenHeight, "Raylib CMake Starter");
+    // Lua
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
 
-    const GameSubView gameSubView(screenWidth / 2, screenHeight);
-    const ConsoleSubView consoleSubView(screenWidth / 4, screenHeight / 8);
+    lua_register(L, "log", LuaPrint);
+
+    LuaUtils::LuaDoFile(L, std::string(PROJECT_DIR) + "/lua/test.lua");
+
+    // lua config
+    LuaUtils::LuaDoFile(L, std::string(PROJECT_DIR) + "/lua/config.lua");
+    const int windowWidth = LuaUtils::LuaGetIntegerOrDefault(L, "windowWidth", 800);
+    const int windowHeight = LuaUtils::LuaGetIntegerOrDefault(L, "windowHeight", 450);
+    const std::string windowName = LuaUtils::LuaGetStringOrDefault(L, "windowName", "Engine");
+    const std::string style = LuaUtils::LuaGetStringOrDefault(L, "style", "dark");
+    const int cameraMode = LuaUtils::LuaGetIntegerOrDefault(L, "cameraMode", CAMERA_ORBITAL);
+
+    InitWindow(windowWidth, windowHeight, windowName.c_str());
+
+    const GameSubView gameSubView(windowWidth / 2, windowHeight);
+    const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 8);
 
     // Variables
     bool showTextInputBox = false;
@@ -40,34 +70,49 @@ int main() {
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     // GUI: Initialize gui parameters
-    const auto style = "jungle";
     GuiLoadStyle((std::string(PROJECT_DIR) + "/vendor/raygui/styles/" + style + "/style_" + style + ".rgs").c_str());
 
     GuiSetStyle(LISTVIEW, SCROLLBAR_WIDTH, 6);
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
     //--------------------------------------------------------------------------------------
 
+    int active;
+    int current = 0;
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
-        UpdateCamera(&camera, CAMERA_ORBITAL);
-
-
+        UpdateCamera(&camera, cameraMode);
         //----------------------------------------------------------------------------------
 
+        // Lua
+        lua_getglobal(L, "update");
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            std::cerr << "Error calling function: " << lua_tostring(L, -1) << std::endl;
+            lua_pop(L, 1);
+        }
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-        gameSubView.Render(camera, {screenWidth / 2, 0});
-        consoleSubView.Render(logger, {0, screenHeight * .75});
+        gameSubView.Render(camera, {static_cast<float>(windowWidth) / 2, 0});
+        consoleSubView.Render(logger, {10, static_cast<float>(windowHeight) * .75f});
 
-        int active;
-        // GuiToggleGroup((Rectangle){200, 25, 125, 300}, "Toggle group", &active);
+        GuiListView((Rectangle){10, 25, 50, 300}, "One;Two;Three;Four;Five", nullptr, &active);
+        GuiToggleGroup((Rectangle){200, 25, 50, 50}, "One;Two;Three;Four;Five", &active);
+        Vector2 mouseCell;
+        GuiGrid((Rectangle){200, 100, 100, 100}, "One;Two;Three;Four;Five", 10, 1, &mouseCell);
+        GuiSpinner((Rectangle){200, 200, 100, 30}, "Spinner", &current, 0, 100, true);
+        GuiTooltip(Rectangle{200, 250, 100, 300});
+        const char *items[] = {"A", "B", "C"};
+        auto toClose = GuiTabBar((Rectangle){200, 250, 100, 30}, items, 3, &current);
+        if (toClose != -1)
+            logger.Log(TextFormat("Tab bar closed: %d", toClose));
+
+        GuiComboBox((Rectangle){200, 300, 100, 30}, "A;B;C", &current);
 
         // GuiGroupBox((Rectangle){200, 25, 125, 300}, "Group box");
 
@@ -86,6 +131,7 @@ int main() {
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
+    lua_close(L);
     CloseWindow(); // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 

@@ -20,7 +20,13 @@ public:
 
     void SetContentSize(const float width, const float height) override;
 
+    Vector2 GetSize() override {
+        return {static_cast<float>(width_), static_cast<float>(height_)};
+    }
+
 private:
+    int width_;
+    int height_;
     Rectangle panelRec = {};
     Rectangle panelContentRec = {};
     Rectangle panelView = {};

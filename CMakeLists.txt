@@ -4,6 +4,11 @@ project(raylib-starter)
 
 set(CMAKE_CXX_STANDARD 14)
 
+# Add Lua
+set(LUA_INCLUDE_DIR "/opt/homebrew/include")
+set(LUA_LIBRARY "/opt/homebrew/lib/liblua.dylib")
+include_directories(${LUA_INCLUDE_DIR})
+
 add_subdirectory(vendor/raylib)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -38,7 +43,7 @@ endif ()
 
 
 # Link against raylib libraries and ANGLE if using ANGLE
-target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} raylib ${LUA_LIBRARY})
 if (USE_ANGLE)
     target_link_libraries(${PROJECT_NAME} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 endif ()

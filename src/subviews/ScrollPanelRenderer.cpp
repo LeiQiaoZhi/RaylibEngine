@@ -1,11 +1,13 @@
 #include "ScrollPanelRenderer.h"
+
 #include <raygui.h>
 
-ScrollPanelRenderer::ScrollPanelRenderer(const int width, const int height) {
+ScrollPanelRenderer::ScrollPanelRenderer(const int width, const int height) : width_(width), height_(height) {
     const int scrollbarWidth = GuiGetStyle(LISTVIEW, SCROLLBAR_WIDTH);
-    panelRec = {0, 0, static_cast<float>(width), static_cast<float>(height)};
+    panelRec = {0, 200, static_cast<float>(width), static_cast<float>(height)};
     panelContentRec = {
-        0, 0, static_cast<float>(width) - static_cast<float>(scrollbarWidth), static_cast<float>(height)
+        0, 0,
+        static_cast<float>(width - scrollbarWidth), static_cast<float>(height)
     };
 }
 

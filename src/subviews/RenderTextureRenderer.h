@@ -30,6 +30,10 @@ public:
         // TODO
     }
 
+    Vector2 GetSize() override {
+        return {static_cast<float>(width_), static_cast<float>(height_)};
+    }
+
 private:
     int width_;
     int height_;
