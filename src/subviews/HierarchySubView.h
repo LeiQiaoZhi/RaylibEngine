@@ -5,7 +5,7 @@
 #ifndef HIERARCHYSUBVIEW_H
 #define HIERARCHYSUBVIEW_H
 #include "ISubviewRenderer.h"
-#include "../Scene.h"
+#include "../GCM/Scene.h"
 
 
 class HierarchySubView {

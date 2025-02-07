@@ -11,5 +11,5 @@ local cameraModes = {
 windowWidth = 1600
 windowHeight = 900
 windowName = "Raylib Lua Engine"
-style = "jungle"
+style = "dark"
 cameraMode = cameraModes.CAMERA_CUSTOM

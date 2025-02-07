@@ -3,14 +3,18 @@
 
 #include "ScrollPanelRenderer.h"
 
-void GameSubView::Render(const Camera &camera, const Vector2 position) const {
+void GameSubView::Render(const Scene &scene, const Vector2 position) const {
+    const CameraComponent *camera = scene.GetMainCamera();
+    if (!camera) return;
+    const Camera *raylibCamera = camera->GetRaylibCamera();
+    if (!raylibCamera) return;
     GuiStatusBar({
                      position.x, position.y,
                      renderer_->GetSize().x,RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT
                  }, "Scene");
 
     renderer_->Begin();
-    BeginMode3D(camera);
+    BeginMode3D(*raylibCamera);
     DrawGrid(20, 20);
     EndMode3D();
     renderer_->End();

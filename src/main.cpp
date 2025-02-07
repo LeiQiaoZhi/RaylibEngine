@@ -5,7 +5,7 @@
 #include <string>
 
 #include "raygui.h"
-#include "Scene.h"
+#include "GCM/Scene.h"
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
@@ -82,6 +82,7 @@ int main() {
     Scene scene;
     scene.root = new GameObject("Root Node", 1);
     GameObject cameraGO("Camera", 2);
+    cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
     scene.root->AddChild(&cameraGO);
     GameObject testParent("Test Parent", 3);
     scene.root->AddChild(&testParent);
@@ -99,7 +100,7 @@ int main() {
     {
         // Update
         //----------------------------------------------------------------------------------
-        UpdateCamera(&camera, cameraMode);
+        scene.UpdateComponents();
         //----------------------------------------------------------------------------------
 
         // Lua
@@ -114,7 +115,7 @@ int main() {
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-        gameSubView.Render(camera, {static_cast<float>(windowWidth) / 2, 0});
+        gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
         consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
         hierarchySubView.Render(scene, {static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f});
 
