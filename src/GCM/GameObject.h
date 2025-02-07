@@ -22,6 +22,10 @@ public:
         return sceneDepth;
     }
 
+    int GetUID() const {
+        return uid;
+    }
+
     // Children
     void AddChild(GameObject *child);
 
@@ -64,6 +68,8 @@ public:
     }
 
     void UpdateComponents() const;
+
+    GameObject *GetGameObjectByUID(int uid);
 
 private:
     std::string name;

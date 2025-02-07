@@ -11,7 +11,7 @@ public:
     explicit CameraComponent(Camera *camera, const int mode) : camera(camera), cameraMode(mode) {
     }
 
-    void EditorUpdate() override;
+    void EditorUpdate(Rectangle &rect) override;
 
     void Update() override;
 

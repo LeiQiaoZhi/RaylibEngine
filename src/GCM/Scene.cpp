@@ -15,3 +15,10 @@ CameraComponent *Scene::GetMainCamera() const {
 void Scene::UpdateComponents() const {
     root->UpdateComponents();
 }
+
+GameObject *Scene::GetGameObjectByUID(const int uid) const {
+    if (uid < 0)
+        return nullptr;
+
+    return root->GetGameObjectByUID(uid);
+}

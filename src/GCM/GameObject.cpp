@@ -35,5 +35,17 @@ void GameObject::UpdateComponents() const {
     }
 }
 
+GameObject *GameObject::GetGameObjectByUID(int uid) {
+    if (this->uid == uid) {
+        return this;
+    }
 
+    for (auto *child: children) {
+        auto *result = child->GetGameObjectByUID(uid);
+        if (result) {
+            return result;
+        }
+    }
 
+    return nullptr;
+}

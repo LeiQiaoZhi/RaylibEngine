@@ -11,6 +11,7 @@
 #include "subviews/GameSubView.h"
 #include "luautils/LuaUtils.h"
 #include "subviews/HierarchySubView.h"
+#include "subviews/InspectorSubView.h"
 
 Logger logger;
 
@@ -56,6 +57,7 @@ int main() {
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
+    const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight / 4);
 
     // Variables
     bool showTextInputBox = false;
@@ -80,16 +82,23 @@ int main() {
 
     // test scene set up
     Scene scene;
-    scene.root = new GameObject("Root Node", 1);
+    scene.name = "Test Scene";
+    scene.root = new GameObject(scene.name, 1);
     GameObject cameraGO("Camera", 2);
     cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
     scene.root->AddChild(&cameraGO);
-    GameObject testParent("Test Parent", 3);
-    scene.root->AddChild(&testParent);
+    GameObject testParentA("Test Parent A", 3);
+    scene.root->AddChild(&testParentA);
     GameObject testChild1("Test Child 1", 4);
-    testParent.AddChild(&testChild1);
+    testParentA.AddChild(&testChild1);
     GameObject testChild2("Test Child 2", 5);
-    testParent.AddChild(&testChild2);
+    testParentA.AddChild(&testChild2);
+    GameObject testParentB("Test Parent B", 6);
+    scene.root->AddChild(&testParentB);
+    GameObject testChild3("Test Child 3", 7);
+    testParentB.AddChild(&testChild3);
+    GameObject testChild4("Test Child 4", 8);
+    testParentB.AddChild(&testChild4);
 
     //--------------------------------------------------------------------------------------
 
@@ -117,7 +126,10 @@ int main() {
 
         gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
         consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
-        hierarchySubView.Render(scene, {static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f});
+        hierarchySubView.Render(scene, {
+                                    static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
+                                });
+        inspectorSubView.Render(scene, {0, static_cast<float>(windowHeight) * .5f});
 
         GuiListView((Rectangle){10, 25, 50, 300}, "One;Two;Three;Four;Five", nullptr, &active);
         GuiToggleGroup((Rectangle){200, 25, 50, 50}, "One;Two;Three;Four;Five", &active);

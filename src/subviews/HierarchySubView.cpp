@@ -1,23 +1,24 @@
-//
-// Created by Qiaozhi Lei on 2/6/25.
-//
-
 #include "HierarchySubView.h"
 
 #include <raygui.h>
 
 #include "ScrollPanelRenderer.h"
+#include "../logger/Logger.h"
+#include "../Editor.h"
 
 HierarchySubView::HierarchySubView(const int width, const int height) {
     renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
 }
 
-void HierarchySubView::Render(const Scene &scene, Vector2 position) const {
+void HierarchySubView::Render(Scene &scene, Vector2 position) const {
     if (!scene.root) {
         return;
     }
 
-    const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
+    const Color normalTextColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
+    const Color bgColor = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
+    const Color pressed = GetColor(GuiGetStyle(DEFAULT, BASE_COLOR_PRESSED));
+    const Color focused = GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED));
     const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     const int totalCount = scene.GameObjectCount();
     renderer_->SetContentSize(renderer_->GetContentSize().x,
@@ -38,10 +39,27 @@ void HierarchySubView::Render(const Scene &scene, Vector2 position) const {
         toDraw.pop_back();
         if (!current) continue;
         std::string spaces(current->GetSceneDepth() * 4, ' ');
-        DrawText((spaces + current->GetName()).c_str(),
-                 static_cast<int>(topLeft.x) + 10,
-                 (i + 1) * textSize + static_cast<int>(topLeft.y),
-                 textSize, textColor);
+        const Rectangle rect = {
+            topLeft.x + 10.0f + current->GetSceneDepth() * 20,
+            (i + 1) * textSize + topLeft.y,
+            renderer_->GetContentSize().x - 10, static_cast<float>(textSize)
+        };
+        Color buttonColor = bgColor;
+        Color textColor = normalTextColor;
+        if (scene.selectedGameObjectUID == current->GetUID()) {
+            buttonColor = pressed;
+            textColor = bgColor;
+        }
+        if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+            buttonColor = Editor::DisabledColor(); // hover
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                scene.selectedGameObjectUID = current->GetUID();
+            }
+        }
+        DrawRectangleRec(rect, buttonColor);
+        DrawText(current->GetName(), rect.x, rect.y, textSize, textColor);
+
+
         toDraw.insert(toDraw.end(), current->GetChildren().rbegin(), current->GetChildren().rend());
         i++;
         if (i > totalCount)

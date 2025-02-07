@@ -11,9 +11,11 @@ public:
     int GameObjectCount() const;
     CameraComponent *GetMainCamera() const;
     void UpdateComponents() const;
+    GameObject *GetGameObjectByUID(int uid) const;
 
     std::string name;
     GameObject *root = nullptr;
+    int selectedGameObjectUID = -1;
 };
 
 
