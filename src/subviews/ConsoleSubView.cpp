@@ -28,6 +28,6 @@ void ConsoleSubView::Render(const Logger &logger, const Vector2 position) const 
     }
     renderer_->End();
 
-    auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
+    const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, WHITE);
 }

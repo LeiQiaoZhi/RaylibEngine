@@ -5,10 +5,12 @@
 #include <string>
 
 #include "raygui.h"
+#include "Scene.h"
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
 #include "luautils/LuaUtils.h"
+#include "subviews/HierarchySubView.h"
 
 Logger logger;
 
@@ -52,7 +54,8 @@ int main() {
     InitWindow(windowWidth, windowHeight, windowName.c_str());
 
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
-    const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 8);
+    const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
+    const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
 
     // Variables
     bool showTextInputBox = false;
@@ -74,6 +77,19 @@ int main() {
 
     GuiSetStyle(LISTVIEW, SCROLLBAR_WIDTH, 6);
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
+
+    // test scene set up
+    Scene scene;
+    scene.root = new GameObject("Root Node", 1);
+    GameObject cameraGO("Camera", 2);
+    scene.root->AddChild(&cameraGO);
+    GameObject testParent("Test Parent", 3);
+    scene.root->AddChild(&testParent);
+    GameObject testChild1("Test Child 1", 4);
+    testParent.AddChild(&testChild1);
+    GameObject testChild2("Test Child 2", 5);
+    testParent.AddChild(&testChild2);
+
     //--------------------------------------------------------------------------------------
 
     int active;
@@ -99,12 +115,13 @@ int main() {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
         gameSubView.Render(camera, {static_cast<float>(windowWidth) / 2, 0});
-        consoleSubView.Render(logger, {10, static_cast<float>(windowHeight) * .75f});
+        consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
+        hierarchySubView.Render(scene, {static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f});
 
         GuiListView((Rectangle){10, 25, 50, 300}, "One;Two;Three;Four;Five", nullptr, &active);
         GuiToggleGroup((Rectangle){200, 25, 50, 50}, "One;Two;Three;Four;Five", &active);
         Vector2 mouseCell;
-        GuiGrid((Rectangle){200, 100, 100, 100}, "One;Two;Three;Four;Five", 10, 1, &mouseCell);
+        GuiGrid((Rectangle){200, 100, 100, 100}, "One;Two;Three;Four;Five", current * 10, 1, &mouseCell);
         GuiSpinner((Rectangle){200, 200, 100, 30}, "Spinner", &current, 0, 100, true);
         GuiTooltip(Rectangle{200, 250, 100, 300});
         const char *items[] = {"A", "B", "C"};
