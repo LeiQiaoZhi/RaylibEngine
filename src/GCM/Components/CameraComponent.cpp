@@ -3,8 +3,8 @@
 #include "../../editor/Editor.h"
 
 void CameraComponent::OnEditorGUI(Rectangle &rect) {
-    DrawText("Component: Camera", rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
-    rect.y += Editor::TextSize() + Editor::SmallGap();
+    headerProperty.OnEditorGUI(rect);
+    if (headerProperty.IsFolded()) return;
 
     const Rectangle modeRect = {rect.x, rect.y, rect.width / 5.0f, Editor::TextSize() * 2.0f};
     GuiToggleGroup(modeRect, "Custom;Free;Orbital;FPS;TP", &cameraMode);
@@ -19,16 +19,32 @@ void CameraComponent::OnEditorGUI(Rectangle &rect) {
 }
 
 float CameraComponent::GetEditorHeight() const {
-    return Editor::TextSize() * 5 + Editor::SmallGap() * 3;
+    return headerProperty.IsFolded()
+               ? Editor::TextSize() + Editor::SmallGap()
+               : Editor::TextSize() * 5 + Editor::SmallGap() * 3;
 }
 
-void CameraComponent::OnDrawGizmos(Scene* scene) const{
+void CameraComponent::OnDraw(Scene *scene) const {
+}
+
+void CameraComponent::OnDrawGizmos(Scene *scene) const {
     // TODO: visualize frustum
 }
 
 void CameraComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
+void CameraComponent::Start() {
+}
+
 void CameraComponent::Update() {
-    UpdateCamera(camera, cameraMode);
+    if (IsCursorHidden())
+        UpdateCamera(camera, cameraMode);
+    if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+        if (IsCursorHidden()) {
+            EnableCursor();
+        } else {
+            DisableCursor();
+        }
+    }
 }

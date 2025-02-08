@@ -18,6 +18,8 @@ public:
 
     void DrawGizmos(Scene *scene) const;
 
+    void Draw(Scene * scene);
+
     std::string name;
     GameObject *root = nullptr;
     int selectedGameObjectUID = -1;

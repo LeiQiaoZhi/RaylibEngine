@@ -14,12 +14,8 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
     if (!scene.root) {
         return;
     }
-
-    const Color normalTextColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
-    const Color bgColor = GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR));
-    const Color pressed = GetColor(GuiGetStyle(DEFAULT, BASE_COLOR_PRESSED));
-    const Color focused = GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED));
-    const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
+    const Color bgColor = Editor::BackgroundColor();
+    const int textSize = Editor::TextSize();
     const int totalCount = scene.GameObjectCount();
     renderer_->SetContentSize(renderer_->GetContentSize().x,
                               static_cast<float>(1 + totalCount) * textSize + 10);
@@ -45,10 +41,8 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
             renderer_->GetContentSize().x - 10, static_cast<float>(textSize)
         };
         Color buttonColor = bgColor;
-        Color textColor = normalTextColor;
         if (scene.selectedGameObjectUID == current->GetUID()) {
-            buttonColor = pressed;
-            textColor = bgColor;
+            buttonColor = Editor::DisabledColor();
         }
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             buttonColor = Editor::DisabledColor(); // hover
@@ -57,8 +51,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
             }
         }
         DrawRectangleRec(rect, buttonColor);
-        DrawText(current->GetName(), rect.x, rect.y, textSize, textColor);
-
+        GuiLabel(rect, current->GetName());
 
         toDraw.insert(toDraw.end(), current->GetChildren().rbegin(), current->GetChildren().rend());
         i++;

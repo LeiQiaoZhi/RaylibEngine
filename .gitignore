@@ -4,3 +4,4 @@ vendor/angle/out
 .vscode/
 .idea
 **/cmake-build-debug/
+.DS_Store

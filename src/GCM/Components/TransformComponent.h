@@ -10,15 +10,20 @@
 class TransformComponent final : public Component {
 public:
     explicit TransformComponent() {
+        headerProperty = ComponentHeaderProperty("Transform");
     }
 
     void OnEditorGUI(Rectangle &rect) override;
+
+    void OnDraw(Scene *scene) const override;
 
     void OnDrawGizmos(Scene *scene) const override;
 
     void OnDrawGizmosSelected(Scene *scene) const override;
 
     float GetEditorHeight() const override;
+
+    void Start() override;
 
     void Update() override;
 

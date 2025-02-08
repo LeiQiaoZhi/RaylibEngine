@@ -9,8 +9,8 @@
 #include "../../editor/Editor.h"
 
 void TransformComponent::OnEditorGUI(Rectangle &rect) {
-    DrawText("Component: Transform", rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
-    rect.y += Editor::TextSize() + Editor::SmallGap();
+    headerProperty.OnEditorGUI(rect);
+    if (headerProperty.IsFolded()) return;
 
     positionProperty.OnEditorGUI(rect);
     eulerAnglesProperty.OnEditorGUI(rect);
@@ -18,9 +18,10 @@ void TransformComponent::OnEditorGUI(Rectangle &rect) {
 
     std::ostringstream oss;
     oss.precision(2);
-    oss << "World Position: " << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition().z <<
-            std::endl;
-    DrawText(oss.str().c_str(), rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
+    oss << "World Position: (" << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition().z
+            << ")" << std::endl;
+    rect.y += Editor::TextSize();
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     // display matrix
@@ -30,16 +31,24 @@ void TransformComponent::OnEditorGUI(Rectangle &rect) {
     oss << transform.m1 << ", " << transform.m5 << ", " << transform.m9 << ", " << transform.m13 << std::endl;
     oss << transform.m2 << ", " << transform.m6 << ", " << transform.m10 << ", " << transform.m14 << std::endl;
     oss << transform.m3 << ", " << transform.m7 << ", " << transform.m11 << ", " << transform.m15 << std::endl;
-    DrawText(oss.str().c_str(), rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
+    rect.y += Editor::TextSize();
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 4.0f}, oss.str().c_str());
     rect.y += Editor::TextSize() * 4 + Editor::SmallGap();
+}
+
+void TransformComponent::OnDraw(Scene *scene) const {
 }
 
 
 float TransformComponent::GetEditorHeight() const {
-    return Editor::TextSize() * 6 + Editor::SmallGap() * 3
+    return Editor::TextSize() * 7 + Editor::SmallGap() * 3
+           + headerProperty.GetEditorHeight()
            + positionProperty.GetEditorHeight()
            + eulerAnglesProperty.GetEditorHeight()
            + scaleProperty.GetEditorHeight();
+}
+
+void TransformComponent::Start() {
 }
 
 void TransformComponent::OnDrawGizmos(Scene *scene) const {

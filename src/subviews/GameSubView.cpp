@@ -16,6 +16,7 @@ void GameSubView::Render(Scene &scene, const Vector2 position) const {
     renderer_->Begin();
     BeginMode3D(*raylibCamera);
     DrawGrid(20, 20);
+    scene.Draw(&scene);
     scene.DrawGizmos(&scene);
     EndMode3D();
     renderer_->End();

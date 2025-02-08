@@ -1,6 +1,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 #include "raylib.h"
+#include "../../editor/ComponentHeaderProperty.h"
 
 class Scene;
 class GameObject;
@@ -13,13 +14,16 @@ public:
     // height of the component in inspector view
     virtual float GetEditorHeight() const = 0;
 
+    // render in scene view every frame
+    virtual void OnDraw(Scene * scene) const = 0;
+
     // when gizmos are enabled, render gizmos every frame
     virtual void OnDrawGizmos(Scene* scene) const = 0;
 
     // when gizmos are enabled, render gizmos every frame when selected
     virtual void OnDrawGizmosSelected(Scene* scene) const = 0;
 
-    //    virtual void Start() = 0;
+    virtual void Start() = 0;
 
     // TODO: differentiate between Editor and Game mode
     virtual void Update() = 0;
@@ -29,9 +33,11 @@ public:
     //    virtual void OnDestroy() = 0;
     virtual ~Component() = default;
 
+
 protected:
     friend class GameObject;
     GameObject *gameObject = nullptr;
+    ComponentHeaderProperty headerProperty = ComponentHeaderProperty("Component");
 };
 
 

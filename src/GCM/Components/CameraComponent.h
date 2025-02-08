@@ -8,15 +8,20 @@
 class CameraComponent final : public Component {
 public:
     explicit CameraComponent(Camera *camera, const int mode) : camera(camera), cameraMode(mode) {
+        headerProperty = ComponentHeaderProperty("Camera");
     }
 
     void OnEditorGUI(Rectangle &rect) override;
 
     float GetEditorHeight() const override;
 
+    void OnDraw(Scene *scene) const override;
+
     void OnDrawGizmos(Scene *scene) const override;
 
     void OnDrawGizmosSelected(Scene *scene) const override;
+
+    void Start() override;
 
     void Update() override;
 

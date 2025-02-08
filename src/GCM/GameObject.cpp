@@ -1,7 +1,3 @@
-//
-// Created by Qiaozhi Lei on 2/6/25.
-//
-
 #include "GameObject.h"
 
 void GameObject::AddChild(GameObject *child) {
@@ -65,5 +61,17 @@ void GameObject::DrawGizmos(Scene *scene) const {
 void GameObject::DrawGizmosSelected(Scene *scene) const {
     for (const auto *component: components) {
         component->OnDrawGizmosSelected(scene);
+    }
+}
+
+void GameObject::Draw(Scene *scene) const {
+    // own components draw
+    for (const auto *component: components) {
+        component->OnDraw(scene);
+    }
+
+    // children draw
+    for (const auto *child: children) {
+        child->Draw(scene);
     }
 }

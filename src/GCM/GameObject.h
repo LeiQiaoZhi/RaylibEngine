@@ -86,6 +86,8 @@ public:
 
     void DrawGizmosSelected(Scene * scene) const;
 
+    void Draw(Scene * scene) const;
+
 protected:
     std::string name;
     int uid;

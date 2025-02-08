@@ -6,6 +6,7 @@
 
 #include "raygui.h"
 #include "GCM/Scene.h"
+#include "GCM/Components/ModelComponent.h"
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
@@ -91,15 +92,15 @@ int main() {
     testParentA.AddChild(&testChild2);
     GameObject testParentB("Test Parent B", 6);
     scene.root->AddChild(&testParentB);
+    testParentB.AddComponent(new ModelComponent());
     GameObject testChild3("Test Child 3", 7);
     testParentB.AddChild(&testChild3);
     GameObject testChild4("Test Child 4", 8);
     testParentB.AddChild(&testChild4);
 
+
     //--------------------------------------------------------------------------------------
 
-    int active;
-    int current = 0;
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
@@ -129,6 +130,7 @@ int main() {
         inspectorSubView.Render(scene, {0, 0});
 
         DrawFPS(windowWidth / 4, 0);
+
 
         EndDrawing();
         //----------------------------------------------------------------------------------

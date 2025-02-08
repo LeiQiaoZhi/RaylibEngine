@@ -18,7 +18,7 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
     float height = Editor::SmallGap() + Editor::MediumGap() + Editor::TextSize();
     if (selectedGameObject) {
         for (const auto *component: selectedGameObject->GetComponents()) {
-            height += component->GetEditorHeight() + Editor::SmallGap();
+            height += component->GetEditorHeight() + Editor::LargeGap();
         }
     }
 
@@ -48,8 +48,9 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
         };
 
         for (auto *component: selectedGameObject->GetComponents()) {
-            rect.y += Editor::SmallGap();
-            rect.height -= Editor::SmallGap();
+            GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);
+            rect.y += Editor::LargeGap();
+            rect.height -= Editor::LargeGap();
             component->OnEditorGUI(rect);
             rect.height -= component->GetEditorHeight();
         }
