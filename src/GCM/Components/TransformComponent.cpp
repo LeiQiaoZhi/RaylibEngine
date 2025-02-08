@@ -25,7 +25,7 @@ void TransformComponent::OnEditorGUI(Rectangle &rect) {
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     // display matrix
-    Matrix transform = GetTransformMatrix();
+    const Matrix transform = GetTransformMatrix();
     oss.str("");
     oss << transform.m0 << ", " << transform.m4 << ", " << transform.m8 << ", " << transform.m12 << std::endl;
     oss << transform.m1 << ", " << transform.m5 << ", " << transform.m9 << ", " << transform.m13 << std::endl;
@@ -54,7 +54,10 @@ void TransformComponent::Start() {
 void TransformComponent::OnDrawGizmos(Scene *scene) const {
     rlDisableDepthTest();
     const Vector3 worldPosition = GetWorldPosition();
-    DrawSphere(worldPosition, 1.0f, RED);
+    const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
+    const float distToCamera = Vector3Distance(worldPosition, camera->position);
+    const float radius = distToCamera * 0.004f;
+    DrawSphere(worldPosition, radius, RED);
     rlEnableDepthTest();
 }
 
@@ -71,6 +74,9 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     Vector3 right = Vector3Subtract(Vector3Transform(Vector3{1, 0, 0}, GetTransformMatrix()), worldPosition);
     Vector3 up = Vector3Subtract(Vector3Transform(Vector3{0, 1, 0}, GetTransformMatrix()), worldPosition);
     Vector3 forward = Vector3Subtract(Vector3Transform(Vector3{0, 0, 1}, GetTransformMatrix()), worldPosition);
+    right = Vector3Normalize(right);
+    up = Vector3Normalize(up);
+    forward = Vector3Normalize(forward);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(right, length)), RED);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(up, length)), GREEN);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(forward, length)), BLUE);
