@@ -37,9 +37,10 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
     if (selectedGameObject) {
         std::ostringstream oss;
         oss << "Name: " << selectedGameObject->GetName() << " | UID: " << selectedGameObject->GetUID();
-        DrawText(oss.str().c_str(),
-                 topLeft.x + Editor::MediumGap(), topLeft.y + Editor::MediumGap(),
-                 textSize, textColor);
+        GuiLabel({
+                     topLeft.x + Editor::MediumGap(), topLeft.y + Editor::MediumGap(),
+                     renderer_->GetContentSize().x, textSize * 1.0f
+                 }, oss.str().c_str());
 
         Rectangle rect = {
             topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap() + textSize,

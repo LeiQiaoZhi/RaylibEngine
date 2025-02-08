@@ -13,20 +13,30 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     if (headerProperty.IsFolded()) return;
 
     // file name
-    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width - Editor::TextSize() * 2, Editor::TextSize() * 1.0f},
+    const float labelWidth = MeasureText("Filename", Editor::TextSize());
+    GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Filename");
+    rect.x += labelWidth + Editor::SmallGap();
+    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width - Editor::SmallGap() - labelWidth, Editor::TextSize() * 1.0f},
                    filename, 32, editMode)) {
         editMode = !editMode;
     }
+    rect.x -= labelWidth + Editor::SmallGap();
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Load Model")) {
-        const std::string path = std::string(PROJECT_DIR) + "/resources/" + filename;
+        if (filename[0] == '\0') {
+            warningText = "Filename is empty";
+            return;
+        }
+        const std::string path = std::string(ASSET_DIR) + "/models/" + filename;
         LoadModelFromFile(path);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     if (!warningText.empty()) {
-        DrawText(warningText.c_str(), rect.x, rect.y, Editor::TextSize(), YELLOW);
+        const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
+        std::cout << warningText << std::endl;
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
 }
@@ -39,8 +49,6 @@ float ModelComponent::GetEditorHeight() const {
 void ModelComponent::OnDraw(Scene *scene) const {
     if (model == nullptr) return;
 
-    // TODO: transform
-    model->transform = gameObject->GetTransform()->GetTransformMatrix();
     DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
 }
 
@@ -56,19 +64,14 @@ void ModelComponent::Start() {
 
 void ModelComponent::Update() {
     if (model == nullptr) return;
+    model->transform = gameObject->GetTransform()->GetTransformMatrix();
     bounds = GetModelBoundingBox(*model);
 }
 
 void ModelComponent::LoadModelFromFile(const std::string &filename) {
-    if (filename.empty()) {
-        warningText = "Filename is empty";
-        std::cout << warningText << std::endl;
-        return;
-    }
     // test file exits
     if (!FileExists(filename.c_str())) {
         warningText = "File does not exist";
-        std::cout << warningText << std::endl;
         return;
     }
     warningText = "";
@@ -83,5 +86,7 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         const Model modelObj = LoadModel(filename.c_str()); // Load new model
         model = new Model(modelObj);
         bounds = GetModelBoundingBox(*model);
+    } else {
+        warningText = "File format not supported";
     }
 }
