@@ -36,7 +36,6 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     if (!warningText.empty()) {
         const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
-        std::cout << warningText << std::endl;
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
 }

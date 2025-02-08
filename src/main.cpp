@@ -11,6 +11,7 @@
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
 #include "luautils/LuaUtils.h"
+#include "subviews/AssetsSubView.h"
 #include "subviews/HierarchySubView.h"
 #include "subviews/InspectorSubView.h"
 
@@ -59,6 +60,7 @@ int main() {
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
     const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
+    const AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
 
     // Camera
     Camera camera = {0};
@@ -128,6 +130,7 @@ int main() {
                                     static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
                                 });
         inspectorSubView.Render(scene, {0, 0});
+        assetsSubView.Render(scene, {static_cast<float>(windowWidth) * .25f, 0});
 
         DrawFPS(windowWidth - 80, 0);
 

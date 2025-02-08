@@ -22,7 +22,6 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
         }
     }
 
-    const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
     const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     const auto topLeft = renderer_->GetContentTopLeft();
 
