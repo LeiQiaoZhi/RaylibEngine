@@ -46,7 +46,7 @@ void TransformComponent::OnDrawGizmos(Scene *scene) const {
     rlDisableDepthTest();
     const Vector3 worldPosition = GetWorldPosition();
     DrawSphere(worldPosition, 1.0f, RED);
-
+    rlEnableDepthTest();
 }
 
 void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
@@ -58,7 +58,7 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     }
     DrawLine3D(worldPosition, parentPosition, YELLOW);
 
-    const float length = 10.0f;
+    constexpr float length = 10.0f;
     Vector3 right = Vector3Subtract(Vector3Transform(Vector3{1, 0, 0}, GetTransformMatrix()), worldPosition);
     Vector3 up = Vector3Subtract(Vector3Transform(Vector3{0, 1, 0}, GetTransformMatrix()), worldPosition);
     Vector3 forward = Vector3Subtract(Vector3Transform(Vector3{0, 0, 1}, GetTransformMatrix()), worldPosition);
