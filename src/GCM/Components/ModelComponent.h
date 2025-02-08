@@ -11,6 +11,13 @@ public:
         headerProperty = ComponentHeaderProperty("Model");
     }
 
+    ~ModelComponent() override {
+        if (model) {
+            UnloadModel(*model);
+            delete model;
+        }
+    }
+
     void OnEditorGUI(Rectangle &rect) override;
 
     float GetEditorHeight() const override;

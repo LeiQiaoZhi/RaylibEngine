@@ -47,6 +47,9 @@ void AssetsSubView::Render(Scene &scene, Vector2 position) const {
     }
     renderer_->End();
 
+    // free
+    UnloadDirectoryFiles(files);
+
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, WHITE);
 }
