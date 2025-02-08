@@ -43,10 +43,10 @@ int main() {
 
     lua_register(L, "log", LuaPrint);
 
-    LuaUtils::LuaDoFile(L, std::string(PROJECT_DIR) + "/lua/test.lua");
+    LuaUtils::LuaDoFile(L, std::string(ASSET_DIR) + "/lua/test.lua");
 
     // lua config
-    LuaUtils::LuaDoFile(L, std::string(PROJECT_DIR) + "/lua/config.lua");
+    LuaUtils::LuaDoFile(L, std::string(ASSET_DIR) + "/lua/config.lua");
     const int windowWidth = LuaUtils::LuaGetIntegerOrDefault(L, "windowWidth", 800);
     const int windowHeight = LuaUtils::LuaGetIntegerOrDefault(L, "windowHeight", 450);
     const std::string windowName = LuaUtils::LuaGetStringOrDefault(L, "windowName", "Engine");
@@ -129,7 +129,7 @@ int main() {
                                 });
         inspectorSubView.Render(scene, {0, 0});
 
-        DrawFPS(windowWidth / 4, 0);
+        DrawFPS(windowWidth - 80, 0);
 
 
         EndDrawing();
