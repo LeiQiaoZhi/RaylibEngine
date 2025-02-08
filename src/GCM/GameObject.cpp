@@ -30,7 +30,7 @@ void GameObject::UpdateComponents() const {
     }
 
     // update children
-    for (auto *child: children) {
+    for (const auto *child: children) {
         child->UpdateComponents();
     }
 }
@@ -48,4 +48,16 @@ GameObject *GameObject::GetGameObjectByUID(int uid) {
     }
 
     return nullptr;
+}
+
+void GameObject::DrawGizmos(Scene *scene) const {
+    // own components draw gizmos
+    for (const auto *component: components) {
+        component->OnDrawGizmos(scene);
+    }
+
+    // children draw gizmos
+    for (const auto *child: children) {
+        child->DrawGizmos(scene);
+    }
 }

@@ -1,10 +1,11 @@
 #include "InspectorSubView.h"
 
+#include <iostream>
 #include <raygui.h>
 #include <sstream>
 
 #include "ScrollPanelRenderer.h"
-#include "../Editor.h"
+#include "../editor/Editor.h"
 #include "../logger/Logger.h"
 
 InspectorSubView::InspectorSubView(const int width, const int height) {
@@ -13,13 +14,19 @@ InspectorSubView::InspectorSubView(const int width, const int height) {
 
 void InspectorSubView::Render(Scene &scene, Vector2 position) const {
     if (!scene.root) return;
+    GameObject *selectedGameObject = scene.GetGameObjectByUID(scene.selectedGameObjectUID);
+    float height = Editor::SmallGap() + Editor::MediumGap() + Editor::TextSize();
+    if (selectedGameObject) {
+        for (const auto *component: selectedGameObject->GetComponents()) {
+            height += component->GetEditorHeight() + Editor::SmallGap();
+        }
+    }
 
     const Color textColor = GetColor(GuiGetStyle(DEFAULT, TEXT_COLOR_NORMAL));
     const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
-    const int totalCount = scene.GameObjectCount();
     const auto topLeft = renderer_->GetContentTopLeft();
-    renderer_->SetContentSize(renderer_->GetContentSize().x,
-                              static_cast<float>(1 + totalCount) * textSize + 10);
+
+    renderer_->SetContentSize(renderer_->GetContentSize().x, height);
 
     GuiStatusBar({
                      position.x, position.y,
@@ -27,7 +34,6 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
                  }, "Inspector");
 
     renderer_->Begin();
-    GameObject *selectedGameObject = scene.GetGameObjectByUID(scene.selectedGameObjectUID);
     if (selectedGameObject) {
         std::ostringstream oss;
         oss << "Name: " << selectedGameObject->GetName() << " | UID: " << selectedGameObject->GetUID();
@@ -38,13 +44,14 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
         Rectangle rect = {
             topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap() + textSize,
             renderer_->GetContentSize().x - Editor::MediumGap() * 2 - Editor::SmallGap(),
-            renderer_->GetContentSize().y - static_cast<float>(textSize)
+            renderer_->GetContentSize().y - Editor::MediumGap() - textSize
         };
 
         for (auto *component: selectedGameObject->GetComponents()) {
-            rect.y += 10;
-            component->EditorUpdate(rect);
-            rect.y += 10;
+            rect.y += Editor::SmallGap();
+            rect.height -= Editor::SmallGap();
+            component->OnEditorGUI(rect);
+            rect.height -= component->GetEditorHeight();
         }
     }
     renderer_->End();

@@ -3,7 +3,7 @@
 
 #include "ScrollPanelRenderer.h"
 
-void GameSubView::Render(const Scene &scene, const Vector2 position) const {
+void GameSubView::Render(Scene &scene, const Vector2 position) const {
     const CameraComponent *camera = scene.GetMainCamera();
     if (!camera) return;
     const Camera *raylibCamera = camera->GetRaylibCamera();
@@ -16,6 +16,7 @@ void GameSubView::Render(const Scene &scene, const Vector2 position) const {
     renderer_->Begin();
     BeginMode3D(*raylibCamera);
     DrawGrid(20, 20);
+    scene.DrawGizmos(&scene);
     EndMode3D();
     renderer_->End();
 

@@ -3,12 +3,15 @@
 #include <utility>
 #include <vector>
 
+#include "Scene.h"
 #include "Components/Component.h"
+#include "Components/TransformComponent.h"
 
 
 class GameObject {
 public:
     explicit GameObject(std::string name, const int uid) : name(std::move(name)), uid(uid) {
+        AddComponent(transform);
     }
 
     void Destroy();
@@ -26,7 +29,7 @@ public:
         return uid;
     }
 
-    // Children
+    // Children and Parent
     void AddChild(GameObject *child);
 
     int RecursiveChildCount() const;
@@ -35,7 +38,15 @@ public:
         return children;
     }
 
+    GameObject *GetParent() const {
+        return parent;
+    }
+
     // Component
+    TransformComponent *GetTransform() const {
+        return transform;
+    }
+
     const std::vector<Component *> &GetComponents() const {
         return components;
     }
@@ -71,12 +82,15 @@ public:
 
     GameObject *GetGameObjectByUID(int uid);
 
-private:
+    void DrawGizmos(Scene* scene) const;
+
+protected:
     std::string name;
     int uid;
     int sceneDepth = 0;
 
     GameObject *parent = nullptr;
+    TransformComponent *transform = new TransformComponent();
     std::vector<GameObject *> children = {};
     std::vector<Component *> components = {};
 };

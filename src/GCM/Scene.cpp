@@ -22,3 +22,7 @@ GameObject *Scene::GetGameObjectByUID(const int uid) const {
 
     return root->GetGameObjectByUID(uid);
 }
+
+void Scene::DrawGizmos(Scene *scene) const {
+    root->DrawGizmos(scene);
+}

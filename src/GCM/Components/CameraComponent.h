@@ -1,6 +1,5 @@
 #ifndef CAMERACOMPONENT_H
 #define CAMERACOMPONENT_H
-#include <string>
 
 #include "Component.h"
 #include "raylib.h"
@@ -11,7 +10,11 @@ public:
     explicit CameraComponent(Camera *camera, const int mode) : camera(camera), cameraMode(mode) {
     }
 
-    void EditorUpdate(Rectangle &rect) override;
+    void OnEditorGUI(Rectangle &rect) override;
+
+    float GetEditorHeight() const override;
+
+    void OnDrawGizmos(Scene *scene) const override;
 
     void Update() override;
 

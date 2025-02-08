@@ -9,9 +9,14 @@
 class Scene {
 public:
     int GameObjectCount() const;
+
     CameraComponent *GetMainCamera() const;
+
     void UpdateComponents() const;
+
     GameObject *GetGameObjectByUID(int uid) const;
+
+    void DrawGizmos(Scene *scene) const;
 
     std::string name;
     GameObject *root = nullptr;

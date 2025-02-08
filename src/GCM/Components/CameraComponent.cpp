@@ -1,8 +1,8 @@
 #include "CameraComponent.h"
 #include "raylib.h"
-#include "../../Editor.h"
+#include "../../editor/Editor.h"
 
-void CameraComponent::EditorUpdate(Rectangle &rect) {
+void CameraComponent::OnEditorGUI(Rectangle &rect) {
     DrawText("Component: Camera", rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
@@ -16,6 +16,14 @@ void CameraComponent::EditorUpdate(Rectangle &rect) {
     fovRect.width -= Editor::TextSize() * 4.0;
     GuiSlider(fovRect, "", "", &camera->fovy, 1, 179.0);
     rect.y += Editor::TextSize() * 2 + Editor::SmallGap();
+}
+
+float CameraComponent::GetEditorHeight() const {
+    return Editor::TextSize() * 5 + Editor::SmallGap() * 3;
+}
+
+void CameraComponent::OnDrawGizmos(Scene* scene) const{
+    // TODO: visualize frustum
 }
 
 void CameraComponent::Update() {

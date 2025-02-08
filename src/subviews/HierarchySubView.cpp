@@ -4,7 +4,7 @@
 
 #include "ScrollPanelRenderer.h"
 #include "../logger/Logger.h"
-#include "../Editor.h"
+#include "../editor/Editor.h"
 
 HierarchySubView::HierarchySubView(const int width, const int height) {
     renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);

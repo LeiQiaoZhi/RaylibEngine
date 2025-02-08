@@ -7,7 +7,7 @@ class GameSubView {
 public:
     GameSubView(int width, int height);
 
-    void Render(const Scene &scene, Vector2 position = {0, 0}) const;
+    void Render(Scene &scene, Vector2 position = {0, 0}) const;
 
 private:
     ISubviewRenderer *renderer_;

@@ -57,11 +57,7 @@ int main() {
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
-    const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight / 4);
-
-    // Variables
-    bool showTextInputBox = false;
-    bool checked = false;
+    const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
 
     // Camera
     Camera camera = {0};
@@ -124,36 +120,15 @@ int main() {
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
+
         gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
         consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
         hierarchySubView.Render(scene, {
                                     static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
                                 });
-        inspectorSubView.Render(scene, {0, static_cast<float>(windowHeight) * .5f});
+        inspectorSubView.Render(scene, {0, 0});
 
-        GuiListView((Rectangle){10, 25, 50, 300}, "One;Two;Three;Four;Five", nullptr, &active);
-        GuiToggleGroup((Rectangle){200, 25, 50, 50}, "One;Two;Three;Four;Five", &active);
-        Vector2 mouseCell;
-        GuiGrid((Rectangle){200, 100, 100, 100}, "One;Two;Three;Four;Five", current * 10, 1, &mouseCell);
-        GuiSpinner((Rectangle){200, 200, 100, 30}, "Spinner", &current, 0, 100, true);
-        GuiTooltip(Rectangle{200, 250, 100, 300});
-        const char *items[] = {"A", "B", "C"};
-        auto toClose = GuiTabBar((Rectangle){200, 250, 100, 30}, items, 3, &current);
-        if (toClose != -1)
-            logger.Log(TextFormat("Tab bar closed: %d", toClose));
-
-        GuiComboBox((Rectangle){200, 300, 100, 30}, "A;B;C", &current);
-
-        // GuiGroupBox((Rectangle){200, 25, 125, 300}, "Group box");
-
-        // Add a checkbox
-        GuiCheckBox((Rectangle){25, 290, 20, 20}, "Check me", &checked);
-
-        DrawFPS(10, 10);
-
-        if (GuiButton((Rectangle){25, 255, 125, 30}, "Push me!")) {
-            logger.Log(TextFormat("Button pushed! %d", GetRandomValue(0, 100)));
-        }
+        DrawFPS(windowWidth / 4, 0);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
