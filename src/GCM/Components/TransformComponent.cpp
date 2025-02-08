@@ -4,6 +4,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "rlgl.h"
 #include "../GameObject.h"
 #include "../../editor/Editor.h"
 
@@ -17,7 +18,8 @@ void TransformComponent::OnEditorGUI(Rectangle &rect) {
 
     std::ostringstream oss;
     oss.precision(2);
-    oss << "World Position: " << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition().z << std::endl;
+    oss << "World Position: " << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition().z <<
+            std::endl;
     DrawText(oss.str().c_str(), rect.x, rect.y, Editor::TextSize(), Editor::TextColor());
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
@@ -41,22 +43,34 @@ float TransformComponent::GetEditorHeight() const {
 }
 
 void TransformComponent::OnDrawGizmos(Scene *scene) const {
-    if (scene->selectedGameObjectUID != gameObject->GetUID()) {
-        return;
-    }
+    rlDisableDepthTest();
     const Vector3 worldPosition = GetWorldPosition();
     DrawSphere(worldPosition, 1.0f, RED);
 
+}
+
+void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
+    rlDisableDepthTest();
+    const Vector3 worldPosition = GetWorldPosition();
     auto parentPosition = Vector3{0, 0, 0};
     if (const auto *parent = gameObject->GetParent()) {
         parentPosition = parent->GetTransform()->GetWorldPosition();
     }
-    DrawLine3D(worldPosition, parentPosition, GREEN);
+    DrawLine3D(worldPosition, parentPosition, YELLOW);
+
+    const float length = 10.0f;
+    Vector3 right = Vector3Subtract(Vector3Transform(Vector3{1, 0, 0}, GetTransformMatrix()), worldPosition);
+    Vector3 up = Vector3Subtract(Vector3Transform(Vector3{0, 1, 0}, GetTransformMatrix()), worldPosition);
+    Vector3 forward = Vector3Subtract(Vector3Transform(Vector3{0, 0, 1}, GetTransformMatrix()), worldPosition);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(right, length)), RED);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(up, length)), GREEN);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(forward, length)), BLUE);
 
     EndMode3D();
     const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
     const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, 800, 900);
     DrawText(gameObject->GetName(), screenPosition.x, screenPosition.y, 10, WHITE);
+    rlEnableDepthTest();
     BeginMode3D(*camera);
 }
 

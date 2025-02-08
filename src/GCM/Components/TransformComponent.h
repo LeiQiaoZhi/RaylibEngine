@@ -16,6 +16,8 @@ public:
 
     void OnDrawGizmos(Scene *scene) const override;
 
+    void OnDrawGizmosSelected(Scene *scene) const override;
+
     float GetEditorHeight() const override;
 
     void Update() override;

@@ -61,3 +61,9 @@ void GameObject::DrawGizmos(Scene *scene) const {
         child->DrawGizmos(scene);
     }
 }
+
+void GameObject::DrawGizmosSelected(Scene *scene) const {
+    for (const auto *component: components) {
+        component->OnDrawGizmosSelected(scene);
+    }
+}

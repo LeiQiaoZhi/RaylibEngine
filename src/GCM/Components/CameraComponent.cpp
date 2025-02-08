@@ -26,6 +26,9 @@ void CameraComponent::OnDrawGizmos(Scene* scene) const{
     // TODO: visualize frustum
 }
 
+void CameraComponent::OnDrawGizmosSelected(Scene *scene) const {
+}
+
 void CameraComponent::Update() {
     UpdateCamera(camera, cameraMode);
 }

@@ -16,6 +16,8 @@ public:
 
     void OnDrawGizmos(Scene *scene) const override;
 
+    void OnDrawGizmosSelected(Scene *scene) const override;
+
     void Update() override;
 
     Camera *GetRaylibCamera() const {

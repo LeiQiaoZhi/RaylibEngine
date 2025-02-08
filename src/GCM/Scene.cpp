@@ -25,4 +25,12 @@ GameObject *Scene::GetGameObjectByUID(const int uid) const {
 
 void Scene::DrawGizmos(Scene *scene) const {
     root->DrawGizmos(scene);
+
+    // draw gizmos for selected game object
+    if (selectedGameObjectUID != -1) {
+        const auto *selectedGameObject = GetGameObjectByUID(selectedGameObjectUID);
+        if (selectedGameObject) {
+            selectedGameObject->DrawGizmosSelected(scene);
+        }
+    }
 }
