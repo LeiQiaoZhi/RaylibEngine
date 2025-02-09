@@ -58,6 +58,21 @@ Vector3 TransformComponent::GetWorldPosition() const {
     return Vector3Transform(Vector3{0, 0, 0}, GetTransformMatrix());
 }
 
+Vector3 TransformComponent::GetWorldRight() const {
+    Vector3 rightPos = Vector3Transform(Vector3{1, 0, 0}, GetTransformMatrix());
+    return Vector3Normalize(Vector3Subtract(rightPos, GetWorldPosition()));
+}
+
+Vector3 TransformComponent::GetWorldUp() const {
+    Vector3 upPos = Vector3Transform(Vector3{0, 1, 0}, GetTransformMatrix());
+    return Vector3Normalize(Vector3Subtract(upPos, GetWorldPosition()));
+}
+
+Vector3 TransformComponent::GetWorldForward() const {
+    Vector3 forwardPos = Vector3Transform(Vector3{0, 0, 1}, GetTransformMatrix());
+    return Vector3Normalize(Vector3Subtract(forwardPos, GetWorldPosition()));
+}
+
 void TransformComponent::OnDraw(Scene *scene) const {
 }
 
@@ -78,23 +93,20 @@ void TransformComponent::OnDrawGizmos(Scene *scene) const {
 void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     rlDisableDepthTest();
     const Vector3 worldPosition = GetWorldPosition();
+
+    // Parent
     auto parentPosition = Vector3{0, 0, 0};
-    if (const auto *parent = gameObject->GetParent()) {
+    if (const auto *parent = gameObject->GetParent())
         parentPosition = parent->GetTransform()->GetWorldPosition();
-    }
     DrawLine3D(worldPosition, parentPosition, YELLOW);
 
+    // Local Axes
     constexpr float length = 10.0f;
-    Vector3 right = Vector3Subtract(Vector3Transform(Vector3{1, 0, 0}, GetTransformMatrix()), worldPosition);
-    Vector3 up = Vector3Subtract(Vector3Transform(Vector3{0, 1, 0}, GetTransformMatrix()), worldPosition);
-    Vector3 forward = Vector3Subtract(Vector3Transform(Vector3{0, 0, 1}, GetTransformMatrix()), worldPosition);
-    right = Vector3Normalize(right);
-    up = Vector3Normalize(up);
-    forward = Vector3Normalize(forward);
-    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(right, length)), RED);
-    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(up, length)), GREEN);
-    DrawLine3D(worldPosition, Vector3Add(worldPosition, Vector3Scale(forward, length)), BLUE);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldRight() * length), RED);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldUp() * length), GREEN);
+    DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldForward() * length), BLUE);
 
+    // Name Label
     EndMode3D();
     const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
     const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, 800, 900);

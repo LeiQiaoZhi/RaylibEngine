@@ -32,6 +32,12 @@ public:
 
     Vector3 GetWorldPosition() const;
 
+    Vector3 GetWorldRight() const;
+
+    Vector3 GetWorldUp() const;
+
+    Vector3 GetWorldForward() const;
+
 private:
     Vector3 position = {0.0f, 0.0f, 0.0f};
     Vector3 eulerAngles = {0.0f, 0.0f, 0.0f};
