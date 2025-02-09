@@ -7,19 +7,16 @@
 #include "ScrollPanelRenderer.h"
 #include "../editor/Editor.h"
 
-AssetsSubView::AssetsSubView(const int width, const int height) {
+AssetsSubView::AssetsSubView(const int width, const int height) : rootFileHierarchyProperty(ASSET_DIR, false) {
     renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
 }
 
-void AssetsSubView::Render(Scene &scene, Vector2 position) const {
+void AssetsSubView::Render(Scene &scene, Vector2 position) {
     if (!scene.root) return;
-    const auto assetPathStr = "Assets path: " + std::string(ASSET_DIR);
-    FilePathList files = LoadDirectoryFilesEx(ASSET_DIR, NULL, true);
 
     // TODO: calc height
-    float height = renderer_->GetContentSize().y;
-    float width = MeasureText(assetPathStr.c_str(), Editor::TextSize());
-
+    float height = rootFileHierarchyProperty.GetEditorHeight() + Editor::TextSize() * 2.0f + Editor::SmallGap() * 6.0f;
+    float width = renderer_->GetContentSize().x;
     renderer_->SetContentSize(width, height);
 
     const auto topLeft = renderer_->GetContentTopLeft();
@@ -35,20 +32,31 @@ void AssetsSubView::Render(Scene &scene, Vector2 position) const {
         renderer_->GetContentSize().y - Editor::SmallGap() * 2
     };
     renderer_->Begin();
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, assetPathStr.c_str());
+
+    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                   path, 256, pathEditMode)) {
+        pathEditMode = !pathEditMode;
+        // TODO: load new path
+        if (DirectoryExists(path)) {
+            rootFileHierarchyProperty.SetPath(path);
+            status = "";
+        } else {
+            status = GuiIconText(ICON_WARNING, "Invalid path");
+        }
+    }
     rect.y += Editor::TextSize() + Editor::SmallGap();
-    for (int i =0; i<files.count; i++) {
-        const char* completeFilePath = files.paths[i];
-        const char* file = GetFileName(completeFilePath);
-        if (file[0] == '.')
-            continue;
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, file);
+    if (!status.empty()) {
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, status.c_str());
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
-    renderer_->End();
 
-    // free
-    UnloadDirectoryFiles(files);
+    GuiLine({rect.x, rect.y, rect.width, Editor::SmallGap() * 1.0f}, nullptr);
+    rect.y += Editor::SmallGap() * 2.0f;
+    rect.height -= Editor::SmallGap() * 3.0f + Editor::TextSize() * 1.0f;
+
+    rootFileHierarchyProperty.OnEditorGUI(rect);
+
+    renderer_->End();
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, WHITE);

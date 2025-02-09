@@ -1,7 +1,7 @@
 #include <raygui.h>
 #include "Vector3Property.h"
 #include "Editor.h"
-#include "../raylib-utils/RaylibUtils.h"
+#include "../utils/RaylibUtils.h"
 
 void Vector3Property::OnEditorGUI(Rectangle &rect) {
     GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, label.c_str());

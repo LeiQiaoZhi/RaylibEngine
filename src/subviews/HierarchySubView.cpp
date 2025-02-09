@@ -24,9 +24,11 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
                      position.x, position.y,
                      renderer_->GetSize().x,RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT
                  }, ("Hierarchy, number of game objects: " + std::to_string(totalCount)).c_str());
+    const auto topLeft = renderer_->GetContentTopLeft();
 
     renderer_->Begin();
-    const auto topLeft = renderer_->GetContentTopLeft();
+
+    // DFS to draw all game objects
     std::vector<GameObject *> toDraw;
     toDraw.push_back(scene.root);
     int i = 0;
@@ -42,7 +44,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
         };
         Color buttonColor = bgColor;
         if (scene.selectedGameObjectUID == current->GetUID()) {
-            buttonColor = Editor::DisabledColor();
+            buttonColor = Editor::DisabledColor(); // selected
         }
         if (CheckCollisionPointRec(GetMousePosition(), rect)) {
             buttonColor = Editor::DisabledColor(); // hover
@@ -58,6 +60,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
         if (i > totalCount)
             break;
     }
+
     renderer_->End();
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};

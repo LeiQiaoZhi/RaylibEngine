@@ -60,7 +60,7 @@ int main() {
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
     const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
-    const AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
+    AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
 
     // Camera
     Camera camera = {0};

@@ -3,7 +3,7 @@
 #include <string>
 
 #include "raylib.h"
-#include "../raylib-utils/RaylibUtils.h"
+#include "../utils/RaylibUtils.h"
 
 
 class ComponentHeaderProperty {
