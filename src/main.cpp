@@ -1,10 +1,12 @@
-#include "raylib.h"
+#include "raygui.h"
 
 #define RAYGUI_IMPLEMENTATION
-#include <iostream>
 #include <string>
-
 #include "raygui.h"
+#undef RAYGUI_IMPLEMENTATION
+
+#include "raylib.h"
+#include <iostream>
 #include "GCM/Scene.h"
 #include "GCM/Components/ModelComponent.h"
 #include "logger/Logger.h"

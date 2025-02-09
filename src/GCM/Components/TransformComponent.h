@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "raylib.h"
 #include "../../editor/FoldoutProperty.h"
-#include "../../editor/Vector3Property.h"
+#include "../../editor/VectorProperty.h"
 
 
 class TransformComponent final : public Component {
