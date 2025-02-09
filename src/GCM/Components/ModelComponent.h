@@ -10,7 +10,7 @@
 class ModelComponent final : public Component {
 public:
     explicit ModelComponent() {
-        headerProperty = ComponentHeaderProperty("Model");
+        headerProperty.label = "Model";
 
         const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
         LoadModelFromFile(path); // TODO: remove this

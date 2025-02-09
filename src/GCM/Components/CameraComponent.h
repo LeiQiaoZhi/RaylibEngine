@@ -8,7 +8,7 @@
 class CameraComponent final : public Component {
 public:
     explicit CameraComponent(Camera *camera, const int mode) : camera(camera), cameraMode(mode) {
-        headerProperty = ComponentHeaderProperty("Camera");
+        headerProperty.label = "Camera";
     }
 
     void OnEditorGUI(Rectangle &rect) override;

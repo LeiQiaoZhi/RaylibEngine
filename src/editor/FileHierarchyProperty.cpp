@@ -15,7 +15,7 @@ void FileHierarchyProperty::OnEditorGUI(Rectangle &rect) {
     if (GuiLabelButton(titleRect, title)) {
         folded = !folded;
     }
-    
+
     // Hover -- show action buttons
     if (CheckCollisionPointRec(GetMousePosition(), titleRect)) {
         const float buttonWidth = Editor::TextSize() * 1.2f;

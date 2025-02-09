@@ -33,11 +33,13 @@ public:
     //    virtual void OnDestroy() = 0;
     virtual ~Component() = default;
 
+public:
+    GameObject *gameObject = nullptr;
+    bool enabled = true;
 
 protected:
     friend class GameObject;
-    GameObject *gameObject = nullptr;
-    ComponentHeaderProperty headerProperty = ComponentHeaderProperty("Component");
+    ComponentHeaderProperty headerProperty = ComponentHeaderProperty("Component", &enabled);
 };
 
 

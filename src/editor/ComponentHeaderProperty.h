@@ -8,16 +8,22 @@
 
 class ComponentHeaderProperty {
 public:
-    explicit ComponentHeaderProperty(std::string label) : label(std::move(label)) {
+    explicit ComponentHeaderProperty(std::string label, bool *enabled) : label(std::move(label)), enabled(enabled) {
     }
-    void OnEditorGUI(Rectangle& rect);
+
+    void OnEditorGUI(Rectangle &rect);
+
     float GetEditorHeight() const;
+
     bool IsFolded() const {
         return folded;
     }
 
-private:
+public:
     std::string label;
+
+private:
+    bool *enabled;
     bool folded = false;
 };
 

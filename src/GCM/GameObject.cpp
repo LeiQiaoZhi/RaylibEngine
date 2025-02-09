@@ -22,7 +22,8 @@ void GameObject::AddComponent(Component *component) {
 void GameObject::UpdateComponents() const {
     // update own components
     for (auto *component: components) {
-        component->Update();
+        if (component->enabled)
+            component->Update();
     }
 
     // update children
@@ -49,7 +50,8 @@ GameObject *GameObject::GetGameObjectByUID(int uid) {
 void GameObject::DrawGizmos(Scene *scene) const {
     // own components draw gizmos
     for (const auto *component: components) {
-        component->OnDrawGizmos(scene);
+        if (component->enabled)
+            component->OnDrawGizmos(scene);
     }
 
     // children draw gizmos
@@ -60,14 +62,16 @@ void GameObject::DrawGizmos(Scene *scene) const {
 
 void GameObject::DrawGizmosSelected(Scene *scene) const {
     for (const auto *component: components) {
-        component->OnDrawGizmosSelected(scene);
+        if (component->enabled)
+            component->OnDrawGizmosSelected(scene);
     }
 }
 
 void GameObject::Draw(Scene *scene) const {
     // own components draw
     for (const auto *component: components) {
-        component->OnDraw(scene);
+        if (component->enabled)
+            component->OnDraw(scene);
     }
 
     // children draw

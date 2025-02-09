@@ -11,7 +11,7 @@
 class TransformComponent final : public Component {
 public:
     explicit TransformComponent() {
-        headerProperty = ComponentHeaderProperty("Transform");
+        headerProperty.label = "Transform";
     }
 
     void OnEditorGUI(Rectangle &rect) override;
