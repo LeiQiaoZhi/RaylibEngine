@@ -9,6 +9,7 @@
 #include "../../editor/Editor.h"
 
 void TransformComponent::OnEditorGUI(Rectangle &rect) {
+    const float originalY = rect.y;
     headerProperty.OnEditorGUI(rect);
     if (headerProperty.IsFolded()) return;
 
@@ -16,37 +17,50 @@ void TransformComponent::OnEditorGUI(Rectangle &rect) {
     eulerAnglesProperty.OnEditorGUI(rect);
     scaleProperty.OnEditorGUI(rect);
 
-    std::ostringstream oss;
-    oss.precision(2);
-    oss << "World Position: (" << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition().z
-            << ")" << std::endl;
-    rect.y += Editor::TextSize();
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
-    rect.y += Editor::TextSize() + Editor::SmallGap();
+    debugFoldout.OnEditorGUI(rect);
+    if (!debugFoldout.IsFolded()) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
 
-    // display matrix
-    const Matrix transform = GetTransformMatrix();
-    oss.str("");
-    oss << transform.m0 << ", " << transform.m4 << ", " << transform.m8 << ", " << transform.m12 << std::endl;
-    oss << transform.m1 << ", " << transform.m5 << ", " << transform.m9 << ", " << transform.m13 << std::endl;
-    oss << transform.m2 << ", " << transform.m6 << ", " << transform.m10 << ", " << transform.m14 << std::endl;
-    oss << transform.m3 << ", " << transform.m7 << ", " << transform.m11 << ", " << transform.m15 << std::endl;
-    rect.y += Editor::TextSize();
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 4.0f}, oss.str().c_str());
-    rect.y += Editor::TextSize() * 4 + Editor::SmallGap();
+        // World Position
+        std::ostringstream oss;
+        oss.precision(2);
+        oss << "World Position: (" << GetWorldPosition().x << ", " << GetWorldPosition().y << ", " << GetWorldPosition()
+                .z
+                << ")" << std::endl;
+        rect.y += Editor::TextSize();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+
+        // Matrix
+        const Matrix transform = GetTransformMatrix();
+        oss.str("");
+        oss << transform.m0 << ", " << transform.m4 << ", " << transform.m8 << ", " << transform.m12 << std::endl;
+        oss << transform.m1 << ", " << transform.m5 << ", " << transform.m9 << ", " << transform.m13 << std::endl;
+        oss << transform.m2 << ", " << transform.m6 << ", " << transform.m10 << ", " << transform.m14 << std::endl;
+        oss << transform.m3 << ", " << transform.m7 << ", " << transform.m11 << ", " << transform.m15 << std::endl;
+        rect.y += Editor::TextSize();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 4.0f}, oss.str().c_str());
+        rect.y += Editor::TextSize() * 4 + Editor::SmallGap();
+
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
+
+    height = rect.y - originalY;
+}
+
+
+float TransformComponent::GetEditorHeight() const {
+    return height;
+}
+
+
+Vector3 TransformComponent::GetWorldPosition() const {
+    return Vector3Transform(Vector3{0, 0, 0}, GetTransformMatrix());
 }
 
 void TransformComponent::OnDraw(Scene *scene) const {
 }
 
-
-float TransformComponent::GetEditorHeight() const {
-    return Editor::TextSize() * 7 + Editor::SmallGap() * 3
-           + headerProperty.GetEditorHeight()
-           + positionProperty.GetEditorHeight()
-           + eulerAnglesProperty.GetEditorHeight()
-           + scaleProperty.GetEditorHeight();
-}
 
 void TransformComponent::Start() {
 }
@@ -102,8 +116,4 @@ Matrix TransformComponent::GetTransformMatrix() const {
     transform = MatrixMultiply(MatrixRotateXYZ(eulerAngles), transform);
     transform = MatrixMultiply(MatrixTranslate(position.x, position.y, position.z), transform);
     return transform;
-}
-
-Vector3 TransformComponent::GetWorldPosition() const {
-    return Vector3Transform(Vector3{0, 0, 0}, GetTransformMatrix());
 }

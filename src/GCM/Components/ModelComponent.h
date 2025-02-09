@@ -5,10 +5,15 @@
 #include "raylib.h"
 #include <string>
 
+#include "../../editor/FoldoutProperty.h"
+
 class ModelComponent final : public Component {
 public:
     explicit ModelComponent() {
         headerProperty = ComponentHeaderProperty("Model");
+
+        const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
+        LoadModelFromFile(path); // TODO: remove this
     }
 
     ~ModelComponent() override {
@@ -36,10 +41,16 @@ public:
 
 private:
     Model *model = nullptr;
-    std::string warningText = "";
+    std::string warningText;
     BoundingBox bounds;
     char filename[32];
     bool editMode;
+    float height;
+
+    FoldoutProperty debugFoldout = FoldoutProperty("Debug");
+    bool drawSurface = true;
+    bool drawBounds = true;
+    bool drawWireframe = false;
 };
 
 

@@ -1,7 +1,9 @@
 #include "ModelComponent.h"
 
+#include <config.h>
 #include <iostream>
 #include <ostream>
+#include <sstream>
 
 #include "raylib.h"
 #include "raymath.h"
@@ -9,6 +11,7 @@
 #include "../../GCM/GameObject.h"
 
 void ModelComponent::OnEditorGUI(Rectangle &rect) {
+    const float originalY = rect.y;
     headerProperty.OnEditorGUI(rect);
     if (headerProperty.IsFolded()) return;
 
@@ -23,6 +26,7 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     rect.x -= labelWidth + Editor::SmallGap();
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
+    // load model
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Load Model")) {
         if (filename[0] == '\0') {
             warningText = "Filename is empty";
@@ -33,29 +37,97 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
+    // warning
     if (!warningText.empty()) {
         const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
+
+    debugFoldout.OnEditorGUI(rect);
+    if (!debugFoldout.IsFolded() && model != nullptr) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
+
+        // Draw options
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Surface", &drawSurface);
+        rect.x += rect.width * .33f;
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Wireframe",
+                    &drawWireframe);
+        rect.x += rect.width * .33f;
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Bounds", &drawBounds);
+        rect.x -= rect.width * .66f;
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+
+        // Mesh
+        std::ostringstream oss;
+        oss.precision(2);
+        oss << "Mesh count: " << model->meshCount << std::endl;
+        rect.y += Editor::TextSize();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        for (int i = 0; i < model->meshCount; i++) {
+            const Mesh mesh = model->meshes[i];
+            int materialIndex = model->meshMaterial[i];
+            oss.str("");
+            oss << i + 1 << ". " << mesh.vertexCount << " vertices, " << mesh.triangleCount << " triangles" <<
+                    ", material: [" << materialIndex << "]" << std::endl;
+            GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+            rect.y += Editor::TextSize() + Editor::SmallGap();
+        }
+        Editor::EndIndent(rect, Editor::LargeGap());
+
+        // Material
+        oss.str("");
+        oss << "Material count: " << model->materialCount << std::endl;
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        for (int i = 0; i < model->materialCount; i++) {
+            const Material material = model->materials[i];
+            oss.str("");
+            oss << i + 1 << ". " << "Shader ID: [" << material.shader.id << "]";
+
+            oss << ", Maps: ";
+            for (int i =0; i<MAX_MATERIAL_MAPS; i++) {
+                if (material.maps[i].texture.id != 0) {
+                    oss << "[Map " << i << ", Texture" << material.maps[i].texture.id << "]";
+                }
+            }
+            oss << std::endl;
+            GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+            rect.y += Editor::TextSize() + Editor::SmallGap();
+        }
+        Editor::EndIndent(rect, Editor::LargeGap());
+
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
+
+    // debug info
+
+    height = rect.y - originalY;
 }
 
 float ModelComponent::GetEditorHeight() const {
-    return Editor::TextSize() * 3.5 + Editor::SmallGap() * 3 +
-           (warningText.empty() ? 0 : Editor::TextSize() + Editor::SmallGap());
+    return height;
 }
 
 void ModelComponent::OnDraw(Scene *scene) const {
     if (model == nullptr) return;
 
-    DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+    if (drawSurface)
+        DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+
+    if (drawWireframe)
+        DrawModelWires(*model, {0, 0, 0}, 1.0f, WHITE);
 }
 
 void ModelComponent::OnDrawGizmos(Scene *scene) const {
 }
 
 void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
-    DrawBoundingBox(bounds, GRAY);
+    if (drawBounds && model != nullptr)
+        DrawBoundingBox(bounds, GRAY);
 }
 
 void ModelComponent::Start() {

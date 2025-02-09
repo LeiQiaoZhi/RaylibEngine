@@ -4,6 +4,7 @@
 
 #include "Component.h"
 #include "raylib.h"
+#include "../../editor/FoldoutProperty.h"
 #include "../../editor/Vector3Property.h"
 
 
@@ -38,6 +39,8 @@ private:
     Vector3Property positionProperty = Vector3Property(&position, "position");
     Vector3Property eulerAnglesProperty = Vector3Property(&eulerAngles, "rotation");
     Vector3Property scaleProperty = Vector3Property(&scale, "scale");
+    FoldoutProperty debugFoldout = FoldoutProperty("Debug", true);
+    float height;
 };
 
 
