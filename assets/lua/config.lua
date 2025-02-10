@@ -8,7 +8,7 @@ local cameraModes = {
 }
 
 -- Output to c++
-windowWidth = 1980
+windowWidth = 1920
 windowHeight = 1080
 windowName = "Raylib Lua Engine"
 style = "dark"

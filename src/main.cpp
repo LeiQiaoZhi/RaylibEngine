@@ -96,13 +96,13 @@ int main() {
     testParentA.AddChild(&testChild1);
     GameObject testChild2("Test Child 2", 5);
     testParentA.AddChild(&testChild2);
-    GameObject testParentB("Test Parent B", 6);
-    scene.root->AddChild(&testParentB);
-    testParentB.AddComponent(new ModelComponent());
+    GameObject Duck("Duck", 6);
+    scene.root->AddChild(&Duck);
+    Duck.AddComponent(new ModelComponent());
     GameObject testChild3("Test Child 3", 7);
-    testParentB.AddChild(&testChild3);
+    Duck.AddChild(&testChild3);
     GameObject testChild4("Test Child 4", 8);
-    testParentB.AddChild(&testChild4);
+    Duck.AddChild(&testChild4);
 
 
     //--------------------------------------------------------------------------------------
