@@ -27,11 +27,15 @@ public:
 
     void Update() override;
 
+    void OnDrawGizmosBottom(::Scene *scene) const override;
+
+    void DrawDebugGrid() const;
+
 private:
     Vector2 size = {10, 10};
     Vector2 spacing = {1, 1};
     Vector3 normal = {0, 1, 0};
-    Color color = GRAY;
+    Color color = {255, 255, 255, 50};
 
     float editorHeight;
     Vector2Property sizeProperty = Vector2Property(&size, "Size");

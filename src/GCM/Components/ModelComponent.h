@@ -39,6 +39,8 @@ public:
 
     void LoadModelFromFile(const std::string &filename);
 
+    void OnDrawGizmosBottom(Scene *scene) const override;
+
 private:
     Model *model = nullptr;
     std::string warningText;

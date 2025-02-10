@@ -29,6 +29,8 @@ public:
         return camera;
     }
 
+    void OnDrawGizmosBottom(Scene *scene) const override;
+
 private:
     Camera *camera = nullptr;
     int cameraMode;

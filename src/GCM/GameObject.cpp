@@ -47,6 +47,19 @@ GameObject *GameObject::GetGameObjectByUID(int uid) {
     return nullptr;
 }
 
+void GameObject::DrawGizmosBottom(Scene *scene) const {
+    // own components draw gizmos
+    for (const auto *component: components) {
+        if (component->enabled)
+            component->OnDrawGizmosBottom(scene);
+    }
+
+    // children draw gizmos
+    for (const auto *child: children) {
+        child->DrawGizmosBottom(scene);
+    }
+}
+
 void GameObject::DrawGizmos(Scene *scene) const {
     // own components draw gizmos
     for (const auto *component: components) {

@@ -25,8 +25,12 @@ public:
         rect.width += indent;
     }
 
-    static Color BlackOrWhiteBasedOnBackground(Color background) {
-        return (background.r + background.g + background.b) / 3 > 128 ? BLACK : WHITE;
+    static Color BlackOrWhiteBasedOnBackground(Color color) {
+        float a = color.a / 255.0f;
+        Color bg = BackgroundColor();
+        return ((color.r + color.g + color.b) * a + (bg.r + bg.g + bg.b) * (1 - a)) > 3 * 128
+                   ? BLACK
+                   : WHITE;
     }
 
     static Color BeginTextColor(Color textColor) {

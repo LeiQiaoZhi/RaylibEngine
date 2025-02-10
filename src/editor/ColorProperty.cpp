@@ -17,8 +17,10 @@ void ColorProperty::OnEditorGUI(Rectangle &rect) {
     color->r = newColor.r;
     color->g = newColor.g;
     color->b = newColor.b;
-    color->a = newColor.a;
     rect.y += dimension + Editor::SmallGap();
+    GuiColorBarAlpha({rect.x, rect.y, dimension, Editor::TextSize() * 1.0f}, nullptr, &alpha);
+    color->a = alpha * 255;
+    rect.y += Editor::TextSize() + Editor::SmallGap();
 
     editorHeight = rect.y - originalY;
 }

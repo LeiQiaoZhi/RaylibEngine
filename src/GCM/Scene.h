@@ -20,6 +20,8 @@ public:
 
     void Draw(Scene * scene);
 
+    void DrawGizmosBottom(Scene * scene);
+
     std::string name;
     GameObject *root = nullptr;
     int selectedGameObjectUID = -1;

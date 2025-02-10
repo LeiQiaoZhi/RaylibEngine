@@ -73,6 +73,9 @@ Vector3 TransformComponent::GetWorldForward() const {
     return Vector3Normalize(Vector3Subtract(forwardPos, GetWorldPosition()));
 }
 
+void TransformComponent::OnDrawGizmosBottom(Scene *scene) const {
+}
+
 void TransformComponent::OnDraw(Scene *scene) const {
 }
 
@@ -93,6 +96,8 @@ void TransformComponent::OnDrawGizmos(Scene *scene) const {
 void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     rlDisableDepthTest();
     const Vector3 worldPosition = GetWorldPosition();
+    const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
+    const float distToCamera = Vector3Distance(worldPosition, camera->position);
 
     // Parent
     auto parentPosition = Vector3{0, 0, 0};
@@ -101,18 +106,17 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     DrawLine3D(worldPosition, parentPosition, YELLOW);
 
     // Local Axes
-    constexpr float length = 10.0f;
+    const float length = distToCamera * 0.1f;
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldRight() * length), RED);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldUp() * length), GREEN);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldForward() * length), BLUE);
 
     // Name Label
     EndMode3D();
-    const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
     const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, 800, 900);
     DrawText(gameObject->GetName(), screenPosition.x, screenPosition.y, 10, WHITE);
-    rlEnableDepthTest();
     BeginMode3D(*camera);
+    rlEnableDepthTest();
 }
 
 void TransformComponent::Update() {

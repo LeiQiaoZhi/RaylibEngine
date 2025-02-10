@@ -161,3 +161,6 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         warningText = "File format not supported";
     }
 }
+
+void ModelComponent::OnDrawGizmosBottom(Scene *scene) const {
+}

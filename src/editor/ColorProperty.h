@@ -24,6 +24,7 @@ private:
     Color *color = nullptr;
     FoldoutProperty foldoutProperty;
     float editorHeight = 0;
+    float alpha = 1.0f;
 };
 
 

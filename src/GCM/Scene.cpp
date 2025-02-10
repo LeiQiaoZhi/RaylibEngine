@@ -38,3 +38,7 @@ void Scene::DrawGizmos(Scene *scene) const {
 void Scene::Draw(Scene *scene) {
     root->Draw(scene);
 }
+
+void Scene::DrawGizmosBottom(Scene *scene) {
+    root->DrawGizmosBottom(scene);
+}

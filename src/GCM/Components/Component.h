@@ -33,6 +33,8 @@ public:
     //    virtual void OnDestroy() = 0;
     virtual ~Component() = default;
 
+    virtual void OnDrawGizmosBottom(Scene * scene) const = 0;
+
 public:
     GameObject *gameObject = nullptr;
     bool enabled = true;

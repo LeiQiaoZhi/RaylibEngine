@@ -48,3 +48,6 @@ void CameraComponent::Update() {
         }
     }
 }
+
+void CameraComponent::OnDrawGizmosBottom(Scene *scene) const {
+}
