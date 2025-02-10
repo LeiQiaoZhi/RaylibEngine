@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include <iostream>
+#include "raymath.h"
 
 class RaylibUtils {
 public:
@@ -43,6 +44,28 @@ public:
             }
         }
         throw std::out_of_range("Type must be vector3 or 2");
+    }
+
+    static void DrawDebugGrid(const Vector3 &position, const Vector3 &right, const Vector3 &forward,
+                              const Vector2 &size,
+                              const Vector2 &spacing, const Color &color) {
+        // prevent division by zero
+        if (spacing.x == 0 || spacing.y == 0 || size.x == 0 || size.y == 0) {
+            return;
+        }
+
+        const Vector3 bottomLeft = position - right * size.x / 2 - forward * size.y / 2;
+
+        for (int i = 0; i <= size.x / spacing.x; i++) {
+            const Vector3 start = bottomLeft + right * i * spacing.x;
+            const Vector3 end = start + forward * size.y;
+            DrawLine3D(start, end, color);
+        }
+        for (int i = 0; i <= size.y / spacing.y; i++) {
+            const Vector3 start = bottomLeft + forward * i * spacing.y;
+            const Vector3 end = start + right * size.x;
+            DrawLine3D(start, end, color);
+        }
     }
 };
 

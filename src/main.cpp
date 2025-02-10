@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include <iostream>
 #include "GCM/Scene.h"
+#include "GCM/Components/DebugGridBoxComponent.h"
 #include "GCM/Components/DebugGridComponent.h"
 #include "GCM/Components/ModelComponent.h"
 #include "logger/Logger.h"
@@ -86,7 +87,7 @@ int main() {
     Scene scene;
     scene.name = "Test Scene";
     scene.root = new GameObject(scene.name, 1);
-    scene.root->AddComponent(new DebugGridComponent());
+    scene.root->AddComponent(new DebugGridBoxComponent());
     GameObject cameraGO("Camera", 2);
     cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
     scene.root->AddChild(&cameraGO);

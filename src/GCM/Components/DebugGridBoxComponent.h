@@ -1,17 +1,17 @@
-#ifndef DEBUGGRIDCOMPONENT_H
-#define DEBUGGRIDCOMPONENT_H
+#ifndef DEBUGGRIDBOXCOMPONENT_H
+#define DEBUGGRIDBOXCOMPONENT_H
 
 #include "Component.h"
 #include "../../editor/ColorProperty.h"
 #include "../../editor/VectorProperty.h"
 
-class DebugGridComponent final : public Component {
+class DebugGridBoxComponent final : public Component {
 public:
-    DebugGridComponent() {
-        headerProperty.label = "Debug Grid";
+    DebugGridBoxComponent() {
+        headerProperty.label = "Debug Grid Box";
     }
 
-    ~DebugGridComponent() override = default;
+    ~DebugGridBoxComponent() override = default;
 
     void OnEditorGUI(Rectangle &rect) override;
 
@@ -30,15 +30,15 @@ public:
     void OnDrawGizmosBottom(::Scene *scene) const override;
 
 private:
-    Vector2 size = {10, 10};
-    Vector2 spacing = {1, 1};
+    Vector3 size = {40, 40, 40};
+    Vector3 spacing = {10, 10, 10};
     Color color = {255, 255, 255, 50};
 
     float editorHeight;
-    Vector2Property sizeProperty = Vector2Property(&size, "Size");
-    Vector2Property spacingProperty = Vector2Property(&spacing, "Spacing");
+    Vector3Property sizeProperty = Vector3Property(&size, "Size");
+    Vector3Property spacingProperty = Vector3Property(&spacing, "Spacing");
     ColorProperty colorProperty = ColorProperty(&color, "Color");
 };
 
 
-#endif //DEBUGGRIDCOMPONENT_H
+#endif //DEBUGGRIDBOXCOMPONENT_H
