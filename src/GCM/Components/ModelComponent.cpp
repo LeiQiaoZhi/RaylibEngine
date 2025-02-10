@@ -102,9 +102,6 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
 
         Editor::EndIndent(rect, Editor::LargeGap());
     }
-
-    // debug info
-
     height = rect.y - originalY;
 }
 
@@ -127,7 +124,7 @@ void ModelComponent::OnDrawGizmos(Scene *scene) const {
 
 void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
     if (drawBounds && model != nullptr)
-        DrawBoundingBox(bounds, GRAY);
+        RaylibUtils::DrawModelBoundingBoxAfterTransform(*model, GRAY);
 }
 
 void ModelComponent::Start() {
@@ -136,7 +133,6 @@ void ModelComponent::Start() {
 void ModelComponent::Update() {
     if (model == nullptr) return;
     model->transform = gameObject->GetTransform()->GetTransformMatrix();
-    bounds = GetModelBoundingBox(*model);
 }
 
 void ModelComponent::LoadModelFromFile(const std::string &filename) {

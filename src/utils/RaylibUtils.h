@@ -67,6 +67,69 @@ public:
             DrawLine3D(start, end, color);
         }
     }
+
+    static Vector3 GetScaleFromTransform(const Matrix& mat) {
+        return {
+            Vector3Length(Vector3{mat.m0, mat.m1, mat.m2}),
+            Vector3Length(Vector3{mat.m4, mat.m5, mat.m6}),
+            Vector3Length(Vector3{mat.m8, mat.m9, mat.m10})
+        };
+    }
+
+    // Compute model bounding box limits (considers all meshes)
+    static void DrawModelBoundingBoxAfterTransform(Model model, Color color) {
+        BoundingBox bbox = {0};
+
+        if (model.meshCount > 0) {
+            Vector3 temp = {0};
+            bbox = GetMeshBoundingBox(model.meshes[0]);
+
+            for (int i = 1; i < model.meshCount; i++) {
+                BoundingBox tempBounds = GetMeshBoundingBox(model.meshes[i]);
+
+                temp.x = (bbox.min.x < tempBounds.min.x) ? bbox.min.x : tempBounds.min.x;
+                temp.y = (bbox.min.y < tempBounds.min.y) ? bbox.min.y : tempBounds.min.y;
+                temp.z = (bbox.min.z < tempBounds.min.z) ? bbox.min.z : tempBounds.min.z;
+                bbox.min = temp;
+
+                temp.x = (bbox.max.x > tempBounds.max.x) ? bbox.max.x : tempBounds.max.x;
+                temp.y = (bbox.max.y > tempBounds.max.y) ? bbox.max.y : tempBounds.max.y;
+                temp.z = (bbox.max.z > tempBounds.max.z) ? bbox.max.z : tempBounds.max.z;
+                bbox.max = temp;
+            }
+        }
+
+        Vector3 corners[8] = {
+            {bbox.min.x, bbox.min.y, bbox.min.z},
+            {bbox.min.x, bbox.min.y, bbox.max.z},
+            {bbox.min.x, bbox.max.y, bbox.min.z},
+            {bbox.min.x, bbox.max.y, bbox.max.z},
+            {bbox.max.x, bbox.min.y, bbox.min.z},
+            {bbox.max.x, bbox.min.y, bbox.max.z},
+            {bbox.max.x, bbox.max.y, bbox.min.z},
+            {bbox.max.x, bbox.max.y, bbox.max.z}
+        };
+
+        // Apply transformation to all corners
+        for (int i = 0; i < 8; i++) {
+            corners[i] = Vector3Transform(corners[i], model.transform);
+        }
+
+        DrawLine3D(corners[0], corners[1], color);
+        DrawLine3D(corners[1], corners[3], color);
+        DrawLine3D(corners[3], corners[2], color);
+        DrawLine3D(corners[2], corners[0], color);
+
+        DrawLine3D(corners[4], corners[5], color);
+        DrawLine3D(corners[5], corners[7], color);
+        DrawLine3D(corners[7], corners[6], color);
+        DrawLine3D(corners[6], corners[4], color);
+
+        DrawLine3D(corners[0], corners[4], color);
+        DrawLine3D(corners[1], corners[5], color);
+        DrawLine3D(corners[2], corners[6], color);
+        DrawLine3D(corners[3], corners[7], color);
+    }
 };
 
 #endif //RAYLIBUTILS_H
