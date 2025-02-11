@@ -44,6 +44,9 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
 
+    // Material Loading
+    materialProp.OnEditorGUI(rect);
+
     debugFoldout.OnEditorGUI(rect);
     if (!debugFoldout.IsFolded() && model != nullptr) {
         Editor::BeginIndent(rect, Editor::LargeGap());
@@ -95,17 +98,20 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
                     oss.str("");
                     oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id << "]" <<
                             std::endl;
+                    float recWidth = Editor::TextSize() * 1.0f;
+                    DrawRectangleRec({
+                                         rect.x + rect.width - recWidth, rect.y - recWidth * 1.0f, recWidth,
+                                         Editor::TextSize() * 1.0f
+                                     }, material.maps[i].color);
                     GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
                     rect.y += Editor::TextSize() + Editor::SmallGap();
                 }
             }
         }
         Editor::EndIndent(rect, Editor::LargeGap());
-
-        // Material Loading
-
         Editor::EndIndent(rect, Editor::LargeGap());
     }
+
     height = rect.y - originalY;
 }
 
@@ -157,6 +163,9 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         const Model modelObj = LoadModel(filename.c_str()); // Load new model
         model = new Model(modelObj);
         bounds = GetModelBoundingBox(*model);
+
+        // update properties
+        materialProp.SetModel(model);
     } else {
         warningText = "File format not supported";
     }

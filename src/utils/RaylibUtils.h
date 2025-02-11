@@ -1,9 +1,15 @@
 #ifndef RAYLIBUTILS_H
 #define RAYLIBUTILS_H
 
+#include <config.h>
+
 #include "raylib.h"
 #include <iostream>
 #include "raymath.h"
+#include <nlohmann/json.hpp>
+#include "JsonUtils.h"
+
+using json = nlohmann::json;
 
 class RaylibUtils {
 public:
@@ -68,7 +74,7 @@ public:
         }
     }
 
-    static Vector3 GetScaleFromTransform(const Matrix& mat) {
+    static Vector3 GetScaleFromTransform(const Matrix &mat) {
         return {
             Vector3Length(Vector3{mat.m0, mat.m1, mat.m2}),
             Vector3Length(Vector3{mat.m4, mat.m5, mat.m6}),
@@ -148,8 +154,33 @@ public:
         }
     }
 
-    static void LoadMaterialFromFile(const char *path) {
 
+    static Material LoadMaterialFromFile(const char *path) {
+        json j = JsonUtils::JsonFromFile(path);
+        Material material = LoadMaterialDefault();
+
+        // Shader
+        if (j["Shader"]["Vertex"] != "default") {
+            std::string vertPath = ASSET_DIR + std::string(j["Shader"]["Vertex"]);
+        }
+        if (j["Shader"]["Fragment"] != "default") {
+            std::string fragPath = ASSET_DIR + std::string(j["Shader"]["Fragment"]);
+        }
+
+        // Textures
+        auto &mapsArray = j["Maps"];
+        for (int i = 0; i < std::min(MAX_MATERIAL_MAPS, static_cast<int>(mapsArray.size())); i++) {
+            auto &map = mapsArray[i];
+            auto &color = map["Color"];
+            const int type = map["Type"];
+            std::string texturePath = ASSET_DIR + std::string(map["Path"]);
+            material.maps[type].texture = LoadTexture(texturePath.c_str());
+            material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
+        }
+
+        // TODO: params
+
+        return material;
     }
 };
 

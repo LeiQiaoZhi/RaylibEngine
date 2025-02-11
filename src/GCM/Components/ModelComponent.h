@@ -6,6 +6,7 @@
 #include <string>
 
 #include "../../editor/FoldoutProperty.h"
+#include "../../editor/MaterialProperty.h"
 
 class ModelComponent final : public Component {
 public:
@@ -15,10 +16,6 @@ public:
         // const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
         const auto path = std::string(SHADER_EXAMPLES_ASSET_DIR) + "/models/old_car_new.glb";
         LoadModelFromFile(path); // TODO: remove this
-        model->meshMaterial[0] = 0;
-        model->materials[0].maps[MATERIAL_MAP_ALBEDO].color = RED;
-        const auto texPath = std::string(SHADER_EXAMPLES_ASSET_DIR) + "/old_car_d.png";
-        model->materials[0].maps[MATERIAL_MAP_ALBEDO].texture = LoadTexture(texPath.c_str());
     }
 
     ~ModelComponent() override {
@@ -58,6 +55,8 @@ private:
     bool drawSurface = true;
     bool drawBounds = true;
     bool drawWireframe = false;
+    MaterialProperty materialProp = MaterialProperty(model, 0);
+    // TODO: more materials
 };
 
 

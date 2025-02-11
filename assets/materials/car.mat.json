@@ -1,0 +1,45 @@
+{
+  "Shader": {
+    "Vertex": "default",
+    "Fragment": "default"
+  },
+  "Maps": [
+    {
+      "Type": 0,
+      "Path": "/textures/old_car_d.png",
+      "Color": [
+        255,
+        0,
+        0,
+        255
+      ]
+    },
+    {
+      "Type": 5,
+      "Path": "/textures/old_car_e.png",
+      "Color": [
+        0,
+        255,
+        0,
+        255
+      ]
+    },
+    {
+      "Type": 2,
+      "Path": "/textures/old_car_n.png",
+      "Color": [
+        0,
+        0,
+        255,
+        255
+      ]
+    }
+  ],
+  "Params": [
+    0,
+    0,
+    0,
+    0
+  ]
+}
+

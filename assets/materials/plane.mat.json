@@ -1,0 +1,35 @@
+{
+  "Shader": {
+    "Vertex": "default",
+    "Fragment": "default"
+  },
+  "Maps": [
+    {
+      "Type": 0,
+      "Path": "/textures/road_a.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "Type": 2,
+      "Path": "/textures/road_n.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "Params": [
+    0,
+    0,
+    0,
+    0
+  ]
+}
+

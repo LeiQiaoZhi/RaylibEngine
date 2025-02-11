@@ -5,12 +5,12 @@
   },
   "Maps": [
     {
-      "Type": "Albedo",
-      "Path": "textures/old_car_d.png",
+      "Type": 0,
+      "Path": "/textures/church_diffuse.png",
       "Color": [
         255,
-        0,
-        0,
+        255,
+        255,
         255
       ]
     }

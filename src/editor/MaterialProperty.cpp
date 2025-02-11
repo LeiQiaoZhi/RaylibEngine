@@ -11,12 +11,35 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Load Material")) {
-        // TODO: load material from file
+        if (path[0] == '\0') {
+            statusText = "Path is empty";
+            statusWarning = true;
+            return;
+        }
+        if (model == nullptr) {
+            statusText = "Model is null";
+            statusWarning = true;
+            return;
+        }
+        const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(path);
+        if (!FileExists(fullPath.c_str())) {
+            statusText = "File does not exist";
+            statusWarning = true;
+            return;
+        }
+        // TODO: test extension
+
+        // unload first
+        UnloadMaterial(model->materials[materialIndex]);
+        model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
+        statusText = "Material loaded";
+        statusWarning = false;
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     if (!statusText.empty()) {
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, statusText.c_str());
+        const char *text = statusWarning ? GuiIconText(ICON_WARNING, statusText.c_str()) : statusText.c_str();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
         rect.y += Editor::TextSize() + Editor::SmallGap();
     }
 

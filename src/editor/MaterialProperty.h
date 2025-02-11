@@ -16,6 +16,10 @@ public:
 
     float GetEditorHeight() const;
 
+    void SetModel(Model * model) {
+        this->model = model;
+    }
+
 private:
     Model *model = nullptr;
     char path[256] = "";
@@ -24,6 +28,7 @@ private:
     float height;
     std::string statusText = "";
     bool pathEditMode = false;
+    bool statusWarning = false;
 };
 
 
