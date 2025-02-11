@@ -52,6 +52,7 @@ target_compile_definitions(
         ${PROJECT_NAME}
         PRIVATE PROJECT_DIR="${CMAKE_SOURCE_DIR}"
         PRIVATE ASSET_DIR="${CMAKE_SOURCE_DIR}/assets"
+        PRIVATE SHADER_EXAMPLES_ASSET_DIR="${CMAKE_SOURCE_DIR}/vendor/raylib/examples/shaders/resources"
 )
 
 add_compile_options(-Wno-deprecated-declarations)

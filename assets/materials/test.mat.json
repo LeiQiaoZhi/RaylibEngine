@@ -1,0 +1,24 @@
+{
+  "Shader": {
+    "Vertex": "default",
+    "Fragment": "default"
+  },
+  "Maps": [
+    {
+      "Type": "Albedo",
+      "Path": "textures/old_car_d.png",
+      "Color": [
+        255,
+        0,
+        0,
+        255
+      ]
+    }
+  ],
+  "Params": [
+    0,
+    0,
+    0,
+    0
+  ]
+}

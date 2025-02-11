@@ -70,7 +70,7 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
             const Mesh mesh = model->meshes[i];
             int materialIndex = model->meshMaterial[i];
             oss.str("");
-            oss << i + 1 << ". " << mesh.vertexCount << " vertices, " << mesh.triangleCount << " triangles" <<
+            oss << i << ". " << mesh.vertexCount << " vertices, " << mesh.triangleCount << " triangles" <<
                     ", material: [" << materialIndex << "]" << std::endl;
             GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
             rect.y += Editor::TextSize() + Editor::SmallGap();
@@ -86,19 +86,23 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
         for (int i = 0; i < model->materialCount; i++) {
             const Material material = model->materials[i];
             oss.str("");
-            oss << i + 1 << ". " << "Shader ID: [" << material.shader.id << "]";
-
-            oss << ", Maps: ";
-            for (int i =0; i<MAX_MATERIAL_MAPS; i++) {
-                if (material.maps[i].texture.id != 0) {
-                    oss << "[Map " << i << ", Texture" << material.maps[i].texture.id << "]";
-                }
-            }
-            oss << std::endl;
+            oss << i << ". " << "Shader ID: [" << material.shader.id << "], Maps: " << std::endl;
             GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
             rect.y += Editor::TextSize() + Editor::SmallGap();
+            for (int i = 0; i < MAX_MATERIAL_MAPS; i++) {
+                std::string mapType = RaylibUtils::MaterialMapTypeToString(i);
+                if (material.maps[i].texture.id != 0) {
+                    oss.str("");
+                    oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id << "]" <<
+                            std::endl;
+                    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+                    rect.y += Editor::TextSize() + Editor::SmallGap();
+                }
+            }
         }
         Editor::EndIndent(rect, Editor::LargeGap());
+
+        // Material Loading
 
         Editor::EndIndent(rect, Editor::LargeGap());
     }

@@ -12,8 +12,13 @@ public:
     explicit ModelComponent() {
         headerProperty.label = "Model";
 
-        const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
+        // const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
+        const auto path = std::string(SHADER_EXAMPLES_ASSET_DIR) + "/models/old_car_new.glb";
         LoadModelFromFile(path); // TODO: remove this
+        model->meshMaterial[0] = 0;
+        model->materials[0].maps[MATERIAL_MAP_ALBEDO].color = RED;
+        const auto texPath = std::string(SHADER_EXAMPLES_ASSET_DIR) + "/old_car_d.png";
+        model->materials[0].maps[MATERIAL_MAP_ALBEDO].texture = LoadTexture(texPath.c_str());
     }
 
     ~ModelComponent() override {

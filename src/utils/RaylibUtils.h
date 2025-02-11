@@ -130,6 +130,27 @@ public:
         DrawLine3D(corners[2], corners[6], color);
         DrawLine3D(corners[3], corners[7], color);
     }
+
+    static std::string MaterialMapTypeToString(const int i) {
+        switch (i) {
+            case MATERIAL_MAP_ALBEDO: return "Albedo";
+            case MATERIAL_MAP_METALNESS: return "Metalness";
+            case MATERIAL_MAP_NORMAL: return "Normal";
+            case MATERIAL_MAP_ROUGHNESS: return "Roughness";
+            case MATERIAL_MAP_OCCLUSION: return "Occlusion";
+            case MATERIAL_MAP_EMISSION: return "Emission";
+            case MATERIAL_MAP_HEIGHT: return "Height";
+            case MATERIAL_MAP_CUBEMAP: return "Cubemap";
+            case MATERIAL_MAP_IRRADIANCE: return "Irradiance";
+            case MATERIAL_MAP_PREFILTER: return "Prefilter";
+            case MATERIAL_MAP_BRDF: return "BRDF";
+            default: return "Unknown";
+        }
+    }
+
+    static void LoadMaterialFromFile(const char *path) {
+
+    }
 };
 
 #endif //RAYLIBUTILS_H
