@@ -10,6 +10,7 @@ set(LUA_LIBRARY "/opt/homebrew/lib/liblua.dylib")
 include_directories(${LUA_INCLUDE_DIR})
 
 add_subdirectory(vendor/raylib)
+add_subdirectory(vendor/json)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -44,6 +45,8 @@ endif ()
 
 # Link against raylib libraries and ANGLE if using ANGLE
 target_link_libraries(${PROJECT_NAME} raylib ${LUA_LIBRARY})
+target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
+
 if (USE_ANGLE)
     target_link_libraries(${PROJECT_NAME} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 endif ()
