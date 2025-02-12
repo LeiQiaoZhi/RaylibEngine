@@ -92,3 +92,16 @@ void GameObject::Draw(Scene *scene) const {
         child->Draw(scene);
     }
 }
+
+void GameObject::StartComponents() const {
+    // start own components
+    for (auto *component: components) {
+        if (component->enabled)
+            component->Start();
+    }
+
+    // start children
+    for (const auto *child: children) {
+        child->StartComponents();
+    }
+}

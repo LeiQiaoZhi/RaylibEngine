@@ -11,6 +11,7 @@
 #include "GCM/Components/DebugGridBoxComponent.h"
 #include "GCM/Components/DebugGridComponent.h"
 #include "GCM/Components/ModelComponent.h"
+#include "GCM/Components/ProceduralMeshComponent.h"
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
@@ -97,15 +98,17 @@ int main() {
     testParentA.AddChild(&testChild1);
     GameObject testChild2("Test Child 2", 5);
     testParentA.AddChild(&testChild2);
-    GameObject Duck("Duck", 6);
-    scene.root->AddChild(&Duck);
-    Duck.AddComponent(new ModelComponent());
+    GameObject model("Model", 6);
+    scene.root->AddChild(&model);
+    model.AddComponent(new ModelComponent());
+    model.AddComponent(new ProceduralMeshComponent());
     GameObject testChild3("Test Child 3", 7);
-    Duck.AddChild(&testChild3);
+    model.AddChild(&testChild3);
     GameObject testChild4("Test Child 4", 8);
-    Duck.AddChild(&testChild4);
+    model.AddChild(&testChild4);
 
 
+    scene.StartComponents();
     //--------------------------------------------------------------------------------------
 
     // Main game loop

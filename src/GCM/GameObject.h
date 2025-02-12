@@ -82,14 +82,15 @@ public:
 
     GameObject *GetGameObjectByUID(int uid);
 
-    void DrawGizmosBottom(Scene * scene) const;
+    void DrawGizmosBottom(Scene *scene) const;
 
-    void DrawGizmos(Scene* scene) const;
+    void DrawGizmos(Scene *scene) const;
 
-    void DrawGizmosSelected(Scene * scene) const;
+    void DrawGizmosSelected(Scene *scene) const;
 
-    void Draw(Scene * scene) const;
+    void Draw(Scene *scene) const;
 
+    void StartComponents() const;
 
 protected:
     std::string name;

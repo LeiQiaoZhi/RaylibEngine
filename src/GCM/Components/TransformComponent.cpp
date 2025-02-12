@@ -133,8 +133,8 @@ Matrix TransformComponent::GetTransformMatrix() const {
     if (parent != nullptr) {
         transform = parent->GetTransform()->GetTransformMatrix();
     }
-    transform = MatrixMultiply(MatrixScale(scale.x, scale.y, scale.z), transform);
-    transform = MatrixMultiply(MatrixRotateXYZ(eulerAngles), transform);
     transform = MatrixMultiply(MatrixTranslate(position.x, position.y, position.z), transform);
+    transform = MatrixMultiply(MatrixRotateXYZ(eulerAngles), transform);
+    transform = MatrixMultiply(MatrixScale(scale.x, scale.y, scale.z), transform);
     return transform;
 }

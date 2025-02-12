@@ -182,6 +182,209 @@ public:
 
         return material;
     }
+
+    static Mesh GenCubeCustomResolution(int size[3], Vector3 sizeWorld) {
+        Mesh mesh = {0};
+
+        // vertices along x, y, z
+        int verticesCount = 2 * (size[0] * size[1] + size[1] * size[2] + size[2] * size[0]);
+        int trianglesCount = 4 * ((size[0] - 1) * (size[1] - 1) + (size[1] - 1) * (size[2] - 1) + (
+                                      size[2] - 1) * (size[0] - 1));
+        Vector3 *vertices = static_cast<Vector3 *>(RL_MALLOC(verticesCount*sizeof(Vector3)));
+        Vector3 *normals = static_cast<Vector3 *>(RL_MALLOC(verticesCount*sizeof(Vector3)));
+        int *indices = static_cast<int *>(RL_MALLOC(trianglesCount*3*sizeof(int)));
+        int verticesAdded = 0;
+        int verticesPerPlane = size[0] * size[2];
+        // bottom and top
+        for (int x = 0; x < size[0]; x++) {
+            for (int z = 0; z < size[2]; z++) {
+                // Bottom
+                vertices[x * size[2] + z + verticesAdded] = {
+                    x * sizeWorld.x / (size[0] - 1),
+                    0,
+                    z * sizeWorld.z / (size[2] - 1)
+                };
+                normals[x * size[2] + z + verticesAdded] = {0, -1, 0};
+
+                // Top
+                vertices[x * size[2] + z + verticesPerPlane + verticesAdded] = {
+                    x * sizeWorld.x / (size[0] - 1),
+                    sizeWorld.y,
+                    z * sizeWorld.z / (size[2] - 1)
+                };
+                normals[x * size[2] + z + verticesPerPlane + verticesAdded] = {0, 1, 0};
+            }
+        }
+
+        int index = 0;
+        for (int x = 0; x < size[0] - 1; x++) {
+            for (int z = 0; z < size[2] - 1; z++) {
+                // Bottom
+                int bottomLeftIndex = x * size[2] + z;
+                int bottomRightIndex = bottomLeftIndex + size[2];
+                int topLeftIndex = bottomLeftIndex + 1;
+                int topRightIndex = bottomRightIndex + 1;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topRightIndex;
+                // Top
+                bottomLeftIndex += verticesPerPlane;
+                bottomRightIndex += verticesPerPlane;
+                topLeftIndex += verticesPerPlane;
+                topRightIndex += verticesPerPlane;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topRightIndex;
+                indices[index++] = bottomRightIndex;
+            }
+        }
+
+        // left and right
+        verticesAdded += verticesPerPlane * 2;
+        verticesPerPlane = size[1] * size[2];
+        for (int y = 0; y < size[1]; y++) {
+            for (int z = 0; z < size[2]; z++) {
+                // Left
+                vertices[y * size[2] + z + verticesAdded] = {
+                    0,
+                    y * sizeWorld.y / (size[1] - 1),
+                    z * sizeWorld.z / (size[2] - 1)
+                };
+                normals[y * size[2] + z + verticesAdded] = {-1, 0, 0};
+
+                // Right
+                vertices[y * size[2] + z + verticesPerPlane + verticesAdded] = {
+                    sizeWorld.x,
+                    y * sizeWorld.y / (size[1] - 1),
+                    z * sizeWorld.z / (size[2] - 1)
+                };
+                normals[y * size[2] + z + verticesPerPlane + verticesAdded] = {1, 0, 0};
+            }
+        }
+
+        for (int y = 0; y < size[1] - 1; y++) {
+            for (int z = 0; z < size[2] - 1; z++) {
+                // Left
+                int bottomLeftIndex = y * size[2] + z + verticesAdded;
+                int bottomRightIndex = bottomLeftIndex + size[2];
+                int topLeftIndex = bottomLeftIndex + 1;
+                int topRightIndex = bottomRightIndex + 1;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topRightIndex;
+                indices[index++] = bottomRightIndex;
+                // Right
+                bottomLeftIndex += verticesPerPlane;
+                bottomRightIndex += verticesPerPlane;
+                topLeftIndex += verticesPerPlane;
+                topRightIndex += verticesPerPlane;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topRightIndex;
+            }
+        }
+
+
+        // front and back
+        verticesAdded += verticesPerPlane * 2;
+        verticesPerPlane = size[0] * size[1];
+        for (int x = 0; x < size[0]; x++) {
+            for (int y = 0; y < size[1]; y++) {
+                // Front
+                vertices[x * size[1] + y + verticesAdded] = {
+                    x * sizeWorld.x / (size[0] - 1),
+                    y * sizeWorld.y / (size[1] - 1),
+                    0,
+                };
+                normals[x * size[1] + y + verticesAdded] = {0, 0, -1};
+
+                // Right
+                vertices[x * size[1] + y + verticesPerPlane + verticesAdded] = {
+                    x * sizeWorld.x / (size[0] - 1),
+                    y * sizeWorld.y / (size[1] - 1),
+                    sizeWorld.z,
+                };
+                normals[x * size[1] + y + verticesPerPlane + verticesAdded] = {0, 0, 1};
+            }
+        }
+
+        for (int x = 0; x < size[0] - 1; x++) {
+            for (int y = 0; y < size[1] - 1; y++) {
+                // Front
+                int bottomLeftIndex = x * size[1] + y + verticesAdded;
+                int bottomRightIndex = bottomLeftIndex + size[1];
+                int topLeftIndex = bottomLeftIndex + 1;
+                int topRightIndex = bottomRightIndex + 1;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topRightIndex;
+                indices[index++] = bottomRightIndex;
+                // Back
+                bottomLeftIndex += verticesPerPlane;
+                bottomRightIndex += verticesPerPlane;
+                topLeftIndex += verticesPerPlane;
+                topRightIndex += verticesPerPlane;
+                indices[index++] = bottomLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = topLeftIndex;
+                indices[index++] = bottomRightIndex;
+                indices[index++] = topRightIndex;
+            }
+        }
+
+
+        mesh.vertexCount = verticesCount;
+        mesh.triangleCount = trianglesCount;
+        mesh.vertices = (float *) RL_MALLOC(mesh.vertexCount*3*sizeof(float));
+        mesh.texcoords = (float *) RL_MALLOC(mesh.vertexCount*2*sizeof(float));
+        mesh.normals = (float *) RL_MALLOC(mesh.vertexCount*3*sizeof(float));
+        mesh.indices = (unsigned short *) RL_MALLOC(mesh.triangleCount*3*sizeof(unsigned short));
+
+        // Mesh vertices position array
+        for (int i = 0; i < mesh.vertexCount; i++) {
+            mesh.vertices[3 * i] = vertices[i].x - sizeWorld.x / 2;
+            mesh.vertices[3 * i + 1] = vertices[i].y - sizeWorld.y / 2;
+            mesh.vertices[3 * i + 2] = vertices[i].z - sizeWorld.z / 2;
+        }
+
+        // Mesh texcoords array
+        // for (int i = 0; i < mesh.vertexCount; i++) {
+        //     mesh.texcoords[2 * i] = texcoords[i].x;
+        //     mesh.texcoords[2 * i + 1] = texcoords[i].y;
+        // }
+
+        // Mesh normals array
+        for (int i = 0; i < mesh.vertexCount; i++) {
+            mesh.normals[3 * i] = normals[i].x;
+            mesh.normals[3 * i + 1] = normals[i].y;
+            mesh.normals[3 * i + 2] = normals[i].z;
+        }
+
+        // Mesh indices array initialization
+        for (int i = 0; i < mesh.triangleCount * 3; i++) mesh.indices[i] = indices[i];
+
+        RL_FREE(vertices);
+        RL_FREE(normals);
+        // RL_FREE(texcoords);
+        RL_FREE(indices);
+
+        UploadMesh(&mesh, false);
+
+        return mesh;
+    }
 };
 
 #endif //RAYLIBUTILS_H

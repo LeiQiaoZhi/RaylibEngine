@@ -22,6 +22,8 @@ public:
 
     void DrawGizmosBottom(Scene * scene);
 
+    void StartComponents() const;
+
     std::string name;
     GameObject *root = nullptr;
     int selectedGameObjectUID = -1;

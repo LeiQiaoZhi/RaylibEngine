@@ -162,13 +162,20 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         if (model) UnloadModel(*model); // Unload previous model
         const Model modelObj = LoadModel(filename.c_str()); // Load new model
         model = new Model(modelObj);
-        bounds = GetModelBoundingBox(*model);
 
         // update properties
         materialProp.SetModel(model);
     } else {
         warningText = "File format not supported";
     }
+}
+
+void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
+    const Model modelObj = LoadModelFromMesh(mesh);
+    model = new Model(modelObj);
+
+    // update properties
+    materialProp.SetModel(model);
 }
 
 void ModelComponent::OnDrawGizmosBottom(Scene *scene) const {

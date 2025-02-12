@@ -42,3 +42,7 @@ void Scene::Draw(Scene *scene) {
 void Scene::DrawGizmosBottom(Scene *scene) {
     root->DrawGizmosBottom(scene);
 }
+
+void Scene::StartComponents() const {
+    root->StartComponents();
+}

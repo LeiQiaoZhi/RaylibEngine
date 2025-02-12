@@ -41,12 +41,13 @@ public:
 
     void LoadModelFromFile(const std::string &filename);
 
+    void SetModelFromMesh(const Mesh &mesh);
+
     void OnDrawGizmosBottom(Scene *scene) const override;
 
 private:
     Model *model = nullptr;
     std::string warningText;
-    BoundingBox bounds;
     char filename[32];
     bool editMode;
     float height;
