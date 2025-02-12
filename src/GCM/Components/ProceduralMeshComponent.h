@@ -33,12 +33,22 @@ public:
     void OnDrawGizmosBottom(Scene *scene) const override;
 
 private:
+    enum class MeshType : unsigned int {
+        Cube,
+        Plane,
+    };
+
     ModelComponent *modelComponent = nullptr;
+    MeshType meshType = MeshType::Cube;
     Vector3 cubeSize = {10, 10, 10};
     Vector3 cubeWorldSize = {10, 10, 10};
+    Vector2 planeSize = {10, 10};
+    Vector2 planeWorldSize = {10, 10};
 
     Vector3Property sizeProperty = Vector3Property(&cubeSize, "Size");
     Vector3Property worldSizeProperty = Vector3Property(&cubeWorldSize, "World Size");
+    Vector2Property planeSizeProperty = Vector2Property(&planeSize, "Size");
+    Vector2Property planeWorldSizeProperty = Vector2Property(&planeWorldSize, "World Size");
 
     std::string warningText;
     float height;

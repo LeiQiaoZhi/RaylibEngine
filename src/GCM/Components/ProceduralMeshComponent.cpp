@@ -15,16 +15,32 @@ void ProceduralMeshComponent::OnEditorGUI(Rectangle &rect) {
     headerProperty.OnEditorGUI(rect);
     if (headerProperty.IsFolded()) return;
 
-    sizeProperty.OnEditorGUI(rect);
-    worldSizeProperty.OnEditorGUI(rect);
+    int* meshTypePtr = reinterpret_cast<int*>(&meshType);
+    GuiToggleGroup(Rectangle{rect.x, rect.y, rect.width / 2.0f, Editor::TextSize() * 1.5f}, "Cube;Plane", meshTypePtr);
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
+    if (meshType == MeshType::Cube) {
+        sizeProperty.OnEditorGUI(rect);
+        worldSizeProperty.OnEditorGUI(rect);
+    } else if (meshType == MeshType::Plane) {
+        planeSizeProperty.OnEditorGUI(rect);
+        planeWorldSizeProperty.OnEditorGUI(rect);
+    }
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Create Mesh")) {
         if (!modelComponent) {
             warningText = "Model Component not found";
             return;
         }
-        int sizeArray[3] = {static_cast<int>(cubeSize.x), static_cast<int>(cubeSize.y), static_cast<int>(cubeSize.z)};
-        const Mesh mesh = RaylibUtils::GenCubeCustomResolution(sizeArray, cubeWorldSize);
+        Mesh mesh{0};
+        if (meshType == MeshType::Cube) {
+            int sizeArray[3] = {
+                static_cast<int>(cubeSize.x), static_cast<int>(cubeSize.y), static_cast<int>(cubeSize.z)
+            };
+            mesh = RaylibUtils::GenCubeCustomResolution(sizeArray, cubeWorldSize);
+        } else if (meshType == MeshType::Plane) {
+            mesh = GenMeshPlane(planeWorldSize.x, planeWorldSize.y, static_cast<int>(planeSize.x), static_cast<int>(planeSize.y));
+        }
         modelComponent->SetModelFromMesh(mesh);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
