@@ -14,7 +14,6 @@ AssetsSubView::AssetsSubView(const int width, const int height) : rootFileHierar
 void AssetsSubView::Render(Scene &scene, Vector2 position) {
     if (!scene.root) return;
 
-    // TODO: calc height
     float height = rootFileHierarchyProperty.GetEditorHeight() + Editor::TextSize() * 2.0f + Editor::SmallGap() * 6.0f;
     float width = renderer_->GetContentSize().x;
     renderer_->SetContentSize(width, height);

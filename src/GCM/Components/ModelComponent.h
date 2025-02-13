@@ -45,8 +45,9 @@ public:
 
     void OnDrawGizmosBottom(Scene *scene) const override;
 
-private:
+public:
     Model *model = nullptr;
+private:
     std::string warningText;
     char filename[32];
     bool editMode;

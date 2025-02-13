@@ -10,6 +10,7 @@
 #include "GCM/Scene.h"
 #include "GCM/Components/DebugGridBoxComponent.h"
 #include "GCM/Components/DebugGridComponent.h"
+#include "GCM/Components/JelloComponent.h"
 #include "GCM/Components/ModelComponent.h"
 #include "GCM/Components/ProceduralMeshComponent.h"
 #include "logger/Logger.h"
@@ -102,6 +103,7 @@ int main() {
     scene.root->AddChild(&model);
     model.AddComponent(new ModelComponent());
     model.AddComponent(new ProceduralMeshComponent());
+    model.AddComponent(new JelloComponent());
     GameObject testChild3("Test Child 3", 7);
     model.AddChild(&testChild3);
     GameObject testChild4("Test Child 4", 8);
