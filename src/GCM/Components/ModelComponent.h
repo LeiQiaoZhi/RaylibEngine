@@ -49,7 +49,8 @@ public:
     Model *model = nullptr;
 
 private:
-    std::string warningText;
+    std::string statusText;
+    bool statusWarning = false;
     char filename[32];
     bool editMode;
     float height;

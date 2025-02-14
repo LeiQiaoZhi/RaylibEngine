@@ -27,7 +27,7 @@ public:
     }
 
     static void Euler(Matrix3D &positions, Matrix3D &velocities, Matrix3D &accelerations, const double dt) {
-        int vertexCounts[3] = {
+        const int vertexCounts[3] = {
             static_cast<int>(positions.size()),
             static_cast<int>(positions[0].size()),
             static_cast<int>(positions[0][0].size())
@@ -36,13 +36,7 @@ public:
         for (int x = 0; x < vertexCounts[0]; x++) {
             for (int y = 0; y < vertexCounts[1]; y++) {
                 for (int z = 0; z < vertexCounts[2]; z++) {
-                    // jello->p[i][j][k].x += jello->dt * jello->v[i][j][k].x;
-                    // jello->p[i][j][k].y += jello->dt * jello->v[i][j][k].y;
-                    // jello->p[i][j][k].z += jello->dt * jello->v[i][j][k].z;
                     positions[x][y][z] += velocities[x][y][z] * dt;
-                    // jello->v[i][j][k].x += jello->dt * a[i][j][k].x;
-                    // jello->v[i][j][k].y += jello->dt * a[i][j][k].y;
-                    // jello->v[i][j][k].z += jello->dt * a[i][j][k].z;
                     velocities[x][y][z] += accelerations[x][y][z] * dt;
                 }
             }

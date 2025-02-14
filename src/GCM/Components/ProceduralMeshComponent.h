@@ -54,7 +54,8 @@ private:
     Vector2Property planeSizeProperty = Vector2Property(&planeSize, "Size");
     Vector2Property planeWorldSizeProperty = Vector2Property(&planeWorldSize, "World Size");
 
-    std::string warningText;
+    std::string statusText;
+    bool statusWarning = false;
     float height;
 };
 

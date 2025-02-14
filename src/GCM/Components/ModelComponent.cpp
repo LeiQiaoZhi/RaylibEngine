@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <sys/stat.h>
 
 #include "raylib.h"
 #include "raymath.h"
@@ -16,33 +17,32 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     if (headerProperty.IsFolded()) return;
 
     // file name
-    const float labelWidth = MeasureText("Filename", Editor::TextSize());
+    const float labelWidth = Editor::TextWidth("Filename") + Editor::SmallGap();
     GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Filename");
-    rect.x += labelWidth + Editor::SmallGap();
+    rect.x += labelWidth;
     if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width - Editor::SmallGap() - labelWidth, Editor::TextSize() * 1.0f},
                    filename, 32, editMode)) {
         editMode = !editMode;
     }
-    rect.x -= labelWidth + Editor::SmallGap();
+    rect.x -= labelWidth;
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     // load model
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Load Model")) {
         if (filename[0] == '\0') {
-            warningText = "Filename is empty";
-            return;
+            statusText = "Filename is empty";
+            statusWarning = true;
+        } else {
+            const std::string path = std::string(ASSET_DIR) + "/models/" + filename;
+            LoadModelFromFile(path);
+            statusText = "Model loaded";
+            statusWarning = false;
         }
-        const std::string path = std::string(ASSET_DIR) + "/models/" + filename;
-        LoadModelFromFile(path);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
-    // warning
-    if (!warningText.empty()) {
-        const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
-        rect.y += Editor::TextSize() + Editor::SmallGap();
-    }
+    // status
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
     // Material Loading
     materialsFoldout.SetLabel(TextFormat("Materials [%d]", materialProps.size()));
@@ -166,10 +166,10 @@ void ModelComponent::Update() {
 void ModelComponent::LoadModelFromFile(const std::string &filename) {
     // test file exits
     if (!FileExists(filename.c_str())) {
-        warningText = "File does not exist";
+        statusText = "File does not exist";
         return;
     }
-    warningText = "";
+    statusText = "";
     if (IsFileExtension(filename.c_str(), ".obj") ||
         IsFileExtension(filename.c_str(), ".gltf") ||
         IsFileExtension(filename.c_str(), ".glb") ||
@@ -186,7 +186,7 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         for (int i = 0; i < model->meshCount; i++)
             materialProps.emplace_back(model, i);
     } else {
-        warningText = "File format not supported";
+        statusText = "File format not supported";
     }
 }
 

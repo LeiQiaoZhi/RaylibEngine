@@ -115,8 +115,8 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     EndMode3D();
     // TODO: get live screen size
     const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, 1920 / 2, 1080);
-    const float width = MeasureText(gameObject->GetName(), 10);
-    constexpr float padding = 5;
+    const float width = Editor::TextWidth(gameObject->GetName());
+    const float padding = Editor::SmallGap();
     DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
                   width + padding * 2, 10 + padding * 2, Fade(BLACK, 0.5f));
     DrawText(gameObject->GetName(), screenPosition.x, screenPosition.y, 10, WHITE);

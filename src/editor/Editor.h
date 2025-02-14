@@ -14,6 +14,7 @@ public:
     static int SmallGap() { return 5; }
     static int MediumGap() { return 10; }
     static int LargeGap() { return 20; }
+    static int LabelWidth() { return TextSize() * 5 + LargeGap(); }
 
     static void BeginIndent(Rectangle &rect, int indent) {
         rect.x += indent;
@@ -25,7 +26,7 @@ public:
         rect.width += indent;
     }
 
-    static Color BlackOrWhiteBasedOnBackground(Color color) {
+    static Color ContrastBlackOrWhite(Color color) {
         float a = color.a / 255.0f;
         Color bg = BackgroundColor();
         return ((color.r + color.g + color.b) * a + (bg.r + bg.g + bg.b) * (1 - a)) > 3 * 128
@@ -41,6 +42,23 @@ public:
 
     static void EndTextColor(Color textColor) {
         GuiSetStyle(DEFAULT, TEXT_COLOR_NORMAL, ColorToInt(textColor));
+    }
+
+    static float TextWidth(const char *str) {
+        return MeasureTextEx(GuiGetFont(), str, TextSize(), 0).x;
+    }
+
+    static void DrawStatusInfoBox(Rectangle &rect, const std::string &statusText, const bool isWarning) {
+        if (!statusText.empty()) {
+            const int icon = isWarning ? ICON_WARNING : ICON_INFO;
+            const char *text = GuiIconText(icon, statusText.c_str());
+            const auto originalColor = BeginTextColor(isWarning ? YELLOW : LIGHTGRAY);
+            DrawRectangleRec({rect.x, rect.y, rect.width, TextSize() * 1.0f},
+                             Fade(ContrastBlackOrWhite(TextColor()), 0.5f));
+            GuiLabel({rect.x, rect.y, rect.width, TextSize() * 1.0f}, text);
+            rect.y += TextSize() + SmallGap();
+            EndTextColor(originalColor);
+        }
     }
 };
 

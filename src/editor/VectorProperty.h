@@ -33,15 +33,16 @@ public:
 
         Rectangle positionRect = {rect.x, rect.y, rect.width / n, Editor::TextSize() * 1.0f};
         for (int i = 0; i < n; i++) {
-            const float sublabelWidth = MeasureText(subLabels[i].c_str(), Editor::TextSize()) + Editor::SmallGap();
-            GuiLabel({positionRect.x, positionRect.y, sublabelWidth, positionRect.height}, subLabels[i].c_str());
-            positionRect.width = rect.width / n - sublabelWidth - Editor::SmallGap();
-            positionRect.x += sublabelWidth;
+            const float subLabelWidth = Editor::TextWidth(subLabels[i].c_str()) + Editor::SmallGap();
+
+            GuiLabel({positionRect.x, positionRect.y, subLabelWidth, positionRect.height}, subLabels[i].c_str());
+            positionRect.width = rect.width / n - subLabelWidth - Editor::SmallGap();
+            positionRect.x += subLabelWidth;
             if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValues[i],
                                  RaylibUtils::GetVectorComponent(vector, i), editModes[i])) {
                 editModes[i] = !editModes[i];
             }
-            positionRect.x += rect.width / n - sublabelWidth;
+            positionRect.x += rect.width / n - subLabelWidth;
         }
         rect.x -= labelWidth;
         rect.width += labelWidth;

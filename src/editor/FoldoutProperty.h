@@ -8,7 +8,7 @@
 
 class FoldoutProperty {
 public:
-    explicit FoldoutProperty(std::string label, bool foled = false) : label(std::move(label)), folded(foled) {
+    explicit FoldoutProperty(std::string label, const bool folded = false) : label(std::move(label)), folded(folded) {
     }
 
     void OnEditorGUI(Rectangle &rect);

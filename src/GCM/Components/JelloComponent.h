@@ -11,7 +11,7 @@
 #include "../../utils/PhysicsUtils.h"
 #include "../../utils/Plane.h"
 #include "../../editor/FoldoutProperty.h"
-#include "../../editor/MaterialProperty.h"
+#include "../../editor/SingleValueProperty.h"
 #include "../../editor/VectorProperty.h"
 
 class JelloComponent final : public Component {
@@ -43,6 +43,12 @@ private:
 
     void UpdateMesh();
 
+    float GetMassPerPoint() const {
+        if (!proceduralMeshComponent) return 0;
+        return totalMass / proceduralMeshComponent->cubeSize.x / proceduralMeshComponent->cubeSize.y /
+               proceduralMeshComponent->cubeSize.z;
+    }
+
     std::vector<int> LocalToMeshIndex(int x, int y, int z) const;
 
     bool ValidPoint(const Vector3 *p) {
@@ -60,10 +66,11 @@ private:
         return positions[static_cast<int>(p->x)][static_cast<int>(p->y)][static_cast<int>(p->z)];
     }
 
-    Vector3 AccelerationFromNeighbour(const Vector3 *self_local, const Vector3 *neighbour_local, const double rest) const;
+    Vector3 AccelerationFromNeighbour(const Vector3 *self_local, const Vector3 *neighbour_local,
+                                      const double rest) const;
 
     Vector3 AccelerationFromCollision(const Vector3 *self_world, const Vector3 *contact, const Vector3 relative_vel,
-                                        const double rest = 0.) const;
+                                      const double rest = 0.) const;
 
 private:
     // dependencies
@@ -75,16 +82,20 @@ private:
     Matrix3D accelerations;
     Matrix3D velocities;
     Matrix3D positions;
-    float mass = 1.0f / 512.0f;
+    float totalMass = 2.0f;
     float elasticity = 200;
     float damping = 0.25;
     float collisionElasticity = 400;
     float collisionDamping = 0.25;
+    float speed;
 
     // ui
-    std::string warningText;
+    std::string statusText;
+    bool statusWarning = false;
     float height;
-    FoldoutProperty debugFoldout = FoldoutProperty("Debug");
+    FoldoutProperty debugFoldout = FoldoutProperty("Debug", true);
+    FloatSlider massProperty = FloatSlider(&totalMass, "Total Mass", 0, 10);
+    FloatSlider speedProperty = FloatSlider(&speed, "Speed", 0, 2);
 
     // consts
     static constexpr Vector3 neighbour_directions[6] = {

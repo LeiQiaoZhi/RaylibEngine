@@ -7,8 +7,8 @@
 void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     const float originalY = rect.y;
 
-    const char* label = TextFormat("[%i] Material", materialIndex);
-    const float labelWidth = MeasureText(label, Editor::TextSize()) + Editor::SmallGap();
+    const char *label = TextFormat("[%i] Material", materialIndex);
+    const float labelWidth = Editor::TextWidth(label) + Editor::SmallGap();
     GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, label);
 
     // path
@@ -20,35 +20,28 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     Editor::EndIndent(rect, labelWidth + Editor::SmallGap());
 
     // load material
-    const float buttonWidth = rect.width - MeasureText("Default", Editor::TextSize()) - Editor::SmallGap() * 2;
+    const float buttonWidth = rect.width - Editor::TextWidth("Default") - Editor::SmallGap() * 2;
     if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.5f}, "Load Material")) {
+        const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(path);
         if (path[0] == '\0') {
             statusText = "Path is empty";
             statusWarning = true;
-            return;
-        }
-        if (model == nullptr) {
+        } else if (model == nullptr) {
             statusText = "Model is null";
             statusWarning = true;
-            return;
-        }
-        const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(path);
-        if (!FileExists(fullPath.c_str())) {
+        } else if (!FileExists(fullPath.c_str())) {
             statusText = "File does not exist";
             statusWarning = true;
-            return;
-        }
-        if (!Utils::EndsWith(path, ".mat.json")) {
+        } else if (!Utils::EndsWith(path, ".mat.json")) {
             statusText = "File must be .mat.json";
             statusWarning = true;
-            return;
+        } else {
+            UnloadMaterial(model->materials[materialIndex]);
+
+            model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
+            statusText = "Material loaded";
+            statusWarning = false;
         }
-
-        UnloadMaterial(model->materials[materialIndex]);
-
-        model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
-        statusText = "Material loaded";
-        statusWarning = false;
     }
 
     // load default
@@ -68,11 +61,7 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     // status
-    if (!statusText.empty()) {
-        const char *text = statusWarning ? GuiIconText(ICON_WARNING, statusText.c_str()) : statusText.c_str();
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
-        rect.y += Editor::TextSize() + Editor::SmallGap();
-    }
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
     height = rect.y - originalY;
 }

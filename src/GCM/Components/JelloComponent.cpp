@@ -17,7 +17,8 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
     headerProperty.OnEditorGUI(rect);
     if (headerProperty.IsFolded()) return;
     if (!modelComponent || !proceduralMeshComponent) {
-        warningText = "Model Component not found";
+        statusText = "Model Component not found";
+        statusWarning = true;
         return;
     }
 
@@ -25,20 +26,21 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
     proceduralMeshComponent->sizeProperty.OnEditorGUI(rect);
     proceduralMeshComponent->worldSizeProperty.OnEditorGUI(rect);
 
+    massProperty.OnEditorGUI(rect);
+    speedProperty.OnEditorGUI(rect);
+
     const char *buttonText = started ? "Restart" : "Start";
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, buttonText)) {
         started = !started;
         if (started)
             StartSimulation();
+        statusText = started ? "Simulation started" : "Simulation stopped";
+        statusWarning = false;
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     // warning
-    if (!warningText.empty()) {
-        const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
-        rect.y += Editor::TextSize() + Editor::SmallGap();
-    }
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
     // debug
     debugFoldout.OnEditorGUI(rect);
@@ -84,12 +86,14 @@ void JelloComponent::OnDrawGizmosSelected(Scene *scene) const {
 void JelloComponent::Start() {
     modelComponent = gameObject->GetComponent<ModelComponent>();
     if (!modelComponent) {
-        warningText = "Model Component not found";
+        statusText = "Model Component not found";
+        statusWarning = true;
         return;
     }
     proceduralMeshComponent = gameObject->GetComponent<ProceduralMeshComponent>();
     if (!proceduralMeshComponent) {
-        warningText = "Procedural Mesh Component not found";
+        statusText = "Procedural Mesh Component not found";
+        statusWarning = true;
         return;
     }
 }
@@ -98,7 +102,7 @@ void JelloComponent::Update() {
     if (!started) return;
 
     ComputeAcceleration();
-    PhysicsUtils::Euler(positions, velocities, accelerations, 0.001);
+    PhysicsUtils::Euler(positions, velocities, accelerations, GetFrameTime() * speed * 0.1);
 
     UpdateMesh();
 }
@@ -265,11 +269,11 @@ Vector3 JelloComponent::AccelerationFromNeighbour(const Vector3 *self_local, con
     const Vector3 neighbour_world = LocalToWorld(neighbour_local);
     const Vector3 self_world = LocalToWorld(self_local);
     const Vector3 hooke_f = PhysicsUtils::Hooke(&self_world, &neighbour_world, rest, elasticity);
-    const Vector3 hooke_a = hooke_f / mass;
+    const Vector3 hooke_a = hooke_f / GetMassPerPoint();
 
     const Vector3 relative_vel = VelocityFromLocal(self_local) - VelocityFromLocal(neighbour_local);
     const Vector3 damp_f = PhysicsUtils::SpringDamp(&self_world, &neighbour_world, relative_vel, damping);
-    const Vector3 damp_a = damp_f / mass;
+    const Vector3 damp_a = damp_f / GetMassPerPoint();
 
     return hooke_a + damp_a;
 }
@@ -277,9 +281,9 @@ Vector3 JelloComponent::AccelerationFromNeighbour(const Vector3 *self_local, con
 Vector3 JelloComponent::AccelerationFromCollision(const Vector3 *self_world, const Vector3 *contact,
                                                   const Vector3 relative_vel, const double rest) const {
     const Vector3 hooke_f = PhysicsUtils::Hooke(self_world, contact, rest, collisionElasticity);
-    const Vector3 hooke_a = hooke_f / mass;
+    const Vector3 hooke_a = hooke_f / GetMassPerPoint();
     const Vector3 damp_f = PhysicsUtils::SpringDamp(self_world, contact, relative_vel, collisionDamping);
-    const Vector3 damp_a = damp_f / mass;
+    const Vector3 damp_a = damp_f / GetMassPerPoint();
     return hooke_a + damp_a;
 }
 

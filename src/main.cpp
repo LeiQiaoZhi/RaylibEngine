@@ -59,6 +59,7 @@ int main() {
     const std::string windowName = LuaUtils::LuaGetStringOrDefault(L, "windowName", "Engine");
     const std::string style = LuaUtils::LuaGetStringOrDefault(L, "style", "dark");
     const int cameraMode = LuaUtils::LuaGetIntegerOrDefault(L, "cameraMode", CAMERA_ORBITAL);
+    const int uiScale = LuaUtils::LuaGetIntegerOrDefault(L, "uiScale", 1);
 
     InitWindow(windowWidth, windowHeight, windowName.c_str());
 
@@ -84,6 +85,7 @@ int main() {
 
     GuiSetStyle(LISTVIEW, SCROLLBAR_WIDTH, 6);
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 16 * uiScale);
 
     // test scene set up
     Scene scene;

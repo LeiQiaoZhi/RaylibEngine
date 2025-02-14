@@ -32,12 +32,8 @@ void ProceduralMeshComponent::OnEditorGUI(Rectangle &rect) {
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
-    // warning
-    if (!warningText.empty()) {
-        const char *text = GuiIconText(ICON_WARNING, warningText.c_str());
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, text);
-        rect.y += Editor::TextSize() + Editor::SmallGap();
-    }
+    // status
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
     height = rect.y - originalY;
 }
@@ -58,7 +54,8 @@ void ProceduralMeshComponent::OnDrawGizmosSelected(Scene *scene) const {
 void ProceduralMeshComponent::Start() {
     modelComponent = gameObject->GetComponent<ModelComponent>();
     if (!modelComponent) {
-        warningText = "Model Component not found";
+        statusText = "Model Component not found";
+        statusWarning = true;
     }
 }
 
@@ -70,7 +67,8 @@ void ProceduralMeshComponent::OnDrawGizmosBottom(Scene *scene) const {
 
 void ProceduralMeshComponent::GenerateMesh() {
     if (!modelComponent) {
-        warningText = "Model Component not found";
+        statusText = "Model Component not found";
+        statusWarning = true;
         return;
     }
     Mesh mesh{0};

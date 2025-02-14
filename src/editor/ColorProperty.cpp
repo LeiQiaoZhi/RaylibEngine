@@ -5,7 +5,7 @@
 void ColorProperty::OnEditorGUI(Rectangle &rect) {
     const float originalY = rect.y;
     const float dimension = rect.width * .5f;
-    const Color textColor = Editor::BlackOrWhiteBasedOnBackground(*color);
+    const Color textColor = Editor::ContrastBlackOrWhite(*color);
     Color original = Editor::BeginTextColor(textColor);
     DrawRectangleRec({rect.x, rect.y, dimension, Editor::TextSize() * 1.0f}, *color);
     foldoutProperty.OnEditorGUI(rect);
