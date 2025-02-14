@@ -1,8 +1,5 @@
-//
-// Created by Qiaozhi Lei on 2/6/25.
-//
-
 #include "Scene.h"
+#include "GameObject.h"
 
 int Scene::GameObjectCount() const {
     return root->RecursiveChildCount() + 1;
@@ -45,4 +42,9 @@ void Scene::DrawGizmosBottom(Scene *scene) {
 
 void Scene::StartComponents() const {
     root->StartComponents();
+}
+
+void Scene::SetRoot(GameObject *gameObject) {
+    root = gameObject;
+    root->scene = this;
 }

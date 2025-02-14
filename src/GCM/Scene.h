@@ -18,15 +18,23 @@ public:
 
     void DrawGizmos(Scene *scene) const;
 
-    void Draw(Scene * scene);
+    void Draw(Scene *scene);
 
-    void DrawGizmosBottom(Scene * scene);
+    void DrawGizmosBottom(Scene *scene);
 
     void StartComponents() const;
 
+    void SetRoot(GameObject *gameObject);
+
+    GameObject *GetRoot() const {
+        return root;
+    }
+
     std::string name;
-    GameObject *root = nullptr;
     int selectedGameObjectUID = -1;
+
+private:
+    GameObject *root = nullptr;
 };
 
 

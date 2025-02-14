@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
 void GameObject::AddChild(GameObject *child) {
+    child->scene = scene;
     child->parent = this;
     child->sceneDepth = sceneDepth + 1;
     children.push_back(child);

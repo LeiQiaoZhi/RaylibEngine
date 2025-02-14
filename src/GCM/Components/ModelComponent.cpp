@@ -51,6 +51,12 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     if (!debugFoldout.IsFolded() && model != nullptr) {
         Editor::BeginIndent(rect, Editor::LargeGap());
 
+        // Render types
+
+        auto renderTypePtr = reinterpret_cast<int *>(&renderType);
+        GuiToggleGroup({rect.x, rect.y, rect.width / 3, Editor::TextSize() * 1.5f}, "Default;UV;Normal", renderTypePtr);
+        rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
         // Draw options
         GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Surface", &drawSurface);
         rect.x += rect.width * .33f;
@@ -122,8 +128,14 @@ float ModelComponent::GetEditorHeight() const {
 void ModelComponent::OnDraw(Scene *scene) const {
     if (model == nullptr) return;
 
-    if (drawSurface)
-        DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+    if (drawSurface) {
+        if (renderType == RenderType::Default)
+            DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+        else if (renderType == RenderType::DebugUV)
+            RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetUVShader());
+        else if (renderType == RenderType::DebugNormal)
+            RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetNormalShader());
+    }
 
     if (drawWireframe)
         DrawModelWires(*model, {0, 0, 0}, 1.0f, WHITE);

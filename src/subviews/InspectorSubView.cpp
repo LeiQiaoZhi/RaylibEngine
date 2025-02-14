@@ -13,7 +13,7 @@ InspectorSubView::InspectorSubView(const int width, const int height) {
 }
 
 void InspectorSubView::Render(Scene &scene, Vector2 position) const {
-    if (!scene.root) return;
+    if (!scene.GetRoot()) return;
     GameObject *selectedGameObject = scene.GetGameObjectByUID(scene.selectedGameObjectUID);
     float height = Editor::SmallGap() + Editor::MediumGap() + Editor::TextSize();
     if (selectedGameObject) {

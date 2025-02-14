@@ -88,19 +88,19 @@ int main() {
     // test scene set up
     Scene scene;
     scene.name = "Test Scene";
-    scene.root = new GameObject(scene.name, 1);
-    scene.root->AddComponent(new DebugGridBoxComponent());
+    scene.SetRoot(new GameObject(scene.name, 1));
+    scene.GetRoot()->AddComponent(new DebugGridBoxComponent());
     GameObject cameraGO("Camera", 2);
     cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
-    scene.root->AddChild(&cameraGO);
+    scene.GetRoot()->AddChild(&cameraGO);
     GameObject testParentA("Test Parent A", 3);
-    scene.root->AddChild(&testParentA);
+    scene.GetRoot()->AddChild(&testParentA);
     GameObject testChild1("Test Child 1", 4);
     testParentA.AddChild(&testChild1);
     GameObject testChild2("Test Child 2", 5);
     testParentA.AddChild(&testChild2);
     GameObject model("Model", 6);
-    scene.root->AddChild(&model);
+    scene.GetRoot()->AddChild(&model);
     model.AddComponent(new ModelComponent());
     model.AddComponent(new ProceduralMeshComponent());
     model.AddComponent(new JelloComponent());

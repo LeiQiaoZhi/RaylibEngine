@@ -11,7 +11,7 @@ HierarchySubView::HierarchySubView(const int width, const int height) {
 }
 
 void HierarchySubView::Render(Scene &scene, Vector2 position) const {
-    if (!scene.root) {
+    if (!scene.GetRoot()) {
         return;
     }
     const Color bgColor = Editor::BackgroundColor();
@@ -30,7 +30,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) const {
 
     // DFS to draw all game objects
     std::vector<GameObject *> toDraw;
-    toDraw.push_back(scene.root);
+    toDraw.push_back(scene.GetRoot());
     int i = 0;
     while (!toDraw.empty()) {
         const GameObject *current = toDraw.back();

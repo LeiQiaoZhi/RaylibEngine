@@ -93,10 +93,12 @@ public:
     void StartComponents() const;
 
 protected:
+    friend class Scene;
     std::string name;
     int uid;
     int sceneDepth = 0;
 
+    Scene *scene = nullptr;
     GameObject *parent = nullptr;
     TransformComponent *transform = new TransformComponent();
     std::vector<GameObject *> children = {};

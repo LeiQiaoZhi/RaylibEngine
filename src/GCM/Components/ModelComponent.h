@@ -47,17 +47,26 @@ public:
 
 public:
     Model *model = nullptr;
+
 private:
     std::string warningText;
     char filename[32];
     bool editMode;
     float height;
 
+    MaterialProperty materialProp = MaterialProperty(model, 0);
     FoldoutProperty debugFoldout = FoldoutProperty("Debug");
     bool drawSurface = true;
     bool drawBounds = true;
     bool drawWireframe = false;
-    MaterialProperty materialProp = MaterialProperty(model, 0);
+
+    enum class RenderType: unsigned int {
+        Default,
+        DebugUV,
+        DebugNormal
+    };
+
+    RenderType renderType = RenderType::Default;
     // TODO: more materials
 };
 
