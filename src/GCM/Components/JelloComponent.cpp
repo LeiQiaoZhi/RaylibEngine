@@ -29,6 +29,10 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
     massProperty.OnEditorGUI(rect);
     speedProperty.OnEditorGUI(rect);
 
+    int *integrationMethodPtr = reinterpret_cast<int *>(&integrationMethod);
+    GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f}, "RK4;Euler", integrationMethodPtr);
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
     const char *buttonText = started ? "Restart" : "Start";
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, buttonText)) {
         started = !started;
@@ -101,14 +105,18 @@ void JelloComponent::Start() {
 void JelloComponent::Update() {
     if (!started) return;
 
-    ComputeAcceleration();
-    PhysicsUtils::Euler(positions, velocities, accelerations, GetFrameTime() * speed * 0.1);
+    if (integrationMethod == IntegrationMethod::RK4) {
+        RK4();
+    } else {
+        ComputeAcceleration();
+        PhysicsUtils::Euler(positions, velocities, accelerations, GetFrameTime() * speed * 0.1);
+    }
 
     UpdateMesh();
 }
 
 void JelloComponent::ComputeAcceleration() {
-    int vertexCounts[3] = {
+    const int vertexCounts[3] = {
         static_cast<int>(proceduralMeshComponent->cubeSize.x),
         static_cast<int>(proceduralMeshComponent->cubeSize.y),
         static_cast<int>(proceduralMeshComponent->cubeSize.z)
@@ -184,6 +192,15 @@ void JelloComponent::StartSimulation() {
     positions = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
     velocities = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
     accelerations = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k1PositionChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k1VelocityChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k2PositionChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k2VelocityChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k3PositionChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k3VelocityChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k4PositionChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+    k4VelocityChanges = MathUtils::CreateMatrix3D(vertexCounts[0], vertexCounts[1], vertexCounts[2]);
+
     for (int x = 0; x < vertexCounts[0]; x++) {
         for (int y = 0; y < vertexCounts[1]; y++) {
             for (int z = 0; z < vertexCounts[2]; z++) {
@@ -285,6 +302,63 @@ Vector3 JelloComponent::AccelerationFromCollision(const Vector3 *self_world, con
     const Vector3 damp_f = PhysicsUtils::SpringDamp(self_world, contact, relative_vel, collisionDamping);
     const Vector3 damp_a = damp_f / GetMassPerPoint();
     return hooke_a + damp_a;
+}
+
+void JelloComponent::RK4() {
+    const int vertexCounts[3] = {
+        static_cast<int>(proceduralMeshComponent->cubeSize.x),
+        static_cast<int>(proceduralMeshComponent->cubeSize.y),
+        static_cast<int>(proceduralMeshComponent->cubeSize.z)
+    };
+    const float dt = GetFrameTime() * speed * 0.1;
+    const Matrix3D startPositions = positions;
+    const Matrix3D startVelocities = velocities;
+
+    ComputeAcceleration();
+    for (int i = 0; i < vertexCounts[0]; i++)
+        for (int j = 0; j < vertexCounts[1]; j++)
+            for (int k = 0; k < vertexCounts[2]; k++) {
+                k1PositionChanges[i][j][k] = velocities[i][j][k] * dt;
+                k1VelocityChanges[i][j][k] = accelerations[i][j][k] * dt;
+                positions[i][j][k] = startPositions[i][j][k] + k1PositionChanges[i][j][k] / 2;
+                velocities[i][j][k] = startVelocities[i][j][k] + k1VelocityChanges[i][j][k] / 2;
+            }
+
+    ComputeAcceleration();
+    for (int i = 0; i < vertexCounts[0]; i++)
+        for (int j = 0; j < vertexCounts[1]; j++)
+            for (int k = 0; k < vertexCounts[2]; k++) {
+                k2PositionChanges[i][j][k] = velocities[i][j][k] * dt;
+                k2VelocityChanges[i][j][k] = accelerations[i][j][k] * dt;
+                positions[i][j][k] = startPositions[i][j][k] + k2PositionChanges[i][j][k] / 2;
+                velocities[i][j][k] = startVelocities[i][j][k] + k2VelocityChanges[i][j][k] / 2;
+            }
+
+    ComputeAcceleration();
+    for (int i = 0; i < vertexCounts[0]; i++)
+        for (int j = 0; j < vertexCounts[1]; j++)
+            for (int k = 0; k < vertexCounts[2]; k++) {
+                k3PositionChanges[i][j][k] = velocities[i][j][k] * dt;
+                k3VelocityChanges[i][j][k] = accelerations[i][j][k] * dt;
+                positions[i][j][k] = startPositions[i][j][k] + k3PositionChanges[i][j][k];
+                velocities[i][j][k] = startVelocities[i][j][k] + k3VelocityChanges[i][j][k];
+            }
+
+    ComputeAcceleration();
+    for (int i = 0; i < vertexCounts[0]; i++)
+        for (int j = 0; j < vertexCounts[1]; j++)
+            for (int k = 0; k < vertexCounts[2]; k++) {
+                k4PositionChanges[i][j][k] = velocities[i][j][k] * dt;
+                k4VelocityChanges[i][j][k] = accelerations[i][j][k] * dt;
+                positions[i][j][k] = startPositions[i][j][k] + (
+                                         k1PositionChanges[i][j][k] + k2PositionChanges[i][j][k] * 2
+                                         + k3PositionChanges[i][j][k] * 2 + k4PositionChanges[i][j][k]
+                                     ) / 6;
+                velocities[i][j][k] = startVelocities[i][j][k] + (
+                                          k1VelocityChanges[i][j][k] + k2VelocityChanges[i][j][k] * 2
+                                          + k3VelocityChanges[i][j][k] * 2 + k4VelocityChanges[i][j][k]
+                                      ) / 6;
+            }
 }
 
 

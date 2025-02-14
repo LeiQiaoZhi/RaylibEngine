@@ -23,10 +23,10 @@ public:
         const Vector3 dir_normalized = Vector3Normalize(dir);
         const double projection = Vector3DotProduct(relative_vel, dir_normalized);
 
-        return dir_normalized * -k * projection ;
+        return dir_normalized * -k * projection;
     }
 
-    static void Euler(Matrix3D &positions, Matrix3D &velocities, Matrix3D &accelerations, const double dt) {
+    static void Euler(Matrix3D &positions, Matrix3D &velocities, const Matrix3D &accelerations, const double dt) {
         const int vertexCounts[3] = {
             static_cast<int>(positions.size()),
             static_cast<int>(positions[0].size()),

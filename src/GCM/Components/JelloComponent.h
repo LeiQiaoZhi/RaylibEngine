@@ -72,12 +72,21 @@ private:
     Vector3 AccelerationFromCollision(const Vector3 *self_world, const Vector3 *contact, const Vector3 relative_vel,
                                       const double rest = 0.) const;
 
+    void RK4();
+
 private:
     // dependencies
     ModelComponent *modelComponent = nullptr;
     ProceduralMeshComponent *proceduralMeshComponent = nullptr;
 
     // states
+    enum class IntegrationMethod {
+        RK4,
+        Euler
+    };
+
+    IntegrationMethod integrationMethod = IntegrationMethod::RK4;
+
     bool started = false;
     Matrix3D accelerations;
     Matrix3D velocities;
@@ -96,6 +105,16 @@ private:
     FoldoutProperty debugFoldout = FoldoutProperty("Debug", true);
     FloatSlider massProperty = FloatSlider(&totalMass, "Total Mass", 0, 10);
     FloatSlider speedProperty = FloatSlider(&speed, "Speed", 0, 2);
+
+    // rk4 states
+    Matrix3D k1PositionChanges;
+    Matrix3D k1VelocityChanges;
+    Matrix3D k2PositionChanges;
+    Matrix3D k2VelocityChanges;
+    Matrix3D k3PositionChanges;
+    Matrix3D k3VelocityChanges;
+    Matrix3D k4PositionChanges;
+    Matrix3D k4VelocityChanges;
 
     // consts
     static constexpr Vector3 neighbour_directions[6] = {
