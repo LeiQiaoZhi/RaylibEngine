@@ -45,17 +45,23 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     }
 
     // Material Loading
-    materialProp.OnEditorGUI(rect);
+    materialsFoldout.SetLabel(TextFormat("Materials [%d]", materialProps.size()));
+    materialsFoldout.OnEditorGUI(rect);
+    if (!materialsFoldout.IsFolded()) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        for (auto &materialProp: materialProps)
+            materialProp.OnEditorGUI(rect);
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
 
     debugFoldout.OnEditorGUI(rect);
     if (!debugFoldout.IsFolded() && model != nullptr) {
         Editor::BeginIndent(rect, Editor::LargeGap());
 
         // Render types
-
         auto renderTypePtr = reinterpret_cast<int *>(&renderType);
         GuiToggleGroup({rect.x, rect.y, rect.width / 3, Editor::TextSize() * 1.5f}, "Default;UV;Normal", renderTypePtr);
-        rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+        rect.y += Editor::TextSize() * 1.5f + Editor::MediumGap();
 
         // Draw options
         GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Surface", &drawSurface);
@@ -176,7 +182,9 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         model = new Model(modelObj);
 
         // update properties
-        materialProp.SetModel(model);
+        materialProps.clear();
+        for (int i = 0; i < model->meshCount; i++)
+            materialProps.emplace_back(model, i);
     } else {
         warningText = "File format not supported";
     }
@@ -187,7 +195,9 @@ void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
     model = new Model(modelObj);
 
     // update properties
-    materialProp.SetModel(model);
+    materialProps.clear();
+    for (int i = 0; i < model->meshCount; i++)
+        materialProps.emplace_back(model, i);
 }
 
 void ModelComponent::OnDrawGizmosBottom(Scene *scene) const {

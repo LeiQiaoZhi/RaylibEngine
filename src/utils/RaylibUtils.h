@@ -174,6 +174,15 @@ public:
             const int type = map["Type"];
             std::string texturePath = ASSET_DIR + std::string(map["Path"]);
             material.maps[type].texture = LoadTexture(texturePath.c_str());
+            if (map.contains("Wrap")) {
+                const TextureWrap wrap = StringToTextureWrapEnum(map["Wrap"]);
+                SetTextureWrap(material.maps[type].texture, wrap);
+            }
+            if (map.contains("Filter")) {
+                const TextureFilter filter = StringToTextureFilterEnum(map["Filter"]);
+                SetTextureFilter(material.maps[type].texture, filter);
+            }
+
             material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
         }
 
@@ -448,6 +457,34 @@ public:
             shader = LoadShader(vsPath.c_str(), fsPath.c_str());
         }
         return shader;
+    }
+
+    static TextureWrap StringToTextureWrapEnum(std::string s) {
+        //     TEXTURE_WRAP_REPEAT = 0,                // Repeats texture in tiled mode
+        //     TEXTURE_WRAP_CLAMP,                     // Clamps texture to edge pixel in tiled mode
+        //     TEXTURE_WRAP_MIRROR_REPEAT,             // Mirrors and repeats the texture in tiled mode
+        //     TEXTURE_WRAP_MIRROR_CLAMP               // Mirrors and clamps to border the texture in tiled mode
+        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+        if (s == "REPEAT") return TEXTURE_WRAP_REPEAT;
+        if (s == "CLAMP") return TEXTURE_WRAP_CLAMP;
+        if (s == "MIRROR REPEAT") return TEXTURE_WRAP_MIRROR_REPEAT;
+        if (s == "MIRROR CLAMP") return TEXTURE_WRAP_MIRROR_CLAMP;
+    }
+
+    static TextureFilter StringToTextureFilterEnum(std::string s) {
+        //     TEXTURE_FILTER_POINT = 0,               // No filter, just pixel approximation
+        //     TEXTURE_FILTER_BILINEAR,                // Linear filtering
+        //     TEXTURE_FILTER_TRILINEAR,               // Trilinear filtering (linear with mipmaps)
+        //     TEXTURE_FILTER_ANISOTROPIC_4X,          // Anisotropic filtering 4x
+        //     TEXTURE_FILTER_ANISOTROPIC_8X,          // Anisotropic filtering 8x
+        //     TEXTURE_FILTER_ANISOTROPIC_16X,         // Anisotropic filtering 16x
+        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+        if (s == "POINT") return TEXTURE_FILTER_POINT;
+        if (s == "BILINEAR") return TEXTURE_FILTER_BILINEAR;
+        if (s == "TRILINEAR") return TEXTURE_FILTER_TRILINEAR;
+        if (s == "ANISOTROPIC 4X") return TEXTURE_FILTER_ANISOTROPIC_4X;
+        if (s == "ANISOTROPIC 8X") return TEXTURE_FILTER_ANISOTROPIC_8X;
+        if (s == "ANISOTROPIC 16X") return TEXTURE_FILTER_ANISOTROPIC_16X;
     }
 };
 

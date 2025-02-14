@@ -1,7 +1,7 @@
 {
   "Shader": {
-    "Vertex": "custom.vert",
-    "Fragment": "custom.frag"
+    "Vertex": "default",
+    "Fragment": "default"
   },
   "Maps": [
     {
@@ -9,10 +9,12 @@
       "Path": "/textures/old_car_d.png",
       "Color": [
         255,
-        0,
-        0,
+        255,
+        255,
         255
-      ]
+      ],
+      "Wrap": "repeat",
+      "Filter": "bilinear"
     },
     {
       "Type": 5,

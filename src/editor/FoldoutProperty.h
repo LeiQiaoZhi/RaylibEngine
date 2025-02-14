@@ -19,6 +19,10 @@ public:
         return folded;
     }
 
+    void SetLabel(const char * str) {
+        label = str;
+    }
+
 private:
     std::string label;
     bool folded;

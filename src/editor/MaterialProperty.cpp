@@ -7,8 +7,9 @@
 void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     const float originalY = rect.y;
 
-    const float labelWidth = MeasureText("Material", Editor::TextSize());
-    GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Material");
+    const char* label = TextFormat("[%i] Material", materialIndex);
+    const float labelWidth = MeasureText(label, Editor::TextSize()) + Editor::SmallGap();
+    GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, label);
 
     // path
     Editor::BeginIndent(rect, labelWidth + Editor::SmallGap());

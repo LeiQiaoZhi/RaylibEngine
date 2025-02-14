@@ -54,7 +54,8 @@ private:
     bool editMode;
     float height;
 
-    MaterialProperty materialProp = MaterialProperty(model, 0);
+    FoldoutProperty materialsFoldout = FoldoutProperty("Materials");
+    std::vector<MaterialProperty> materialProps = {};
     FoldoutProperty debugFoldout = FoldoutProperty("Debug");
     bool drawSurface = true;
     bool drawBounds = true;
