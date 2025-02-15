@@ -164,6 +164,9 @@ public:
             const std::string vertPath = ASSET_DIR + std::string("/shaders/") + std::string(j["Shader"]["Vertex"]);
             const std::string fragPath = ASSET_DIR + std::string("/shaders/") + std::string(j["Shader"]["Fragment"]);
             material.shader = LoadShader(vertPath.c_str(), fragPath.c_str());
+
+            // set up locations
+            material.shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(material.shader, "viewPos");
         }
 
         // Textures

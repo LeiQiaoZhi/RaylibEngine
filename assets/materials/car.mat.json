@@ -1,7 +1,7 @@
 {
   "Shader": {
-    "Vertex": "default",
-    "Fragment": "default"
+    "Vertex": "custom.vert",
+    "Fragment": "lighting.frag"
   },
   "Maps": [
     {

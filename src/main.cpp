@@ -11,6 +11,7 @@
 #include "GCM/Components/DebugGridBoxComponent.h"
 #include "GCM/Components/DebugGridComponent.h"
 #include "GCM/Components/JelloComponent.h"
+#include "GCM/Components/LightComponent.h"
 #include "GCM/Components/ModelComponent.h"
 #include "GCM/Components/ProceduralMeshComponent.h"
 #include "logger/Logger.h"
@@ -95,12 +96,14 @@ int main() {
     GameObject cameraGO("Camera", 2);
     cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
     scene.GetRoot()->AddChild(&cameraGO);
-    GameObject testParentA("Test Parent A", 3);
-    scene.GetRoot()->AddChild(&testParentA);
-    GameObject testChild1("Test Child 1", 4);
-    testParentA.AddChild(&testChild1);
-    GameObject testChild2("Test Child 2", 5);
-    testParentA.AddChild(&testChild2);
+    GameObject lights("Lights", 3);
+    scene.GetRoot()->AddChild(&lights);
+    GameObject light1("Light 1", 4);
+    light1.AddComponent(new LightComponent());
+    lights.AddChild(&light1);
+    GameObject light2("Light 2", 5);
+    light2.AddComponent(new LightComponent());
+    lights.AddChild(&light2);
     GameObject model("Model", 6);
     scene.GetRoot()->AddChild(&model);
     model.AddComponent(new ModelComponent());
@@ -111,8 +114,9 @@ int main() {
     GameObject testChild4("Test Child 4", 8);
     model.AddChild(&testChild4);
 
-
     scene.StartComponents();
+    scene.FindLights();
+
     //--------------------------------------------------------------------------------------
 
     // Main game loop

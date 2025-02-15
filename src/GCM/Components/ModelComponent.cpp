@@ -135,8 +135,10 @@ void ModelComponent::OnDraw(Scene *scene) const {
     if (model == nullptr) return;
 
     if (drawSurface) {
-        if (renderType == RenderType::Default)
+        if (renderType == RenderType::Default) {
+            scene->SendLightInfoToModel(model);
             DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+        }
         else if (renderType == RenderType::DebugUV)
             RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetUVShader());
         else if (renderType == RenderType::DebugNormal)

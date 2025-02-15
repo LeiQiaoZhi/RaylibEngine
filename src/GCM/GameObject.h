@@ -78,6 +78,23 @@ public:
         return nullptr;
     }
 
+    template<typename T>
+    std::vector<T *> GetComponentsInChildren() {
+        std::vector<T *> result = {};
+        if (auto *component = GetComponent<T>()) {
+            result.push_back(component);
+        }
+
+        for (auto *child: children) {
+            std::vector<T *> components = child->GetComponentsInChildren<T>();
+            if (!components.empty()) {
+                result.insert(result.end(), components.begin(), components.end());
+            }
+        }
+        return result;
+    }
+
+
     void UpdateComponents() const;
 
     GameObject *GetGameObjectByUID(int uid);

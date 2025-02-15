@@ -4,7 +4,9 @@
 
 #include "GameObject.h"
 #include "Components/CameraComponent.h"
+#include "Components/LightComponent.h"
 
+#define MAX_LIGHTS 4
 
 class Scene {
 public:
@@ -30,11 +32,18 @@ public:
         return root;
     }
 
+    void FindLights();
+
+    void SendLightInfoToShader(const Shader *shader) const;
+
+    void SendLightInfoToModel(const Model *model) const;
+
     std::string name;
     int selectedGameObjectUID = -1;
 
 private:
     GameObject *root = nullptr;
+    std::vector<LightComponent *> lights;
 };
 
 

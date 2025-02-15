@@ -9,8 +9,8 @@
 
 class ColorProperty {
 public:
-    explicit ColorProperty(Color *color, std::string label, bool folded = false)
-        : label(std::move(label)), color(color), foldoutProperty(this->label, folded) {
+    explicit ColorProperty(Color *color, std::string label, const bool useAlpha = true, const bool folded = false)
+        : label(std::move(label)), color(color), useAlpha(useAlpha), foldoutProperty(this->label, folded) {
         colorHSV = ColorToHSV(*color);
         alpha = color->a / 255.0f;
     }
@@ -25,6 +25,7 @@ private:
     Color *color = nullptr;
     FoldoutProperty foldoutProperty;
     float editorHeight = 0;
+    bool useAlpha;
     float alpha = 1.0f;
 };
 
