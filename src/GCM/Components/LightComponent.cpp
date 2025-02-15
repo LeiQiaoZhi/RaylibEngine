@@ -1,6 +1,7 @@
 #include "LightComponent.h"
 
 #include <sstream>
+#include <external/glad.h>
 
 #include "raylib.h"
 #include "raymath.h"
@@ -46,14 +47,17 @@ void LightComponent::OnDrawGizmos(Scene *scene) const {
 
 void LightComponent::OnDrawGizmosSelected(Scene *scene) const {
     if (lightType == LightType::Directional) {
+        rlDisableDepthTest();
         const Vector3 direction = gameObject->GetTransform()->GetWorldForward();
         const Vector3 position = gameObject->GetTransform()->GetWorldPosition();
         const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
         const float distToCamera = Vector3Distance(position, camera->position);
-        DrawCylinderEx(position, position + direction * distToCamera * 0.1f,
-                       distToCamera * 0.01, distToCamera * 0.01, 10, color);
-        DrawCylinderEx(position + direction * distToCamera * 0.1f, position + direction * distToCamera * 0.15f,
-                       distToCamera * 0.02, distToCamera * 0.0, 10, color);
+        const Vector3 rotationAxis = Vector3CrossProduct({0, 1, 0}, direction);
+        float rotationAngle = atan2f(Vector3Length(rotationAxis), Vector3DotProduct({0, 1, 0}, direction));
+        rotationAngle *= RAD2DEG;
+        const Vector3 scale = {distToCamera * 0.2f, distToCamera * 0.2f, distToCamera * 0.2f};
+        DrawModelEx(arrowModel, position, rotationAxis, rotationAngle, scale, color);
+        rlEnableDepthTest();
     } else if (lightType == LightType::Point) {
         const Vector3 position = gameObject->GetTransform()->GetWorldPosition();
         DrawSphereWires(position, range, 8, 8, color);

@@ -489,6 +489,34 @@ public:
         if (s == "ANISOTROPIC 8X") return TEXTURE_FILTER_ANISOTROPIC_8X;
         if (s == "ANISOTROPIC 16X") return TEXTURE_FILTER_ANISOTROPIC_16X;
     }
+
+    static Model GetArrowModel() {
+        static Model model = {0}; // Ensure uninitialized state
+        if (model.meshCount == 0) {
+            // Load only if model is not initialized
+            Mesh arrowHead = GenMeshCone(0.1f, 0.4f, 16);
+            for (int i = 0; i < arrowHead.vertexCount; i ++) {
+                arrowHead.vertices[i * 3 + 1] += 0.6f;
+            }
+            UpdateMeshBuffer(arrowHead, 0, arrowHead.vertices, arrowHead.vertexCount * 3 * sizeof(float), 0);
+            const Mesh arrowTail = GenMeshCylinder(0.04f, 0.6f, 16);
+            model.meshCount = 2;
+            model.meshes = static_cast<Mesh *>(RL_REALLOC(model.meshes, 2*sizeof(Mesh)));
+            model.meshes[0] = arrowTail;
+            model.meshes[1] = arrowHead;
+
+            model.materialCount = 1;
+            model.materials = (Material *) RL_CALLOC(model.materialCount, sizeof(Material));
+            model.materials[0] = LoadMaterialDefault();
+
+            model.meshMaterial = (int *) RL_CALLOC(model.meshCount, sizeof(int));
+            model.meshMaterial[0] = 0; // First material index
+            model.meshMaterial[1] = 0; // Second material index
+
+            model.transform = MatrixIdentity();
+        }
+        return model;
+    }
 };
 
 #endif //RAYLIBUTILS_H

@@ -50,6 +50,7 @@ private:
     FloatSlider intensityProperty = FloatSlider(&intensity, "Intensity", 0.0f, 10.0f);
     FloatSlider rangeProperty = FloatSlider(&range, "Range", 0.0f, 100.0f);
     float height;
+    Model arrowModel = RaylibUtils::GetArrowModel();
 };
 
 

@@ -73,6 +73,10 @@ Vector3 TransformComponent::GetWorldForward() const {
     return Vector3Normalize(Vector3Subtract(forwardPos, GetWorldPosition()));
 }
 
+Vector3 TransformComponent::GetEulerAngles() const {
+    return eulerAngles;
+}
+
 void TransformComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 

@@ -22,6 +22,8 @@ public:
 
     void OnDrawGizmosSelected(Scene *scene) const override;
 
+    void OnDrawGizmosBottom(Scene *scene) const override;
+
     float GetEditorHeight() const override;
 
     void Start() override;
@@ -38,7 +40,7 @@ public:
 
     Vector3 GetWorldForward() const;
 
-    void OnDrawGizmosBottom(Scene *scene) const override;
+    Vector3 GetEulerAngles() const;
 
 private:
     Vector3 position = {0.0f, 0.0f, 0.0f};
