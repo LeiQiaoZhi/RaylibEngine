@@ -67,7 +67,7 @@ int main() {
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
-    const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
+    InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
     AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second

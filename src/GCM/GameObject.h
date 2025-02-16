@@ -113,6 +113,8 @@ public:
 
     nlohmann::json ToJson() const;
 
+    void TryAddComponent(Component * component, std::string * status_text, bool * status_warning);
+
 protected:
     friend class Scene;
     std::string name;

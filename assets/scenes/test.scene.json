@@ -28,9 +28,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            14.098583221435547,
-                            11.057863235473633,
-                            25.402925491333008
+                            19.97943687438965,
+                            8.869029998779297,
+                            26.103132247924805
                         ],
                         "cameraTarget": [
                             0.0,
@@ -176,11 +176,25 @@
                                     0.0
                                 ],
                                 "scale": [
+                                    20.0,
                                     1.0,
-                                    1.0,
-                                    1.0
+                                    20.0
                                 ],
                                 "type": "TransformComponent"
+                            },
+                            {
+                                "drawBounds": false,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": true,
+                                "filename": "plane.glb",
+                                "materials": [
+                                    {
+                                        "path": "plane.mat.json"
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
                             }
                         ],
                         "name": "Test Child 3",
@@ -281,6 +295,8 @@
                         "damping": 0.25,
                         "elasticity": 200.0,
                         "enabled": true,
+                        "integrationMethod": 0,
+                        "speed": 1.0,
                         "totalMass": 2.0,
                         "type": "JelloComponent"
                     }
@@ -335,6 +351,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739696384,
-    "selectedGameObjectUID": 6
+    "saveTime": 1739742368,
+    "selectedGameObjectUID": 7
 }

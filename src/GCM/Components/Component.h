@@ -39,6 +39,10 @@ public:
 
     virtual void FromJson(const nlohmann::json &json) = 0;
 
+    static std::map<std::string, std::function<Component *()> > &ComponentTypeMap();
+
+    static std::vector<std::string> &GetAvailableComponentTypes();
+
 public:
     GameObject *gameObject = nullptr;
     bool enabled = true;

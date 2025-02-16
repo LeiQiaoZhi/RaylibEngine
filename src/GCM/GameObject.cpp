@@ -191,3 +191,19 @@ nlohmann::json GameObject::ToJson() const {
 
     return j;
 }
+
+void GameObject::TryAddComponent(Component *component, std::string *status_text, bool *status_warning) {
+    if (typeid(*component) == typeid(TransformComponent)) {
+        if (transform) {
+            *status_text = "Transform component already exists";
+            *status_warning = true;
+            return;
+        }
+        transform = dynamic_cast<TransformComponent *>(component);
+    }
+    else {
+        AddComponent(component);
+        *status_text = "Component added";
+        *status_warning = false;
+    }
+}

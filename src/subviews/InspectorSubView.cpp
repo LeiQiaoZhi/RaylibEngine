@@ -12,20 +12,17 @@ InspectorSubView::InspectorSubView(const int width, const int height) {
     renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
 }
 
-void InspectorSubView::Render(Scene &scene, Vector2 position) const {
+void InspectorSubView::Render(Scene &scene, Vector2 position) {
     if (!scene.GetRoot()) return;
     GameObject *selectedGameObject = scene.GetGameObjectByUID(scene.selectedGameObjectUID);
-    float height = Editor::SmallGap() + Editor::MediumGap() + Editor::TextSize();
-    if (selectedGameObject) {
-        for (const auto *component: selectedGameObject->GetComponents()) {
-            height += component->GetEditorHeight() + Editor::LargeGap();
-        }
-    }
-
     const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     const auto topLeft = renderer_->GetContentTopLeft();
-
-    renderer_->SetContentSize(renderer_->GetContentSize().x, height);
+    Rectangle rect = {
+        topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap() + textSize,
+        renderer_->GetContentSize().x - Editor::MediumGap() * 2 - Editor::SmallGap(),
+        renderer_->GetContentSize().y - Editor::MediumGap() - textSize
+    };
+    float height = rect.y - topLeft.y + Editor::MediumGap();
 
     GuiStatusBar({
                      position.x, position.y,
@@ -40,22 +37,23 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) const {
                      topLeft.x + Editor::MediumGap(), topLeft.y + Editor::MediumGap(),
                      renderer_->GetContentSize().x, textSize * 1.0f
                  }, oss.str().c_str());
-
-        Rectangle rect = {
-            topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap() + textSize,
-            renderer_->GetContentSize().x - Editor::MediumGap() * 2 - Editor::SmallGap(),
-            renderer_->GetContentSize().y - Editor::MediumGap() - textSize
-        };
+        height += textSize + Editor::MediumGap();
 
         for (auto *component: selectedGameObject->GetComponents()) {
             GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);
             rect.y += Editor::LargeGap();
-            rect.height -= Editor::LargeGap();
             component->OnEditorGUI(rect);
-            rect.height -= component->GetEditorHeight();
+            height += component->GetEditorHeight() + Editor::LargeGap();
         }
+
+        GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);
+        rect.y += Editor::LargeGap();
+        addComponentProperty.SetTargetGameObject(selectedGameObject);
+        addComponentProperty.OnEditorGUI(rect);
+        height += addComponentProperty.GetEditorHeight();
     }
     renderer_->End();
+    renderer_->SetContentSize(renderer_->GetContentSize().x, height);
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, WHITE);
