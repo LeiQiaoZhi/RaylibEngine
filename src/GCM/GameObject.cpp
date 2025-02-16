@@ -1,5 +1,66 @@
 #include "GameObject.h"
 
+#include "Components/DebugGridBoxComponent.h"
+#include "Components/DebugGridComponent.h"
+#include "Components/JelloComponent.h"
+#include "Components/ModelComponent.h"
+#include "Components/ProceduralMeshComponent.h"
+
+GameObject::GameObject(nlohmann::json j) {
+    name = j["name"];
+    uid = j["uid"];
+    sceneDepth = j["sceneDepth"];
+
+    // children
+    for (const auto &childJson: j["children"]) {
+        AddChild(new GameObject(childJson));
+    }
+
+    // components
+    for (const auto &componentJson: j["components"]) {
+        Component *component = nullptr;
+        const std::string type = componentJson["type"];
+        if (type == "CameraComponent") {
+            component = new CameraComponent();
+        } else if (type == "DebugGridBoxComponent") {
+            component = new DebugGridBoxComponent();
+        } else if (type == "DebugGridComponent") {
+            component = new DebugGridComponent();
+        } else if (type == "JelloComponent") {
+            component = new JelloComponent();
+        } else if (type == "LightComponent") {
+            component = new LightComponent();
+        } else if (type == "ModelComponent") {
+            component = new ModelComponent();
+        } else if (type == "ProceduralMeshComponent") {
+            component = new ProceduralMeshComponent();
+        } else if (type == "TransformComponent") {
+            component = new TransformComponent();
+            transform = dynamic_cast<TransformComponent *>(component);
+        }
+        if (component) {
+            component->enabled = componentJson["enabled"];
+            component->FromJson(componentJson);
+            AddComponent(component);
+        }
+    }
+}
+
+GameObject::~GameObject() {
+    parent = nullptr;
+    scene = nullptr;
+    transform = nullptr;
+
+    for (const auto *child: children) {
+        delete child;
+    }
+    children.clear();
+    for (const auto *component: components) {
+        delete component;
+    }
+    components.clear();
+}
+
 void GameObject::AddChild(GameObject *child) {
     child->scene = scene;
     child->parent = this;
@@ -105,4 +166,28 @@ void GameObject::StartComponents() const {
     for (const auto *child: children) {
         child->StartComponents();
     }
+}
+
+nlohmann::json GameObject::ToJson() const {
+    nlohmann::json j;
+    j["uid"] = uid;
+    j["name"] = name;
+    j["sceneDepth"] = sceneDepth;
+
+    std::vector<nlohmann::json> childrenJson;
+    for (const auto *child: children) {
+        childrenJson.emplace_back(child->ToJson());
+    }
+
+    std::vector<nlohmann::json> componentsJson;
+    for (const auto *component: components) {
+        nlohmann::json componentJson = component->ToJson();
+        componentJson["enabled"] = component->enabled;
+        componentsJson.emplace_back(componentJson);
+    }
+
+    j["components"] = componentsJson;
+    j["children"] = childrenJson;
+
+    return j;
 }

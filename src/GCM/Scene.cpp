@@ -99,3 +99,27 @@ void Scene::SendLightInfoToModel(const Model *model) const {
         SendLightInfoToShader(shader);
     }
 }
+
+void Scene::Save(const char *path) {
+    nlohmann::json j = {};
+    j["name"] = name;
+    j["root"] = root->ToJson();
+    j["selectedGameObjectUID"] = selectedGameObjectUID;
+    j["saveTime"] = time(nullptr);
+    JsonUtils::JsonToFile(j, path);
+}
+
+void Scene::Load(const char *path) {
+    // unload current scene
+    delete root;
+
+    // load new scene from json
+    nlohmann::json j = JsonUtils::JsonFromFile(path);
+    name = j["name"];
+    selectedGameObjectUID = j["selectedGameObjectUID"];
+    root = new GameObject(j["root"]);
+
+    // initialize scene
+    StartComponents();
+    FindLights();
+}

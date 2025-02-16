@@ -11,11 +11,13 @@
 class GameObject {
 public:
     explicit GameObject(std::string name, const int uid) : name(std::move(name)), uid(uid) {
+        transform = new TransformComponent();
         AddComponent(transform);
     }
 
-    void Destroy();
+    explicit GameObject(nlohmann::json j);
 
+    ~GameObject();
 
     const char *GetName() const {
         return name.c_str();
@@ -109,6 +111,8 @@ public:
 
     void StartComponents() const;
 
+    nlohmann::json ToJson() const;
+
 protected:
     friend class Scene;
     std::string name;
@@ -117,7 +121,7 @@ protected:
 
     Scene *scene = nullptr;
     GameObject *parent = nullptr;
-    TransformComponent *transform = new TransformComponent();
+    TransformComponent *transform;
     std::vector<GameObject *> children = {};
     std::vector<Component *> components = {};
 };

@@ -83,3 +83,23 @@ void ProceduralMeshComponent::GenerateMesh() {
     }
     modelComponent->SetModelFromMesh(mesh);
 }
+
+nlohmann::json ProceduralMeshComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "ProceduralMeshComponent";
+    j["meshType"] = static_cast<int>(meshType);
+    j["cubeSize"] = {cubeSize.x, cubeSize.y, cubeSize.z};
+    j["cubeWorldSize"] = {cubeWorldSize.x, cubeWorldSize.y, cubeWorldSize.z};
+    j["planeSize"] = {planeSize.x, planeSize.y};
+    j["planeWorldSize"] = {planeWorldSize.x, planeWorldSize.y};
+    return j;
+}
+
+void ProceduralMeshComponent::FromJson(const nlohmann::json &json) {
+    meshType = static_cast<MeshType>(json["meshType"]);
+    cubeSize = {json["cubeSize"][0], json["cubeSize"][1], json["cubeSize"][2]};
+    cubeWorldSize = {json["cubeWorldSize"][0], json["cubeWorldSize"][1], json["cubeWorldSize"][2]};
+    planeSize = {json["planeSize"][0], json["planeSize"][1]};
+    planeWorldSize = {json["planeWorldSize"][0], json["planeWorldSize"][1]};
+}
+

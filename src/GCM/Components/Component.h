@@ -15,13 +15,13 @@ public:
     virtual float GetEditorHeight() const = 0;
 
     // render in scene view every frame
-    virtual void OnDraw(Scene * scene) const = 0;
+    virtual void OnDraw(Scene *scene) const = 0;
 
     // when gizmos are enabled, render gizmos every frame
-    virtual void OnDrawGizmos(Scene* scene) const = 0;
+    virtual void OnDrawGizmos(Scene *scene) const = 0;
 
     // when gizmos are enabled, render gizmos every frame when selected
-    virtual void OnDrawGizmosSelected(Scene* scene) const = 0;
+    virtual void OnDrawGizmosSelected(Scene *scene) const = 0;
 
     virtual void Start() = 0;
 
@@ -33,7 +33,11 @@ public:
     //    virtual void OnDestroy() = 0;
     virtual ~Component() = default;
 
-    virtual void OnDrawGizmosBottom(Scene * scene) const = 0;
+    virtual void OnDrawGizmosBottom(Scene *scene) const = 0;
+
+    virtual nlohmann::json ToJson() const = 0;
+
+    virtual void FromJson(const nlohmann::json &json) = 0;
 
 public:
     GameObject *gameObject = nullptr;

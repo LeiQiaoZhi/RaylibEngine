@@ -32,7 +32,10 @@ public:
 
     void OnDrawGizmosBottom(Scene *scene) const override;
 
-public:
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
     enum class LightType {
         Ambient = 0,
         Directional,
@@ -41,11 +44,13 @@ public:
 
 private:
     friend class Scene;
+    // States
     LightType lightType = LightType::Ambient;
     float intensity = 1.0f;
     float range = 10.0f;
     Color color;
 
+    // UI
     ColorProperty colorProperty = ColorProperty(&color, "Color", false);
     FloatSlider intensityProperty = FloatSlider(&intensity, "Intensity", 0.0f, 10.0f);
     FloatSlider rangeProperty = FloatSlider(&range, "Range", 0.0f, 100.0f);

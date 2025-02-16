@@ -66,17 +66,9 @@ int main() {
 
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
-    const HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
+    HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
     const InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
     AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
-
-    // Camera
-    Camera camera = {0};
-    camera.position = (Vector3){10.0f, 10.0f, 10.0f};
-    camera.target = (Vector3){0.0f, 0.0f, 0.0f};
-    camera.up = (Vector3){0.0f, 1.0f, 0.0f};
-    camera.fovy = 45.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -93,27 +85,28 @@ int main() {
     scene.name = "Test Scene";
     scene.SetRoot(new GameObject(scene.name, 1));
     scene.GetRoot()->AddComponent(new DebugGridBoxComponent());
-    GameObject cameraGO("Camera", 2);
-    cameraGO.AddComponent(new CameraComponent(&camera, cameraMode));
-    scene.GetRoot()->AddChild(&cameraGO);
-    GameObject lights("Lights", 3);
-    scene.GetRoot()->AddChild(&lights);
-    GameObject light1("Light 1", 4);
-    light1.AddComponent(new LightComponent());
-    lights.AddChild(&light1);
-    GameObject light2("Light 2", 5);
-    light2.AddComponent(new LightComponent());
-    lights.AddChild(&light2);
-    GameObject model("Model", 6);
-    scene.GetRoot()->AddChild(&model);
-    model.AddComponent(new ModelComponent());
-    model.AddComponent(new ProceduralMeshComponent());
-    model.AddComponent(new JelloComponent());
-    GameObject testChild3("Test Child 3", 7);
-    model.AddChild(&testChild3);
-    GameObject testChild4("Test Child 4", 8);
-    model.AddChild(&testChild4);
+    auto cameraGO = new GameObject("Camera", 2);
+    cameraGO->AddComponent(new CameraComponent());
+    scene.GetRoot()->AddChild(cameraGO);
+    auto lights = new GameObject("Lights", 3);
+    scene.GetRoot()->AddChild(lights);
+    auto light1 = new GameObject("Light 1", 4);
+    light1->AddComponent(new LightComponent());
+    lights->AddChild(light1);
+    auto light2 = new GameObject("Light 2", 5);
+    light2->AddComponent(new LightComponent());
+    lights->AddChild(light2);
+    auto model = new GameObject("Model", 6);
+    scene.GetRoot()->AddChild(model);
+    model->AddComponent(new ModelComponent());
+    model->AddComponent(new ProceduralMeshComponent());
+    model->AddComponent(new JelloComponent());
+    auto testChild3 = new GameObject("Test Child 3", 7);
+    model->AddChild(testChild3);
+    auto testChild4 = new GameObject("Test Child 4", 8);
+    model->AddChild(testChild4);
 
+    scene.GetMainCamera()->SetCameraMode(cameraMode);
     scene.StartComponents();
     scene.FindLights();
 

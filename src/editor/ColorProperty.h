@@ -15,6 +15,11 @@ public:
         alpha = color->a / 255.0f;
     }
 
+    void UpdateColor(const Color &color) {
+        colorHSV = ColorToHSV(color);
+        alpha = color.a / 255.0f;
+    }
+
     void OnEditorGUI(Rectangle &rect);
 
     float GetEditorHeight() const;

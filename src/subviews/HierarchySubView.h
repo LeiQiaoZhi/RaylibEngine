@@ -12,10 +12,14 @@ class HierarchySubView {
 public:
     HierarchySubView(int width, int height);
 
-    void Render(Scene &scene, Vector2 position = {0, 0}) const;
+    void Render(Scene &scene, Vector2 position = {0, 0});
 
 private:
     ISubviewRenderer *renderer_;
+    char sceneFilename[32] = "test.scene.json";
+    bool editMode;
+    std::string statusText;
+    bool statusWarning;
 };
 
 

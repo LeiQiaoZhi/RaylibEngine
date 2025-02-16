@@ -1,0 +1,340 @@
+{
+    "name": "Test Scene",
+    "root": {
+        "children": [
+            {
+                "children": [],
+                "components": [
+                    {
+                        "enabled": true,
+                        "eulerAngles": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "type": "TransformComponent"
+                    },
+                    {
+                        "cameraFovy": 45.0,
+                        "cameraMode": 4,
+                        "cameraPosition": [
+                            14.098583221435547,
+                            11.057863235473633,
+                            25.402925491333008
+                        ],
+                        "cameraTarget": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "cameraUp": [
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        "enabled": true,
+                        "type": "CameraComponent"
+                    }
+                ],
+                "name": "Camera",
+                "sceneDepth": 1,
+                "uid": 2
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.5,
+                                    0.5,
+                                    0.0
+                                ],
+                                "position": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            },
+                            {
+                                "color": [
+                                    255,
+                                    255,
+                                    255,
+                                    255
+                                ],
+                                "enabled": true,
+                                "intensity": 1.0,
+                                "lightType": 1,
+                                "range": 10.0,
+                                "type": "LightComponent"
+                            }
+                        ],
+                        "name": "Light 1",
+                        "sceneDepth": 2,
+                        "uid": 4
+                    },
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "position": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            },
+                            {
+                                "color": [
+                                    255,
+                                    255,
+                                    255,
+                                    255
+                                ],
+                                "enabled": true,
+                                "intensity": 0.2829049229621887,
+                                "lightType": 0,
+                                "range": 10.0,
+                                "type": "LightComponent"
+                            }
+                        ],
+                        "name": "Light 2",
+                        "sceneDepth": 2,
+                        "uid": 5
+                    }
+                ],
+                "components": [
+                    {
+                        "enabled": true,
+                        "eulerAngles": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "type": "TransformComponent"
+                    }
+                ],
+                "name": "Lights",
+                "sceneDepth": 1,
+                "uid": 3
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "position": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            }
+                        ],
+                        "name": "Test Child 3",
+                        "sceneDepth": 2,
+                        "uid": 7
+                    },
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "position": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            }
+                        ],
+                        "name": "Test Child 4",
+                        "sceneDepth": 2,
+                        "uid": 8
+                    }
+                ],
+                "components": [
+                    {
+                        "enabled": true,
+                        "eulerAngles": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "position": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "type": "TransformComponent"
+                    },
+                    {
+                        "drawBounds": false,
+                        "drawSurface": true,
+                        "drawWireframe": false,
+                        "enabled": true,
+                        "filename": "old_car_new.glb",
+                        "materials": [
+                            {
+                                "path": "car.mat.json"
+                            },
+                            {
+                                "path": ""
+                            }
+                        ],
+                        "renderType": 0,
+                        "type": "ModelComponent"
+                    },
+                    {
+                        "cubeSize": [
+                            10.0,
+                            10.0,
+                            10.0
+                        ],
+                        "cubeWorldSize": [
+                            10.0,
+                            10.0,
+                            10.0
+                        ],
+                        "enabled": true,
+                        "meshType": 0,
+                        "planeSize": [
+                            10.0,
+                            10.0
+                        ],
+                        "planeWorldSize": [
+                            10.0,
+                            10.0
+                        ],
+                        "type": "ProceduralMeshComponent"
+                    },
+                    {
+                        "collisionDamping": 0.25,
+                        "collisionElasticity": 400.0,
+                        "damping": 0.25,
+                        "elasticity": 200.0,
+                        "enabled": true,
+                        "totalMass": 2.0,
+                        "type": "JelloComponent"
+                    }
+                ],
+                "name": "Model",
+                "sceneDepth": 1,
+                "uid": 6
+            }
+        ],
+        "components": [
+            {
+                "enabled": true,
+                "eulerAngles": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "type": "TransformComponent"
+            },
+            {
+                "color": [
+                    255,
+                    255,
+                    255,
+                    50
+                ],
+                "enabled": false,
+                "size": [
+                    40.0,
+                    40.0,
+                    40.0
+                ],
+                "spacing": [
+                    10.0,
+                    10.0,
+                    10.0
+                ],
+                "type": "DebugGridBoxComponent"
+            }
+        ],
+        "name": "Test Scene",
+        "sceneDepth": 0,
+        "uid": 1
+    },
+    "saveTime": 1739696384,
+    "selectedGameObjectUID": 6
+}

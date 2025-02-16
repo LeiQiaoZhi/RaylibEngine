@@ -361,6 +361,29 @@ void JelloComponent::RK4() {
             }
 }
 
+nlohmann::json JelloComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "JelloComponent";
+    j["integrationMethod"] = static_cast<int>(integrationMethod);
+    j["totalMass"] = totalMass;
+    j["elasticity"] = elasticity;
+    j["damping"] = damping;
+    j["collisionElasticity"] = collisionElasticity;
+    j["collisionDamping"] = collisionDamping;
+    j["speed"] = speed;
+    return j;
+}
+
+void JelloComponent::FromJson(const nlohmann::json &json) {
+    integrationMethod = static_cast<IntegrationMethod>(json.value("integrationMethod", static_cast<int>(integrationMethod)));
+    totalMass = json.value("totalMass", totalMass);
+    elasticity = json.value("elasticity", elasticity);
+    damping = json.value("damping", damping);
+    collisionElasticity = json.value("collisionElasticity", collisionElasticity);
+    collisionDamping = json.value("collisionDamping", collisionDamping);
+    speed = json.value("speed", speed);
+}
+
 
 void JelloComponent::OnDrawGizmosBottom(Scene *scene) const {
 }

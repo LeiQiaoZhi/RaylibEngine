@@ -33,8 +33,7 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
             statusText = "Filename is empty";
             statusWarning = true;
         } else {
-            const std::string path = std::string(ASSET_DIR) + "/models/" + filename;
-            LoadModelFromFile(path);
+            LoadModelFromFile(filename);
             statusText = "Model loaded";
             statusWarning = false;
         }
@@ -138,8 +137,7 @@ void ModelComponent::OnDraw(Scene *scene) const {
         if (renderType == RenderType::Default) {
             scene->SendLightInfoToModel(model);
             DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
-        }
-        else if (renderType == RenderType::DebugUV)
+        } else if (renderType == RenderType::DebugUV)
             RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetUVShader());
         else if (renderType == RenderType::DebugNormal)
             RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetNormalShader());
@@ -166,21 +164,22 @@ void ModelComponent::Update() {
 }
 
 void ModelComponent::LoadModelFromFile(const std::string &filename) {
+    const std::string path = ASSET_DIR + std::string("/models/") + filename;
     // test file exits
-    if (!FileExists(filename.c_str())) {
+    if (!FileExists(path.c_str())) {
         statusText = "File does not exist";
         return;
     }
     statusText = "";
-    if (IsFileExtension(filename.c_str(), ".obj") ||
-        IsFileExtension(filename.c_str(), ".gltf") ||
-        IsFileExtension(filename.c_str(), ".glb") ||
-        IsFileExtension(filename.c_str(), ".vox") ||
-        IsFileExtension(filename.c_str(), ".iqm") ||
-        IsFileExtension(filename.c_str(), ".m3d")) // Model file formats supported
+    if (IsFileExtension(path.c_str(), ".obj") ||
+        IsFileExtension(path.c_str(), ".gltf") ||
+        IsFileExtension(path.c_str(), ".glb") ||
+        IsFileExtension(path.c_str(), ".vox") ||
+        IsFileExtension(path.c_str(), ".iqm") ||
+        IsFileExtension(path.c_str(), ".m3d")) // Model file formats supported
     {
         if (model) UnloadModel(*model); // Unload previous model
-        const Model modelObj = LoadModel(filename.c_str()); // Load new model
+        const Model modelObj = LoadModel(path.c_str()); // Load new model
         model = new Model(modelObj);
 
         // update properties
@@ -203,4 +202,41 @@ void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
 }
 
 void ModelComponent::OnDrawGizmosBottom(Scene *scene) const {
+}
+
+nlohmann::json ModelComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "ModelComponent";
+    j["filename"] = filename;
+    j["drawSurface"] = drawSurface;
+    j["drawBounds"] = drawBounds;
+    j["drawWireframe"] = drawWireframe;
+    j["renderType"] = static_cast<int>(renderType);
+
+    std::vector<nlohmann::json> materialPropsJson;
+    for (const auto &materialProp: materialProps)
+        materialPropsJson.emplace_back(materialProp.ToJson());
+    j["materials"] = materialPropsJson;
+    return j;
+}
+
+void ModelComponent::FromJson(const nlohmann::json &json) {
+    std::strncpy(filename, json.at("filename").get<std::string>().c_str(), 32);
+    drawSurface = json.at("drawSurface").get<bool>();
+    drawBounds = json.at("drawBounds").get<bool>();
+    drawWireframe = json.at("drawWireframe").get<bool>();
+    renderType = static_cast<RenderType>(json.at("renderType").get<int>());
+
+    LoadModelFromFile(filename);
+
+    int i = 0;
+    for (const auto &materialPropJson: json.at("materials")) {
+        if (i >= materialProps.size()) {
+            statusText = "More materials than expected";
+            statusWarning = true;
+            break;
+        }
+        materialProps[i].FromJson(materialPropJson);
+        i++;
+    }
 }

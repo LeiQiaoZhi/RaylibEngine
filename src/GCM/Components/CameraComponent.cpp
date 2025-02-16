@@ -51,3 +51,27 @@ void CameraComponent::Update() {
 
 void CameraComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
+
+nlohmann::json CameraComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "CameraComponent";
+    j["cameraMode"] = cameraMode;
+    // TODO: save camera transform
+    j["cameraPosition"] = {camera->position.x, camera->position.y, camera->position.z};
+    j["cameraTarget"] = {camera->target.x, camera->target.y, camera->target.z};
+    j["cameraUp"] = {camera->up.x, camera->up.y, camera->up.z};
+    j["cameraFovy"] = camera->fovy;
+    return j;
+}
+
+
+void CameraComponent::FromJson(const nlohmann::json &json) {
+    cameraMode = json["cameraMode"];
+    if (json.contains("cameraPosition"))
+        camera->position = {json["cameraPosition"][0], json["cameraPosition"][1], json["cameraPosition"][2]};
+    if (json.contains("cameraTarget"))
+        camera->target = {json["cameraTarget"][0], json["cameraTarget"][1], json["cameraTarget"][2]};
+    if (json.contains("cameraUp"))
+        camera->up = {json["cameraUp"][0], json["cameraUp"][1], json["cameraUp"][2]};
+    camera->fovy = json.value("cameraFovy", 45.0f);
+}

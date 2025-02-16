@@ -25,6 +25,21 @@ public:
         }
     }
 
+    void SetValueBoxText() {
+        for (int i = 0; i < n; i++) {
+            SetValueBoxText(i);
+        }
+    }
+
+    void SetValueBoxText(int i) {
+        float value = *RaylibUtils::GetVectorComponent<T>(vector, i);
+        if (value - floorf(value) < 0.0001f) {
+            snprintf(valueBoxTextValues[i], sizeof(valueBoxTextValues[i]), "%.0f", value);
+        } else {
+            snprintf(valueBoxTextValues[i], sizeof(valueBoxTextValues[i]), "%.2f", value);
+        }
+    }
+
     void OnEditorGUI(Rectangle &rect) {
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, label.c_str());
         const int labelWidth = Editor::TextSize() * 5 + Editor::LargeGap();
@@ -43,6 +58,10 @@ public:
                 editModes[i] = !editModes[i];
             }
             positionRect.x += rect.width / n - subLabelWidth;
+
+            if (!editModes[i]) {
+                SetValueBoxText(i); // sync text with value, in case it was changed elsewhere
+            }
         }
         rect.x -= labelWidth;
         rect.width += labelWidth;

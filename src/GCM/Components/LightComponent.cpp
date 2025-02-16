@@ -36,6 +36,24 @@ float LightComponent::GetEditorHeight() const {
 void LightComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 
+nlohmann::json LightComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "LightComponent";
+    j["lightType"] = static_cast<int>(lightType);
+    j["intensity"] = intensity;
+    j["range"] = range;
+    j["color"] = {color.r, color.g, color.b, color.a};
+    return j;
+}
+
+void LightComponent::FromJson(const nlohmann::json &json) {
+    lightType = static_cast<LightType>(json.at("lightType").get<int>());
+    intensity = json.at("intensity").get<float>();
+    range = json.at("range").get<float>();
+    color = {json["color"][0], json["color"][1], json["color"][2], json["color"][3]};
+    colorProperty.UpdateColor(color);
+}
+
 void LightComponent::OnDraw(Scene *scene) const {
 }
 

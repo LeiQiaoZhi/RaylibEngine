@@ -38,6 +38,10 @@ public:
 
     void SendLightInfoToModel(const Model *model) const;
 
+    void Save(const char *path);
+
+    void Load(const char* data);
+
     std::string name;
     int selectedGameObjectUID = -1;
 

@@ -74,6 +74,11 @@ private:
 
     void RK4();
 
+public:
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
 private:
     // dependencies
     ModelComponent *modelComponent = nullptr;
@@ -85,18 +90,19 @@ private:
         Euler
     };
 
-    IntegrationMethod integrationMethod = IntegrationMethod::RK4;
-
     bool started = false;
     Matrix3D accelerations;
     Matrix3D velocities;
     Matrix3D positions;
+
+    // params
+    IntegrationMethod integrationMethod = IntegrationMethod::RK4;
     float totalMass = 2.0f;
     float elasticity = 200;
     float damping = 0.25;
     float collisionElasticity = 400;
     float collisionDamping = 0.25;
-    float speed;
+    float speed = 1.0f;
 
     // ui
     std::string statusText;

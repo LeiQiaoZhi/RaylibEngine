@@ -7,8 +7,17 @@
 
 class CameraComponent final : public Component {
 public:
-    explicit CameraComponent(Camera *camera, const int mode) : camera(camera), cameraMode(mode) {
+    explicit CameraComponent() {
         headerProperty.label = "Camera";
+        camera = new Camera();
+        camera->position = (Vector3){10.0f, 10.0f, 10.0f};
+        camera->target = (Vector3){0.0f, 0.0f, 0.0f};
+        camera->up = (Vector3){0.0f, 1.0f, 0.0f};
+        camera->fovy = 45.0f;
+    }
+
+    ~CameraComponent() override {
+        delete camera;
     }
 
     void OnEditorGUI(Rectangle &rect) override;
@@ -29,7 +38,15 @@ public:
         return camera;
     }
 
+    void SetCameraMode(const int mode) {
+        cameraMode = mode;
+    }
+
     void OnDrawGizmosBottom(Scene *scene) const override;
+
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
 
 private:
     Camera *camera = nullptr;

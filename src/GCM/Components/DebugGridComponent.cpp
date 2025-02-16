@@ -42,4 +42,20 @@ void DebugGridComponent::Update() {
 void DebugGridComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 
+nlohmann::json DebugGridComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "DebugGridComponent";
+    j["size"] = {size.x, size.y};
+    j["spacing"] = {spacing.x, spacing.y};
+    j["color"] = {color.r, color.g, color.b, color.a};
+    return j;
+}
+
+void DebugGridComponent::FromJson(const nlohmann::json &json) {
+    size = {json["size"][0], json["size"][1]};
+    spacing = {json["spacing"][0], json["spacing"][1]};
+    color = {json["color"][0], json["color"][1], json["color"][2], json["color"][3]};
+    colorProperty.UpdateColor(color);
+}
+
 

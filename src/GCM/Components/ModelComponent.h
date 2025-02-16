@@ -39,37 +39,40 @@ public:
 
     void Update() override;
 
-    void LoadModelFromFile(const std::string &filename);
+    void LoadModelFromFile(const std::string &path);
 
     void SetModelFromMesh(const Mesh &mesh);
 
     void OnDrawGizmosBottom(Scene *scene) const override;
 
-public:
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
     Model *model = nullptr;
 
 private:
-    std::string statusText;
-    bool statusWarning = false;
-    char filename[32];
-    bool editMode;
-    float height;
-
-    FoldoutProperty materialsFoldout = FoldoutProperty("Materials");
-    std::vector<MaterialProperty> materialProps = {};
-    FoldoutProperty debugFoldout = FoldoutProperty("Debug");
-    bool drawSurface = true;
-    bool drawBounds = true;
-    bool drawWireframe = false;
-
     enum class RenderType: unsigned int {
         Default,
         DebugUV,
         DebugNormal
     };
 
+    // States
+    char filename[32];
+    bool drawSurface = true;
+    bool drawBounds = true;
+    bool drawWireframe = false;
     RenderType renderType = RenderType::Default;
-    // TODO: more materials
+
+    // UI
+    FoldoutProperty materialsFoldout = FoldoutProperty("Materials");
+    std::vector<MaterialProperty> materialProps = {};
+    FoldoutProperty debugFoldout = FoldoutProperty("Debug");
+    bool editMode;
+    std::string statusText;
+    bool statusWarning = false;
+    float height;
 };
 
 

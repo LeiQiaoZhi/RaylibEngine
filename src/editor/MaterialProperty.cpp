@@ -13,7 +13,7 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
 
     // path
     Editor::BeginIndent(rect, labelWidth + Editor::SmallGap());
-    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, path, 256, pathEditMode)) {
+    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, filename, 256, pathEditMode)) {
         pathEditMode = !pathEditMode;
     }
     rect.y += Editor::TextSize() + Editor::SmallGap();
@@ -22,26 +22,7 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     // load material
     const float buttonWidth = rect.width - Editor::TextWidth("Default") - Editor::SmallGap() * 2;
     if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.5f}, "Load Material")) {
-        const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(path);
-        if (path[0] == '\0') {
-            statusText = "Path is empty";
-            statusWarning = true;
-        } else if (model == nullptr) {
-            statusText = "Model is null";
-            statusWarning = true;
-        } else if (!FileExists(fullPath.c_str())) {
-            statusText = "File does not exist";
-            statusWarning = true;
-        } else if (!Utils::EndsWith(path, ".mat.json")) {
-            statusText = "File must be .mat.json";
-            statusWarning = true;
-        } else {
-            UnloadMaterial(model->materials[materialIndex]);
-
-            model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
-            statusText = "Material loaded";
-            statusWarning = false;
-        }
+        LoadMaterialFromFile(filename);
     }
 
     // load default
@@ -68,4 +49,43 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
 
 float MaterialProperty::GetEditorHeight() const {
     return height;
+}
+
+void MaterialProperty::LoadMaterialFromFile(const char *filename) {
+    const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(filename);
+    if (filename[0] == '\0') {
+        statusText = "Path is empty";
+        statusWarning = true;
+    } else if (model == nullptr) {
+        statusText = "Model is null";
+        statusWarning = true;
+    } else if (!FileExists(fullPath.c_str())) {
+        statusText = "File does not exist";
+        statusWarning = true;
+    } else if (!Utils::EndsWith(filename, ".mat.json")) {
+        statusText = "File must be .mat.json";
+        statusWarning = true;
+    } else {
+        UnloadMaterial(model->materials[materialIndex]);
+
+        const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(filename);
+        model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
+        statusText = "Material loaded";
+        statusWarning = false;
+
+        currentMaterialFilename = filename;
+    }
+}
+
+nlohmann::json MaterialProperty::ToJson() const {
+    nlohmann::json j;
+    j["path"] = currentMaterialFilename;
+    return j;
+}
+
+void MaterialProperty::FromJson(const nlohmann::json &json) {
+    SetInputText(json["path"].get<std::string>().c_str());
+    if (filename[0] != '\0') {
+        LoadMaterialFromFile(filename);
+    }
 }

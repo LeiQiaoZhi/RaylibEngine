@@ -54,6 +54,9 @@ public:
                 SetValueBoxText();
             }
         }
+        if (!editMode) {
+            SetValueBoxText(); // sync text with value, in case it was changed elsewhere
+        }
 
         Editor::EndIndent(rect, labelWidth);
 

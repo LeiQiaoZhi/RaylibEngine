@@ -34,7 +34,10 @@ public:
 
     void GenerateMesh();
 
-public:
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
     enum class MeshType : unsigned int {
         Cube,
         Plane,

@@ -60,3 +60,19 @@ void DebugGridBoxComponent::Update() {
 
 void DebugGridBoxComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
+
+nlohmann::json DebugGridBoxComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "DebugGridBoxComponent";
+    j["size"] = {size.x, size.y, size.z};
+    j["spacing"] = {spacing.x, spacing.y, spacing.z};
+    j["color"] = {color.r, color.g, color.b, color.a};
+    return j;
+}
+
+void DebugGridBoxComponent::FromJson(const nlohmann::json &json) {
+    size = {json["size"][0], json["size"][1], json["size"][2]};
+    spacing = {json["spacing"][0], json["spacing"][1], json["spacing"][2]};
+    color = {json["color"][0], json["color"][1], json["color"][2], json["color"][3]};
+    colorProperty.UpdateColor(color);
+}

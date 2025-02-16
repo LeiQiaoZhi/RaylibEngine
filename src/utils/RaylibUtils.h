@@ -159,6 +159,9 @@ public:
         json j = JsonUtils::JsonFromFile(path);
         Material material = LoadMaterialDefault();
 
+        std::cout << "Loading material from file: " << path << std::endl;
+        std::cout << j.dump(4) << std::endl;
+
         // Shader
         if (j["Shader"]["Vertex"] != "default" || j["Shader"]["Fragment"] != "default") {
             const std::string vertPath = ASSET_DIR + std::string("/shaders/") + std::string(j["Shader"]["Vertex"]);

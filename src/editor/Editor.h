@@ -11,6 +11,7 @@ public:
     static Color FocusedColor() { return GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED)); }
     static Color DisabledColor() { return GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_DISABLED)); }
     static int TextSize() { return GuiGetStyle(DEFAULT, TEXT_SIZE); }
+    static float TextSizeF() { return GuiGetStyle(DEFAULT, TEXT_SIZE) * 1.0f; }
     static int SmallGap() { return 5; }
     static int MediumGap() { return 10; }
     static int LargeGap() { return 20; }

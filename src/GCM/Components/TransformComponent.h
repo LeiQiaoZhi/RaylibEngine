@@ -42,6 +42,10 @@ public:
 
     Vector3 GetEulerAngles() const;
 
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
 private:
     Vector3 position = {0.0f, 0.0f, 0.0f};
     Vector3 eulerAngles = {0.0f, 0.0f, 0.0f};

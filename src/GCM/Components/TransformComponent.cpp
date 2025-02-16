@@ -77,6 +77,21 @@ Vector3 TransformComponent::GetEulerAngles() const {
     return eulerAngles;
 }
 
+nlohmann::json TransformComponent::ToJson() const {
+    nlohmann::json j;
+    j["type"] = "TransformComponent";
+    j["position"] = {position.x, position.y, position.z};
+    j["eulerAngles"] = {eulerAngles.x, eulerAngles.y, eulerAngles.z};
+    j["scale"] = {scale.x, scale.y, scale.z};
+    return j;
+}
+
+void TransformComponent::FromJson(const nlohmann::json &json) {
+    position = {json["position"][0], json["position"][1], json["position"][2]};
+    eulerAngles = {json["eulerAngles"][0], json["eulerAngles"][1], json["eulerAngles"][2]};
+    scale = {json["scale"][0], json["scale"][1], json["scale"][2]};
+}
+
 void TransformComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 

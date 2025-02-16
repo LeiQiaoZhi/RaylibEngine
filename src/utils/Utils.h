@@ -37,6 +37,11 @@ public:
     static bool EndsWith(const std::string &str, const std::string &suffix) {
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
+
+    static void CreateEmptyFile(const std::string &path) {
+        std::ofstream file(path);
+        file.close();
+    }
 };
 
 #endif //UTILS_H

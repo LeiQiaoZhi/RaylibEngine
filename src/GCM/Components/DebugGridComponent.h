@@ -29,11 +29,17 @@ public:
 
     void OnDrawGizmosBottom(::Scene *scene) const override;
 
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
 private:
+    // states
     Vector2 size = {10, 10};
     Vector2 spacing = {1, 1};
     Color color = {255, 255, 255, 50};
 
+    // ui
     float editorHeight;
     Vector2Property sizeProperty = Vector2Property(&size, "Size");
     Vector2Property spacingProperty = Vector2Property(&spacing, "Spacing");

@@ -29,6 +29,10 @@ public:
 
     void OnDrawGizmosBottom(::Scene *scene) const override;
 
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
 private:
     Vector3 size = {40, 40, 40};
     Vector3 spacing = {10, 10, 10};
