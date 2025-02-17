@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+#include <sstream>
+
 #include "Components/DebugGridBoxComponent.h"
 #include "Components/DebugGridComponent.h"
 #include "Components/JelloComponent.h"
@@ -200,10 +202,62 @@ void GameObject::TryAddComponent(Component *component, std::string *status_text,
             return;
         }
         transform = dynamic_cast<TransformComponent *>(component);
-    }
-    else {
+    } else {
         AddComponent(component);
         *status_text = "Component added";
         *status_warning = false;
+    }
+}
+
+void GameObject::TryRemoveComponent(Component *component, std::string *status_text, bool *status_warning) {
+    if (typeid(*component) == typeid(TransformComponent)) {
+        if (transform) {
+            *status_text = "Transform component cannot be removed";
+            *status_warning = true;
+            return;
+        }
+        transform = dynamic_cast<TransformComponent *>(component);
+    } else {
+        const auto toRemoveIterator = std::find(components.begin(), components.end(), component);
+        if (toRemoveIterator != components.end()) {
+            // Check if other components depend on this component
+            std::vector<Component *> dependentComponents;
+            for (auto *c: components) {
+                for (const auto &dependency: c->Dependencies()) {
+                    if (std::type_index(typeid(*component)) == dependency) {
+                        dependentComponents.push_back(c);
+                    }
+                }
+            }
+            if (!dependentComponents.empty()) {
+                std::ostringstream oss;
+                oss << "[";
+                for (int i = 0; i < dependentComponents.size(); ++i) {
+                    oss << dependentComponents[i]->headerProperty.label;
+                    if (i < dependentComponents.size() - 1)
+                        oss << ", ";
+                }
+                oss << "] depend on this component";
+                *status_text = oss.str();
+                *status_warning = true;
+                return;
+            }
+
+            component->removed = true;
+            // still need to delete the component at a safe time
+            *status_text = "Component removed";
+            *status_warning = false;
+        } else {
+            *status_text = "Component not found";
+            *status_warning = true;
+        }
+    }
+}
+
+void GameObject::RemoveComponent(Component *component) {
+    const auto toRemoveIterator = std::find(components.begin(), components.end(), component);
+    if (toRemoveIterator != components.end()) {
+        components.erase(toRemoveIterator);
+        delete component;
     }
 }

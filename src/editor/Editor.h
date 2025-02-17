@@ -49,7 +49,7 @@ public:
         return MeasureTextEx(GuiGetFont(), str, TextSize(), 0).x;
     }
 
-    static void DrawStatusInfoBox(Rectangle &rect, const std::string &statusText, const bool isWarning) {
+    static void DrawStatusInfoBox(Rectangle &rect, std::string &statusText, const bool isWarning) {
         if (!statusText.empty()) {
             const int icon = isWarning ? ICON_WARNING : ICON_INFO;
             const char *text = GuiIconText(icon, statusText.c_str());
@@ -57,6 +57,15 @@ public:
             DrawRectangleRec({rect.x, rect.y, rect.width, TextSize() * 1.0f},
                              Fade(ContrastBlackOrWhite(TextColor()), 0.5f));
             GuiLabel({rect.x, rect.y, rect.width, TextSize() * 1.0f}, text);
+
+            const char * cross = GuiIconText(ICON_CROSS_SMALL, "");
+            if (GuiLabelButton(
+                {rect.x + rect.width - TextSize() * 1.0f, rect.y, TextSize() * 1.0f, TextSize() * 1.0f},
+                cross
+                )) {
+                statusText.clear();
+            }
+
             rect.y += TextSize() + SmallGap();
             EndTextColor(originalColor);
         }

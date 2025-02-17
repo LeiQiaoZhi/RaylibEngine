@@ -7,6 +7,9 @@
 void AddComponentProperty::OnEditorGUI(Rectangle &rect) {
     const float originalY = rect.y;
 
+    // status
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
     const float buttonWidth = Editor::TextWidth("Add Component") + Editor::LargeGap();
     Rectangle dropRect = {rect.x, rect.y, rect.width - buttonWidth - Editor::SmallGap(), Editor::TextSize() * 1.5f};
 
@@ -26,8 +29,6 @@ void AddComponentProperty::OnEditorGUI(Rectangle &rect) {
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
-    // status
-    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
     height = rect.y - originalY;
 }

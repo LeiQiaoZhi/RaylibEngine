@@ -39,11 +39,20 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) {
                  }, oss.str().c_str());
         height += textSize + Editor::MediumGap();
 
+        std::vector<Component *> componentsToRemove;
         for (auto *component: selectedGameObject->GetComponents()) {
             GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);
             rect.y += Editor::LargeGap();
             component->OnEditorGUI(rect);
-            height += component->GetEditorHeight() + Editor::LargeGap();
+
+            if (!component->removed) // in case component is removed during this iteration
+                height += component->GetEditorHeight() + Editor::LargeGap();
+            else
+                componentsToRemove.push_back(component);
+        }
+
+        for (auto *component: componentsToRemove) {
+            selectedGameObject->RemoveComponent(component);
         }
 
         GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);

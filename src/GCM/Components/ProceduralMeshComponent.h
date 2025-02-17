@@ -38,6 +38,12 @@ public:
 
     void FromJson(const nlohmann::json &json) override;
 
+    std::vector<std::type_index> Dependencies() override {
+        return {std::type_index(typeid(ModelComponent))};
+    }
+
+public:
+
     enum class MeshType : unsigned int {
         Cube,
         Plane,

@@ -1,5 +1,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
+#include <typeindex>
+
 #include "raylib.h"
 #include "../../editor/ComponentHeaderProperty.h"
 
@@ -39,6 +41,8 @@ public:
 
     virtual void FromJson(const nlohmann::json &json) = 0;
 
+    virtual std::vector<std::type_index> Dependencies() { return {}; }
+
     static std::map<std::string, std::function<Component *()> > &ComponentTypeMap();
 
     static std::vector<std::string> &GetAvailableComponentTypes();
@@ -46,10 +50,12 @@ public:
 public:
     GameObject *gameObject = nullptr;
     bool enabled = true;
+    // need this to prevent error since we are removing components in the middle of GUI iteration
+    bool removed = false;
 
 protected:
     friend class GameObject;
-    ComponentHeaderProperty headerProperty = ComponentHeaderProperty("Component", &enabled);
+    ComponentHeaderProperty headerProperty = ComponentHeaderProperty("Component", &enabled, this);
 };
 
 

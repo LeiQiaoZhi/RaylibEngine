@@ -28,9 +28,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            19.97943687438965,
-                            8.869029998779297,
-                            26.103132247924805
+                            -13.613859176635742,
+                            34.5082893371582,
+                            85.40936279296875
                         ],
                         "cameraTarget": [
                             0.0,
@@ -265,40 +265,6 @@
                         ],
                         "renderType": 0,
                         "type": "ModelComponent"
-                    },
-                    {
-                        "cubeSize": [
-                            10.0,
-                            10.0,
-                            10.0
-                        ],
-                        "cubeWorldSize": [
-                            10.0,
-                            10.0,
-                            10.0
-                        ],
-                        "enabled": true,
-                        "meshType": 0,
-                        "planeSize": [
-                            10.0,
-                            10.0
-                        ],
-                        "planeWorldSize": [
-                            10.0,
-                            10.0
-                        ],
-                        "type": "ProceduralMeshComponent"
-                    },
-                    {
-                        "collisionDamping": 0.25,
-                        "collisionElasticity": 400.0,
-                        "damping": 0.25,
-                        "elasticity": 200.0,
-                        "enabled": true,
-                        "integrationMethod": 0,
-                        "speed": 1.0,
-                        "totalMass": 2.0,
-                        "type": "JelloComponent"
                     }
                 ],
                 "name": "Model",
@@ -335,22 +301,20 @@
                 ],
                 "enabled": false,
                 "size": [
-                    40.0,
-                    40.0,
-                    40.0
+                    100.0,
+                    100.0
                 ],
                 "spacing": [
                     10.0,
-                    10.0,
                     10.0
                 ],
-                "type": "DebugGridBoxComponent"
+                "type": "DebugGridComponent"
             }
         ],
         "name": "Test Scene",
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739742368,
-    "selectedGameObjectUID": 7
+    "saveTime": 1739750223,
+    "selectedGameObjectUID": 1
 }

@@ -115,6 +115,10 @@ public:
 
     void TryAddComponent(Component * component, std::string * status_text, bool * status_warning);
 
+    void TryRemoveComponent(Component * component, std::string * status_text, bool * status_warning);
+
+    void RemoveComponent(Component * component);
+
 protected:
     friend class Scene;
     std::string name;

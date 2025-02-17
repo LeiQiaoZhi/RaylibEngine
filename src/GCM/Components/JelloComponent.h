@@ -36,6 +36,14 @@ public:
 
     void OnDrawGizmosBottom(Scene *scene) const override;
 
+    nlohmann::json ToJson() const override;
+
+    void FromJson(const nlohmann::json &json) override;
+
+    std::vector<std::type_index> Dependencies() override {
+        return {std::type_index(typeid(ModelComponent)), std::type_index(typeid(ProceduralMeshComponent))};
+    }
+
 private:
     void ComputeAcceleration();
 
@@ -73,11 +81,6 @@ private:
                                       const double rest = 0.) const;
 
     void RK4();
-
-public:
-    nlohmann::json ToJson() const override;
-
-    void FromJson(const nlohmann::json &json) override;
 
 private:
     // dependencies

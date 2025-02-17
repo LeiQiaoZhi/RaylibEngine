@@ -13,9 +13,6 @@ void DropdownProperty::OnEditorGUI(Rectangle &rect) {
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
-    // status
-    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
-
     height = rect.y - originalY;
 }
 

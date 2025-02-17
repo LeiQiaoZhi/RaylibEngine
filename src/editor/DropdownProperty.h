@@ -43,9 +43,7 @@ private:
     // UI
     std::string optionsStr;
     float height = 0;
-    std::string statusText = "";
     bool editMode = false;
-    bool statusWarning = false;
 };
 
 
