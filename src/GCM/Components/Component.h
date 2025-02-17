@@ -41,8 +41,11 @@ public:
 
     virtual void FromJson(const nlohmann::json &json) = 0;
 
+    // return a list of component types that this component depends on,
+    // use for safe component removal (only works for same gameobject dependencies)
     virtual std::vector<std::type_index> Dependencies() { return {}; }
 
+    // use for component creation from string
     static std::map<std::string, std::function<Component *()> > &ComponentTypeMap();
 
     static std::vector<std::string> &GetAvailableComponentTypes();

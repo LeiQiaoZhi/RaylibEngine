@@ -8,6 +8,7 @@
 #include "raymath.h"
 #include <nlohmann/json.hpp>
 #include "JsonUtils.h"
+#include "ShaderParam.h"
 
 using json = nlohmann::json;
 
@@ -155,7 +156,7 @@ public:
     }
 
 
-    static Material LoadMaterialFromFile(const char *path) {
+    static Material LoadMaterialFromFile(const char *path, std::vector<ShaderParam> &shaderParams) {
         json j = JsonUtils::JsonFromFile(path);
         Material material = LoadMaterialDefault();
 
@@ -192,7 +193,28 @@ public:
             material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
         }
 
-        // TODO: params
+        //  params
+        shaderParams.clear();
+        for (auto &paramJson: j["Params"]) {
+            ShaderParam param = {};
+            param.name = paramJson["Name"];
+            param.type = StringToShaderUniformDataType(paramJson["Type"]);
+            if (param.type == SHADER_UNIFORM_VEC4) {
+                param.value = Vector4{
+                    paramJson["Value"][0], paramJson["Value"][1],
+                    paramJson["Value"][2], paramJson["Value"][3]
+                };
+            } else if (param.type == SHADER_UNIFORM_VEC3) {
+                param.value = Vector3{paramJson["Value"][0], paramJson["Value"][1], paramJson["Value"][2]};
+            } else if (param.type == SHADER_UNIFORM_VEC2) {
+                param.value = Vector2{paramJson["Value"][0], paramJson["Value"][1]};
+            } else if (param.type == SHADER_UNIFORM_FLOAT) {
+                param.value = paramJson.at("Value").get<float>();
+            } else if (param.type == SHADER_UNIFORM_INT) {
+                param.value = paramJson.at("Value").get<int>();
+            }
+            shaderParams.emplace_back(param);
+        }
 
         return material;
     }
@@ -493,12 +515,22 @@ public:
         if (s == "ANISOTROPIC 16X") return TEXTURE_FILTER_ANISOTROPIC_16X;
     }
 
+    static ShaderUniformDataType StringToShaderUniformDataType(std::string s) {
+        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+        if (s == "FLOAT") return SHADER_UNIFORM_FLOAT;
+        if (s == "VEC2") return SHADER_UNIFORM_VEC2;
+        if (s == "VEC3") return SHADER_UNIFORM_VEC3;
+        if (s == "VEC4") return SHADER_UNIFORM_VEC4;
+        if (s == "INT") return SHADER_UNIFORM_INT;
+        // TODO: add more
+    }
+
     static Model GetArrowModel() {
         static Model model = {0}; // Ensure uninitialized state
         if (model.meshCount == 0) {
             // Load only if model is not initialized
             Mesh arrowHead = GenMeshCone(0.1f, 0.4f, 16);
-            for (int i = 0; i < arrowHead.vertexCount; i ++) {
+            for (int i = 0; i < arrowHead.vertexCount; i++) {
                 arrowHead.vertices[i * 3 + 1] += 0.6f;
             }
             UpdateMeshBuffer(arrowHead, 0, arrowHead.vertices, arrowHead.vertexCount * 3 * sizeof(float), 0);

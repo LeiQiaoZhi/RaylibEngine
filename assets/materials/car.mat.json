@@ -38,10 +38,10 @@
     }
   ],
   "Params": [
-    0,
-    0,
-    0,
-    0
+    {
+      "Name": "iSpecularPower",
+      "Type": "float",
+      "Value": 32.0
+    }
   ]
 }
-

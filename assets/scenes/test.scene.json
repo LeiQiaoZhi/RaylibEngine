@@ -28,9 +28,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            -13.613859176635742,
-                            34.5082893371582,
-                            85.40936279296875
+                            14.033918380737305,
+                            8.353052139282227,
+                            22.7532958984375
                         ],
                         "cameraTarget": [
                             0.0,
@@ -250,7 +250,7 @@
                         "type": "TransformComponent"
                     },
                     {
-                        "drawBounds": false,
+                        "drawBounds": true,
                         "drawSurface": true,
                         "drawWireframe": false,
                         "enabled": true,
@@ -315,6 +315,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739750223,
-    "selectedGameObjectUID": 1
+    "saveTime": 1739770214,
+    "selectedGameObjectUID": 7
 }

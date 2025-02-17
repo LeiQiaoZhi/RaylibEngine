@@ -69,11 +69,39 @@ void MaterialProperty::LoadMaterialFromFile(const char *filename) {
         UnloadMaterial(model->materials[materialIndex]);
 
         const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(filename);
-        model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str());
+        model->materials[materialIndex] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str(), shaderParams);
         statusText = "Material loaded";
         statusWarning = false;
 
         currentMaterialFilename = filename;
+    }
+}
+
+void MaterialProperty::SendParamsToShader() const {
+    const Shader &shader = model->materials[materialIndex].shader;
+    for (ShaderParam param: shaderParams) {
+        const int loc = GetShaderLocation(shader, param.name.c_str());
+        const void *value = nullptr;
+        if (const auto vec = std::get_if<Vector2>(&param.value)) {
+            const float array[2] = {vec->x, vec->y};
+            value = array;
+        }
+        if (const auto vec = std::get_if<Vector3>(&param.value)) {
+            const float array[3] = {vec->x, vec->y, vec->z};
+            value = array;
+        }
+        if (const auto vec = std::get_if<Vector4>(&param.value)) {
+            const float array[4] = {vec->x, vec->y, vec->z, vec->w};
+            value = array;
+        }
+        if (const auto val = std::get_if<float>(&param.value)) {
+            value = val;
+        }
+        if (const auto val = std::get_if<int>(&param.value)) {
+            value = val;
+        }
+        if (value != nullptr)
+            SetShaderValue(shader, loc, value, param.type);
     }
 }
 

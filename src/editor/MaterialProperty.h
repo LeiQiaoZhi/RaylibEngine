@@ -4,6 +4,7 @@
 
 #include "raylib.h"
 #include "../utils/RaylibUtils.h"
+#include "../utils/ShaderParam.h"
 
 
 class MaterialProperty {
@@ -30,6 +31,8 @@ public:
 
     void LoadMaterialFromFile(const char* fullPath);
 
+    void SendParamsToShader() const;
+
     nlohmann::json ToJson() const;
 
     void FromJson(const nlohmann::json &json);
@@ -38,7 +41,8 @@ private:
     Model *model = nullptr;
     char filename[256] = "";
     int materialIndex = 0;
-    std::string currentMaterialFilename = ""; // only change when loaded
+    std::string currentMaterialFilename; // only change when loaded
+    std::vector<ShaderParam> shaderParams;
 
     float height;
     std::string statusText = "";

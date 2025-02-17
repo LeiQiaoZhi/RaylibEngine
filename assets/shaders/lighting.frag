@@ -32,6 +32,8 @@ uniform int lightsCount;
 
 // Other uniforms
 uniform vec3 viewPos;
+uniform float iSpecularPower = 16.0;
+uniform float iSpecularStrength = 0.2;
 
 void main()
 {
@@ -51,7 +53,7 @@ void main()
 
             vec3 toCamera = normalize(viewPos - fragPosition);
             vec3 reflected = reflect(light.direction, fragNormal);
-            float specular = pow(max(dot(toCamera, reflected), 0.0), 16.0) * 0.2;
+            float specular = pow(max(dot(toCamera, reflected), 0.0), iSpecularPower) * iSpecularStrength;
             finalColor.rgb += light.color * light.intensity * specular;
         }
         else if (light.type == LIGHT_POINT) 
