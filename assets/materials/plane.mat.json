@@ -15,6 +15,7 @@
       ]
     },
     {
+      "Enabled": true,
       "Type": 2,
       "Path": "/textures/road_n.png",
       "Color": [
@@ -29,7 +30,7 @@
     {
       "Name": "iSpecularPower",
       "Type": "float",
-      "Value": 50.0
+      "Value": 20.0
     },
     {
       "Name": "iSpecularStrength",

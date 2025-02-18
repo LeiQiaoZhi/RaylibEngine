@@ -171,26 +171,38 @@ public:
 
             // set up locations
             material.shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(material.shader, "viewPos");
+            material.shader.locs[SHADER_LOC_MAP_ALBEDO] = GetShaderLocation(material.shader, "albedoMap");
+            material.shader.locs[SHADER_LOC_COLOR_DIFFUSE] = GetShaderLocation(material.shader, "albedoColor");
+            material.shader.locs[SHADER_LOC_MAP_NORMAL] = GetShaderLocation(material.shader, "normalMap");
         }
 
         // Textures
         auto &mapsArray = j["Maps"];
         for (int i = 0; i < std::min(MAX_MATERIAL_MAPS, static_cast<int>(mapsArray.size())); i++) {
-            auto &map = mapsArray[i];
-            auto &color = map["Color"];
-            const int type = map["Type"];
-            std::string texturePath = ASSET_DIR + std::string(map["Path"]);
+            auto &mapJson = mapsArray[i];
+
+            const int type = mapJson["Type"];
+            std::string texturePath = ASSET_DIR + std::string(mapJson["Path"]);
             material.maps[type].texture = LoadTexture(texturePath.c_str());
-            if (map.contains("Wrap")) {
-                const TextureWrap wrap = StringToTextureWrapEnum(map["Wrap"]);
+
+            if (mapJson.contains("Wrap")) {
+                const TextureWrap wrap = StringToTextureWrapEnum(mapJson["Wrap"]);
                 SetTextureWrap(material.maps[type].texture, wrap);
             }
-            if (map.contains("Filter")) {
-                const TextureFilter filter = StringToTextureFilterEnum(map["Filter"]);
+            if (mapJson.contains("Filter")) {
+                const TextureFilter filter = StringToTextureFilterEnum(mapJson["Filter"]);
                 SetTextureFilter(material.maps[type].texture, filter);
             }
 
+            auto &color = mapJson["Color"];
             material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
+
+            if (type == MATERIAL_MAP_NORMAL) {
+                int loc = GetShaderLocation(material.shader, "useNormalMap");
+                bool useNormalMap = mapJson.value("Enabled", true);
+                int value = useNormalMap ? 1 : 0;
+                SetShaderValue(material.shader, loc, &value, SHADER_UNIFORM_INT);
+            }
         }
 
         //  params

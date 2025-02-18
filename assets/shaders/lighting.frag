@@ -5,10 +5,13 @@ in vec3 fragPosition;
 in vec2 fragTexCoord;
 in vec4 fragColor;
 in vec3 fragNormal;
+in mat3 TBN;
 
 // Input uniform values
-uniform sampler2D texture0;
-uniform vec4 colDiffuse;
+uniform sampler2D albedoMap;
+uniform vec4 albedoColor;
+uniform sampler2D normalMap;
+uniform bool useNormalMap;
 
 // Output fragment color
 out vec4 finalColor;
@@ -37,8 +40,17 @@ uniform float iSpecularStrength = 0.2;
 
 void main()
 {
+    vec2 tiling = vec2(1.0);
+    vec2 uv = vec2(fragTexCoord.x * tiling.x, fragTexCoord.y * tiling.y);
+
     finalColor = vec4(vec3(0.0), 1.0);
-    vec4 baseColor = texture(texture0, fragTexCoord) * colDiffuse;
+    vec4 baseColor = texture(albedoMap, uv) * albedoColor;
+
+    // normal map
+    vec3 normal = useNormalMap 
+        ? normalize(TBN * (texture(normalMap, uv).xyz * 2.0 - 1.0))
+        : fragNormal;
+
     for (int i = 0; i < lightsCount; i++) 
     {
         Light light = lights[i];
@@ -48,11 +60,11 @@ void main()
         }
         else if (light.type == LIGHT_DIRECTION) 
         {
-            float diffuse = max(dot(fragNormal, -light.direction), 0.0);
+            float diffuse = max(dot(normal, -light.direction), 0.0);
             finalColor.rgb += light.color * light.intensity * diffuse * baseColor.rgb;
 
             vec3 toCamera = normalize(viewPos - fragPosition);
-            vec3 reflected = reflect(light.direction, fragNormal);
+            vec3 reflected = reflect(light.direction, normal);
             float specular = pow(max(dot(toCamera, reflected), 0.0), iSpecularPower) * iSpecularStrength;
             finalColor.rgb += light.color * light.intensity * specular;
         }
@@ -63,13 +75,16 @@ void main()
             toLight /= d;
             float attenuation = pow(max(0, 1 - pow(d / light.range, 4)), 2);
 
-            float diffuse = max(dot(fragNormal, toLight), 0.0);
+            float diffuse = max(dot(normal, toLight), 0.0);
             finalColor.rgb += light.color * light.intensity * diffuse * baseColor.rgb * attenuation;
 
             vec3 toCamera = normalize(viewPos - fragPosition);
-            vec3 reflected = reflect(-toLight, fragNormal);
+            vec3 reflected = reflect(-toLight, normal);
             float specular = pow(max(dot(toCamera, reflected), 0.0), 16.0) * 0.2;
             finalColor.rgb += light.color * light.intensity * specular * attenuation;
         }
     }
+
+    // finalColor = vec4(normal, 1.0);
+    // finalColor = vec4(vec3(useNormalMap), 1.0);
 }
