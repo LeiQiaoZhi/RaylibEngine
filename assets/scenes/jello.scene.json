@@ -31,9 +31,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            -68.41715240478516,
-                            16.35956573486328,
-                            51.0930061340332
+                            -71.54949951171875,
+                            28.242595672607422,
+                            40.52233123779297
                         ],
                         "cameraTarget": [
                             0.0,
@@ -224,7 +224,7 @@
                                 "type": "ModelComponent"
                             }
                         ],
-                        "name": "Test Child 3",
+                        "name": "Plane\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
                         "sceneDepth": 2,
                         "uid": 7
                     },
@@ -346,7 +346,7 @@
                         "type": "JelloComponent"
                     }
                 ],
-                "name": "Model",
+                "name": "Jello",
                 "sceneDepth": 1,
                 "uid": 6
             }
@@ -379,7 +379,7 @@
                     255,
                     255,
                     255,
-                    50
+                    15
                 ],
                 "enabled": true,
                 "header": {
@@ -398,10 +398,10 @@
                 "type": "DebugGridBoxComponent"
             }
         ],
-        "name": "Test Scene",
+        "name": "Jello Scene",
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739959675,
-    "selectedGameObjectUID": 6
+    "saveTime": 1739997573,
+    "selectedGameObjectUID": 1
 }

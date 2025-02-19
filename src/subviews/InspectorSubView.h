@@ -14,7 +14,11 @@ public:
 
 private:
     ISubviewRenderer *renderer_;
+
+    // UI
     AddComponentProperty addComponentProperty = AddComponentProperty(nullptr);
+    bool nameEditMode;
+    char nameBuffer[256] = "";
 };
 
 

@@ -123,6 +123,7 @@ public:
 
 protected:
     friend class Scene;
+    friend class InspectorSubView;
     std::string name;
     int uid;
     int sceneDepth = 0;

@@ -15,12 +15,11 @@ InspectorSubView::InspectorSubView(const int width, const int height) {
 void InspectorSubView::Render(Scene &scene, Vector2 position) {
     if (!scene.GetRoot()) return;
     GameObject *selectedGameObject = scene.GetGameObjectByUID(scene.selectedGameObjectUID);
-    const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     const auto topLeft = renderer_->GetContentTopLeft();
     Rectangle rect = {
-        topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap() + textSize,
+        topLeft.x + Editor::MediumGap() + Editor::SmallGap(), topLeft.y + Editor::MediumGap(),
         renderer_->GetContentSize().x - Editor::MediumGap() * 2 - Editor::SmallGap(),
-        renderer_->GetContentSize().y - Editor::MediumGap() - textSize
+        renderer_->GetContentSize().y - Editor::MediumGap()
     };
     float height = rect.y - topLeft.y + Editor::MediumGap();
 
@@ -31,14 +30,27 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) {
 
     renderer_->Begin();
     if (selectedGameObject) {
-        std::ostringstream oss;
-        oss << "Name: " << selectedGameObject->GetName() << " | UID: " << selectedGameObject->GetUID();
-        GuiLabel({
-                     topLeft.x + Editor::MediumGap(), topLeft.y + Editor::MediumGap(),
-                     renderer_->GetContentSize().x, textSize * 1.0f
-                 }, oss.str().c_str());
-        height += textSize + Editor::MediumGap();
+        const float labelWidth = Editor::TextWidth("Name: ") + Editor::MediumGap();
+        const std::string uidString = "UID: " + std::to_string(selectedGameObject->GetUID());
+        const float uidWidth = Editor::TextWidth(uidString.c_str()) + Editor::MediumGap();
+        GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Name: ");
+        Editor::BeginIndent(rect, labelWidth);
+        strncpy(nameBuffer, selectedGameObject->name.c_str(), 255);
+        nameBuffer[255] = '\0';  // Ensure null termination
+        if (GuiTextBox({
+                           rect.x, rect.y, rect.width - uidWidth - Editor::SmallGap(),
+                           Editor::TextSize() * 1.0f
+                       },
+                       &selectedGameObject->name[0], 256, nameEditMode)) {
+            nameEditMode = !nameEditMode;
+            selectedGameObject->name = nameBuffer;
+        }
+        GuiLabel({rect.x + rect.width - uidWidth, rect.y, uidWidth, Editor::TextSize() * 1.0f}, uidString.c_str());
+        Editor::EndIndent(rect, labelWidth);
+        rect.y += Editor::TextSize() + Editor::SmallGap();
 
+
+        // Components
         std::vector<Component *> componentsToRemove;
         for (auto *component: selectedGameObject->GetComponents()) {
             GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);

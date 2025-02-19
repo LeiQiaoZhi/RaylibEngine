@@ -103,13 +103,6 @@ void TransformComponent::Start() {
 }
 
 void TransformComponent::OnDrawGizmos(Scene *scene) const {
-    rlDisableDepthTest();
-    const Vector3 worldPosition = GetWorldPosition();
-    const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
-    const float distToCamera = Vector3Distance(worldPosition, camera->position);
-    const float radius = distToCamera * 0.004f;
-    DrawSphere(worldPosition, radius, RED);
-    rlEnableDepthTest();
 }
 
 void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
@@ -129,6 +122,8 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldRight() * length), RED);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldUp() * length), GREEN);
     DrawLine3D(worldPosition, Vector3Add(worldPosition, GetWorldForward() * length), BLUE);
+    const float radius = distToCamera * 0.004f;
+    DrawSphere(worldPosition, radius, RED);
 
     // Name Label
     EndMode3D();
