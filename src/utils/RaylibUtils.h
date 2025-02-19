@@ -138,6 +138,80 @@ public:
         DrawLine3D(corners[3], corners[7], color);
     }
 
+
+    // Compute model bounding box limits (considers all meshes)
+    static BoundingBox GetModelAABBAfterTransform(const Model &model) {
+        BoundingBox bbox = {0};
+
+        if (model.meshCount > 0) {
+            Vector3 temp = {0};
+            bbox = GetMeshBoundingBox(model.meshes[0]);
+
+            for (int i = 1; i < model.meshCount; i++) {
+                BoundingBox tempBounds = GetMeshBoundingBox(model.meshes[i]);
+
+                temp.x = (bbox.min.x < tempBounds.min.x) ? bbox.min.x : tempBounds.min.x;
+                temp.y = (bbox.min.y < tempBounds.min.y) ? bbox.min.y : tempBounds.min.y;
+                temp.z = (bbox.min.z < tempBounds.min.z) ? bbox.min.z : tempBounds.min.z;
+                bbox.min = temp;
+
+                temp.x = (bbox.max.x > tempBounds.max.x) ? bbox.max.x : tempBounds.max.x;
+                temp.y = (bbox.max.y > tempBounds.max.y) ? bbox.max.y : tempBounds.max.y;
+                temp.z = (bbox.max.z > tempBounds.max.z) ? bbox.max.z : tempBounds.max.z;
+                bbox.max = temp;
+            }
+        }
+
+        Vector3 corners[8] = {
+            {bbox.min.x, bbox.min.y, bbox.min.z},
+            {bbox.min.x, bbox.min.y, bbox.max.z},
+            {bbox.min.x, bbox.max.y, bbox.min.z},
+            {bbox.min.x, bbox.max.y, bbox.max.z},
+            {bbox.max.x, bbox.min.y, bbox.min.z},
+            {bbox.max.x, bbox.min.y, bbox.max.z},
+            {bbox.max.x, bbox.max.y, bbox.min.z},
+            {bbox.max.x, bbox.max.y, bbox.max.z}
+        };
+
+        // Apply transformation to all corners
+        for (int i = 0; i < 8; i++) {
+            corners[i] = Vector3Transform(corners[i], model.transform);
+        }
+
+        // Get new AABB limits
+        BoundingBox result = {corners[0], corners[0]};
+        for (int i = 1; i < 8; i++) {
+            result.min.x = fminf(result.min.x, corners[i].x);
+            result.min.y = fminf(result.min.y, corners[i].y);
+            result.min.z = fminf(result.min.z, corners[i].z);
+            result.max.x = fmaxf(result.max.x, corners[i].x);
+            result.max.y = fmaxf(result.max.y, corners[i].y);
+            result.max.z = fmaxf(result.max.z, corners[i].z);
+        }
+
+        return result;
+    }
+
+    static RayCollision GetRayCollisionModel(const Ray &ray, const Model &model) {
+        RayCollision result = {0};
+        // check AABB
+        const BoundingBox aabb = GetModelAABBAfterTransform(model);
+        RayCollision aabbCollision = GetRayCollisionBox(ray, aabb);
+
+        if (!aabbCollision.hit) return result;
+
+        // check all meshes, return closest
+        for (int i = 0; i < model.meshCount; i++) {
+            const Mesh mesh = model.meshes[i];
+            RayCollision meshCollision = GetRayCollisionMesh(ray, mesh, model.transform);
+            if (meshCollision.hit) {
+                if (!result.hit || meshCollision.distance < result.distance)
+                    result = meshCollision;
+            }
+        }
+        return result;
+    }
+
     static std::string MaterialMapTypeToString(const int i) {
         switch (i) {
             case MATERIAL_MAP_ALBEDO: return "Albedo";

@@ -42,8 +42,17 @@ public:
 
     void Load(const char* data);
 
+    Vector2 GlobalToLocalScreenSpace(const Vector2 &position) const {
+        return Vector2{position.x - screenSpaceRect.x, position.y - screenSpaceRect.y};
+    }
+
+    Vector2 LocalToGlobalScreenSpace(const Vector2 &position) const {
+        return Vector2{position.x + screenSpaceRect.x, position.y + screenSpaceRect.y};
+    }
+
     std::string name;
     int selectedGameObjectUID = -1;
+    Rectangle screenSpaceRect = {0, 0, 0, 0};
 
 private:
     GameObject *root = nullptr;

@@ -1,7 +1,3 @@
-//
-// Created by Qiaozhi Lei on 2/6/25.
-//
-
 #ifndef HIERARCHYSUBVIEW_H
 #define HIERARCHYSUBVIEW_H
 #include "ISubviewRenderer.h"
@@ -16,7 +12,7 @@ public:
 
 private:
     ISubviewRenderer *renderer_;
-    char sceneFilename[32] = "test.scene.json";
+    char sceneFilename[32] = "jello.scene.json";
     bool editMode;
     std::string statusText;
     bool statusWarning;

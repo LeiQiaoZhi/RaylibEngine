@@ -8,14 +8,15 @@
 #include "Components/ModelComponent.h"
 #include "Components/ProceduralMeshComponent.h"
 
-GameObject::GameObject(nlohmann::json j) {
+GameObject::GameObject(nlohmann::json j, Scene *scene) {
+    this->scene = scene;
     name = j["name"];
     uid = j["uid"];
     sceneDepth = j["sceneDepth"];
 
     // children
     for (const auto &childJson: j["children"]) {
-        AddChild(new GameObject(childJson));
+        AddChild(new GameObject(childJson, scene));
     }
 
     // components

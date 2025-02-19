@@ -15,7 +15,7 @@ public:
         AddComponent(transform);
     }
 
-    explicit GameObject(nlohmann::json j);
+    explicit GameObject(nlohmann::json j, Scene *scene);
 
     ~GameObject();
 
@@ -113,11 +113,13 @@ public:
 
     nlohmann::json ToJson() const;
 
-    void TryAddComponent(Component * component, std::string * status_text, bool * status_warning);
+    void TryAddComponent(Component *component, std::string *status_text, bool *status_warning);
 
-    void TryRemoveComponent(Component * component, std::string * status_text, bool * status_warning);
+    void TryRemoveComponent(Component *component, std::string *status_text, bool *status_warning);
 
-    void RemoveComponent(Component * component);
+    void RemoveComponent(Component *component);
+
+    Scene *scene = nullptr;
 
 protected:
     friend class Scene;
@@ -125,7 +127,6 @@ protected:
     int uid;
     int sceneDepth = 0;
 
-    Scene *scene = nullptr;
     GameObject *parent = nullptr;
     TransformComponent *transform;
     std::vector<GameObject *> children = {};

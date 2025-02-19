@@ -117,7 +117,7 @@ void Scene::Load(const char *path) {
     nlohmann::json j = JsonUtils::JsonFromFile(path);
     name = j["name"];
     selectedGameObjectUID = j["selectedGameObjectUID"];
-    root = new GameObject(j["root"]);
+    root = new GameObject(j["root"], this);
 
     // initialize scene
     StartComponents();

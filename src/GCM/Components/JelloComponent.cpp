@@ -7,6 +7,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "rcamera.h"
 #include "../../editor/Editor.h"
 #include "../../GCM/GameObject.h"
 #include "../../utils/MathUtils.h"
@@ -28,6 +29,11 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
 
     massProperty.OnEditorGUI(rect);
     speedProperty.OnEditorGUI(rect);
+    dragStrengthProperty.OnEditorGUI(rect);
+    elasticityProperty.OnEditorGUI(rect);
+    dampingProperty.OnEditorGUI(rect);
+    collisionElasticityProperty.OnEditorGUI(rect);
+    collisionDampingProperty.OnEditorGUI(rect);
 
     int *integrationMethodPtr = reinterpret_cast<int *>(&integrationMethod);
     GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f}, "RK4;Euler", integrationMethodPtr);
@@ -82,6 +88,14 @@ void JelloComponent::OnDraw(Scene *scene) const {
 }
 
 void JelloComponent::OnDrawGizmos(Scene *scene) const {
+    EndMode3D();
+    dragState.OnDrawGizmos(this);
+    BeginMode3D(*scene->GetMainCamera()->GetRaylibCamera());
+
+    if (collision.hit) {
+        DrawSphere(collision.point, 1.0f, RED);
+        DrawLine3D(collision.point, collision.point + collision.normal * 10.0f, YELLOW);
+    }
 }
 
 void JelloComponent::OnDrawGizmosSelected(Scene *scene) const {
@@ -105,6 +119,18 @@ void JelloComponent::Start() {
 void JelloComponent::Update() {
     if (!started) return;
 
+    dragState.Update();
+
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        const Vector2 mousePosition = gameObject->scene->GlobalToLocalScreenSpace(GetMousePosition());
+        const Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
+        const float width = gameObject->scene->screenSpaceRect.width;
+        const float height = gameObject->scene->screenSpaceRect.height;
+        const Ray ray = GetScreenToWorldRayEx(mousePosition, *camera, width, height);
+        collision = RaylibUtils::GetRayCollisionModel(ray, *modelComponent->model);
+        std::cout << collision.hit << std::endl;
+    }
+
     if (integrationMethod == IntegrationMethod::RK4) {
         RK4();
     } else {
@@ -121,18 +147,27 @@ void JelloComponent::ComputeAcceleration() {
         static_cast<int>(proceduralMeshComponent->cubeSize.y),
         static_cast<int>(proceduralMeshComponent->cubeSize.z)
     };
+
+    Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
+    const Vector3 up = GetCameraUp(camera);
+    const Vector3 right = GetCameraRight(camera);
+    const Vector2 dragScreenDir = dragState.endDragPosition - dragState.startDragPosition;
+    const Vector3 dragDir = right * dragScreenDir.x + up * -dragScreenDir.y;
+
     for (int i = 0; i < vertexCounts[0]; i++)
         for (int j = 0; j < vertexCounts[1]; j++)
             for (int k = 0; k < vertexCounts[2]; k++) {
                 accelerations[i][j][k] = {0, 0, 0};
+
+                // external input
+                if (dragState.JustFinishedDragging()) {
+                    accelerations[i][j][k] += dragDir * 500 * dragStrength;
+                }
+
                 // gravity
                 accelerations[i][j][k].y -= 1000;
                 // air resistance
                 accelerations[i][j][k].y -= 10 * velocities[i][j][k].y;
-                // Vector3 externalForce = jello->forceField[
-                //     i * jello->resolution * jello->resolution + j * jello->resolution + k];
-                // Vector3 externalAcc = externalForce / jello->mass;
-                // accelerations[i][j][k] = accelerations[i][j][k] + externalAcc;
 
                 Vector3 current_local = {static_cast<float>(i), static_cast<float>(j), static_cast<float>(k)};
                 Vector3 neighbour_local;
@@ -371,17 +406,20 @@ nlohmann::json JelloComponent::ToJson() const {
     j["collisionElasticity"] = collisionElasticity;
     j["collisionDamping"] = collisionDamping;
     j["speed"] = speed;
+    j["dragStrength"] = dragStrength;
     return j;
 }
 
 void JelloComponent::FromJson(const nlohmann::json &json) {
-    integrationMethod = static_cast<IntegrationMethod>(json.value("integrationMethod", static_cast<int>(integrationMethod)));
+    integrationMethod = static_cast<IntegrationMethod>(json.value("integrationMethod",
+                                                                  static_cast<int>(integrationMethod)));
     totalMass = json.value("totalMass", totalMass);
     elasticity = json.value("elasticity", elasticity);
     damping = json.value("damping", damping);
     collisionElasticity = json.value("collisionElasticity", collisionElasticity);
     collisionDamping = json.value("collisionDamping", collisionDamping);
     speed = json.value("speed", speed);
+    dragStrength = json.value("dragStrength", dragStrength);
 }
 
 

@@ -13,6 +13,7 @@
 #include "../../editor/FoldoutProperty.h"
 #include "../../editor/SingleValueProperty.h"
 #include "../../editor/VectorProperty.h"
+#include "../../input/MouseDragState.h"
 
 class JelloComponent final : public Component {
 public:
@@ -106,6 +107,11 @@ private:
     float collisionElasticity = 400;
     float collisionDamping = 0.25;
     float speed = 1.0f;
+    float dragStrength = 0.5;
+
+    // interaction states
+    MouseDragState dragState;
+    RayCollision collision;
 
     // ui
     std::string statusText;
@@ -114,6 +120,11 @@ private:
     FoldoutProperty debugFoldout = FoldoutProperty("Debug", true);
     FloatSlider massProperty = FloatSlider(&totalMass, "Total Mass", 0, 10);
     FloatSlider speedProperty = FloatSlider(&speed, "Speed", 0, 2);
+    FloatSlider elasticityProperty = FloatSlider(&elasticity, "Elasticity", 0, 1000);
+    FloatSlider dampingProperty = FloatSlider(&damping, "Damping", 0, 1);
+    FloatSlider collisionElasticityProperty = FloatSlider(&collisionElasticity, "Col Elasticity", 0, 1000);
+    FloatSlider collisionDampingProperty = FloatSlider(&collisionDamping, "Col Damping", 0, 1);
+    FloatSlider dragStrengthProperty = FloatSlider(&dragStrength, "Drag Strength", 0, 1);
 
     // rk4 states
     Matrix3D k1PositionChanges;
