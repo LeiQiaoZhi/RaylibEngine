@@ -31,9 +31,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            -60.13717269897461,
-                            16.12561798095703,
-                            57.303226470947266
+                            61.04404830932617,
+                            4.690981864929199,
+                            -58.4105110168457
                         ],
                         "cameraTarget": [
                             0.0,
@@ -94,7 +94,7 @@
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 0.2771884500980377,
+                                "intensity": 0.3205978572368622,
                                 "lightType": 0,
                                 "range": 22.817020416259766,
                                 "type": "LightComponent"
@@ -140,7 +140,7 @@
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.356170892715454,
+                                "intensity": 0.7830954194068909,
                                 "lightType": 1,
                                 "range": 10.0,
                                 "type": "LightComponent"
@@ -296,13 +296,13 @@
                                     10.0
                                 ],
                                 "sphereRadius": 1.0,
-                                "sphereRings": 16,
-                                "sphereSlices": 16,
+                                "sphereRings": 26,
+                                "sphereSlices": 26,
                                 "type": "ProceduralMeshComponent"
                             },
                             {
                                 "color": [
-                                    229,
+                                    228,
                                     139,
                                     255,
                                     255
@@ -311,9 +311,9 @@
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.38064444065094,
+                                "intensity": 0.9442282319068909,
                                 "lightType": 2,
-                                "range": 39.08750534057617,
+                                "range": 32.49570846557617,
                                 "type": "LightComponent"
                             }
                         ],
@@ -469,6 +469,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740004470,
-    "selectedGameObjectUID": 6
+    "saveTime": 1740008879,
+    "selectedGameObjectUID": 4
 }

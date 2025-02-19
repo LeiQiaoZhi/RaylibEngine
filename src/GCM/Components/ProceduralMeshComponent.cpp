@@ -25,6 +25,7 @@ void ProceduralMeshComponent::OnEditorGUI(Rectangle &rect) {
                 &createOnStart);
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
+    std::cout << "meshType: " << static_cast<int>(meshType) << std::endl;
     if (meshType == MeshType::Cube) {
         sizeProperty.OnEditorGUI(rect);
         worldSizeProperty.OnEditorGUI(rect);
@@ -32,9 +33,9 @@ void ProceduralMeshComponent::OnEditorGUI(Rectangle &rect) {
         planeSizeProperty.OnEditorGUI(rect);
         planeWorldSizeProperty.OnEditorGUI(rect);
     } else if (meshType == MeshType::Sphere) {
-        // sphereRadiusProperty.OnEditorGUI(rect);
-        // sphereRingsProperty.OnEditorGUI(rect);
-        // sphereSlicesProperty.OnEditorGUI(rect);
+        sphereRadiusProperty.OnEditorGUI(rect);
+        sphereRingsProperty.OnEditorGUI(rect);
+        sphereSlicesProperty.OnEditorGUI(rect);
     }
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Create Mesh")) {

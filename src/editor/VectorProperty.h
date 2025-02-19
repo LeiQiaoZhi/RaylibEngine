@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include "../utils/RaylibUtils.h"
 #include <cstdio>
+#include <cmath>
 #include "Editor.h"
 
 // Generic vector property editor for Vector2 or Vector3

@@ -6,7 +6,7 @@
 #include <string>
 
 #include "ModelComponent.h"
-// #include "../../editor/SingleValueProperty.h"
+#include "../../editor/SingleValueProperty.h"
 #include "../../editor/VectorProperty.h"
 
 class ProceduralMeshComponent final : public Component {
@@ -42,7 +42,6 @@ public:
     }
 
 public:
-
     enum class MeshType : unsigned int {
         Cube,
         Plane,
@@ -69,9 +68,9 @@ private:
     float sphereRadius = 1;
     int sphereRings = 16;
     int sphereSlices = 16;
-    // FloatSlider sphereRadiusProperty = FloatSlider(&sphereRadius, "Radius", 0, 100);
-    // IntSlider sphereRingsProperty = IntSlider(&sphereRings, "Rings", 0, 100);
-    // IntSlider sphereSlicesProperty = IntSlider(&sphereSlices, "Slices", 0, 100);
+    FloatSlider sphereRadiusProperty = FloatSlider(&sphereRadius, "Radius", 0, 100);
+    IntSlider sphereRingsProperty = IntSlider(&sphereRings, "Rings", 0, 100);
+    IntSlider sphereSlicesProperty = IntSlider(&sphereSlices, "Slices", 0, 100);
 
     std::string statusText;
     bool statusWarning = false;

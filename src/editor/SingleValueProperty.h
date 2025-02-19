@@ -34,22 +34,20 @@ public:
 
         Editor::BeginIndent(rect, labelWidth);
         const Rectangle positionRect = {rect.x, rect.y, rect.width / 3 - Editor::SmallGap(), Editor::TextSize() * 1.0f};
-        if constexpr (isInt) {
-            if (GuiValueBox(positionRect, nullptr, valueBoxTextValue, value, editMode)) {
-                editMode = !editMode;
-            }
-        } else {
-            if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValue, value, editMode)) {
-                editMode = !editMode;
-            }
+        float floatValue = static_cast<float>(*value);
+        if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValue, &floatValue, editMode)) {
+            editMode = !editMode;
+            *value = static_cast<int>(floatValue);
         }
+
         if constexpr (hasSlider) {
             if (GuiSlider({
                               rect.x + rect.width / 3 + Editor::SmallGap(), rect.y,
                               rect.width * 2 / 3 - Editor::SmallGap() * 2,
                               Editor::TextSize() * 1.0f
                           },
-                          nullptr, nullptr, value, minValue, maxValue)) {
+                          nullptr, nullptr, &floatValue, minValue, maxValue)) {
+                *value = static_cast<T>(floatValue);
                 SetValueBoxText();
             }
         }
