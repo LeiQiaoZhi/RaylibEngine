@@ -31,9 +31,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            -71.54949951171875,
-                            28.242595672607422,
-                            40.52233123779297
+                            -60.13717269897461,
+                            16.12561798095703,
+                            57.303226470947266
                         ],
                         "cameraTarget": [
                             0.0,
@@ -110,8 +110,8 @@
                             {
                                 "enabled": true,
                                 "eulerAngles": [
-                                    0.5,
-                                    -0.5,
+                                    1.0,
+                                    1.0,
                                     0.0
                                 ],
                                 "header": {
@@ -131,16 +131,16 @@
                             },
                             {
                                 "color": [
+                                    208,
                                     255,
-                                    255,
-                                    255,
+                                    251,
                                     255
                                 ],
                                 "enabled": true,
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.1082193851470947,
+                                "intensity": 1.356170892715454,
                                 "lightType": 1,
                                 "range": 10.0,
                                 "type": "LightComponent"
@@ -242,19 +242,82 @@
                                     "folded": false
                                 },
                                 "position": [
-                                    0.0,
-                                    0.0,
-                                    0.0
+                                    10.0,
+                                    -10.0,
+                                    10.0
                                 ],
                                 "scale": [
-                                    1.0,
-                                    1.0,
-                                    1.0
+                                    5.0,
+                                    5.0,
+                                    5.0
                                 ],
                                 "type": "TransformComponent"
+                            },
+                            {
+                                "drawBounds": true,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": true,
+                                "filename": "",
+                                "header": {
+                                    "folded": true
+                                },
+                                "materials": [
+                                    {
+                                        "path": ""
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
+                            },
+                            {
+                                "createOnStart": true,
+                                "cubeSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "cubeWorldSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
+                                "meshType": 2,
+                                "planeSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "planeWorldSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "sphereRadius": 1.0,
+                                "sphereRings": 16,
+                                "sphereSlices": 16,
+                                "type": "ProceduralMeshComponent"
+                            },
+                            {
+                                "color": [
+                                    229,
+                                    139,
+                                    255,
+                                    255
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
+                                "intensity": 1.38064444065094,
+                                "lightType": 2,
+                                "range": 39.08750534057617,
+                                "type": "LightComponent"
                             }
                         ],
-                        "name": "Test Child 4",
+                        "name": "Sphere",
                         "sceneDepth": 2,
                         "uid": 8
                     }
@@ -300,6 +363,7 @@
                         "type": "ModelComponent"
                     },
                     {
+                        "createOnStart": false,
                         "cubeSize": [
                             10.0,
                             10.0,
@@ -323,6 +387,9 @@
                             10.0,
                             10.0
                         ],
+                        "sphereRadius": 1.0,
+                        "sphereRings": 16,
+                        "sphereSlices": 16,
                         "type": "ProceduralMeshComponent"
                     },
                     {
@@ -337,11 +404,11 @@
                             "folded": false
                         },
                         "integrationMethod": 0,
-                        "interaction": 1,
+                        "interaction": 0,
                         "material": {
                             "path": "jello.mat.json"
                         },
-                        "speed": 0.5497331023216248,
+                        "speed": 0.2691977024078369,
                         "totalMass": 2.0,
                         "type": "JelloComponent"
                     }
@@ -402,6 +469,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739997573,
-    "selectedGameObjectUID": 1
+    "saveTime": 1740004470,
+    "selectedGameObjectUID": 6
 }

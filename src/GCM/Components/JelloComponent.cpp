@@ -234,17 +234,24 @@ void JelloComponent::ComputeAcceleration() {
                 }
 
                 // collision
+                const Vector3 self_world = LocalToWorld(&current_local);
+                const Vector3 relative_vel = VelocityFromLocal(&current_local);
                 for (int p = 0; p < 6; p++) {
                     Plane bounding_box_plane = bounding_box_planes[p];
-                    Vector3 self_world = LocalToWorld(&current_local);
                     const double dist = bounding_box_plane.distanceWithSign(self_world);
                     // collision
                     if (dist > 0) {
                         Vector3 contact = bounding_box_plane.closestPoint(self_world);
-                        const Vector3 relative_vel = VelocityFromLocal(&current_local);
                         const Vector3 acc = AccelerationFromCollision(&self_world, &contact, relative_vel);
                         accelerations[i][j][k] += acc;
                     }
+                }
+                const double dist = sphere.distanceWithSign(self_world);
+                if (dist < 0) {
+                    std::cout << "collision with sphere" << std::endl;
+                    Vector3 contact = sphere.closestPoint(self_world);
+                    const Vector3 acc = AccelerationFromCollision(&self_world, &contact, relative_vel);
+                    accelerations[i][j][k] += acc;
                 }
             }
 }

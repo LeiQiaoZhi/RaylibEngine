@@ -10,6 +10,7 @@
 #include "../../utils/MathUtils.h"
 #include "../../utils/PhysicsUtils.h"
 #include "../../utils/Plane.h"
+#include "../../utils/Sphere.h"
 #include "../../editor/FoldoutProperty.h"
 #include "../../editor/SingleValueProperty.h"
 #include "../../editor/VectorProperty.h"
@@ -93,6 +94,7 @@ private:
         RK4,
         Euler
     };
+
     enum class Interaction {
         GlobalImpulse,
         LocalImpulse,
@@ -194,6 +196,8 @@ private:
     const Plane bounding_box_planes[6] = {
         bounding_box_top, bounding_box_bot, bounding_box_left, bounding_box_right, bounding_box_front, bounding_box_back
     };
+
+    const Sphere sphere = Sphere({10, -10, 10}, 5);
 };
 
 

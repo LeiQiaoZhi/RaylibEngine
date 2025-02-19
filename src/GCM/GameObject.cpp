@@ -84,6 +84,8 @@ int GameObject::RecursiveChildCount() const {
 void GameObject::AddComponent(Component *component) {
     component->gameObject = this;
     components.push_back(component);
+
+    component->Start();
 }
 
 void GameObject::UpdateComponents() const {
