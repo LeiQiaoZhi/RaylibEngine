@@ -70,7 +70,7 @@ public:
 private:
     std::string label;
     T *value = nullptr;
-    bool editMode;
+    bool editMode = false;
     char valueBoxTextValue[32] = {0}; // For storing text representation of each component
     T minValue;
     T maxValue;

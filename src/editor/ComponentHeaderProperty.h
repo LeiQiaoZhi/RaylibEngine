@@ -19,6 +19,10 @@ public:
 
     bool IsFolded() const;
 
+    nlohmann::json ToJson() const;
+
+    void FromJson(const nlohmann::json &json);
+
 public:
     std::string label;
 

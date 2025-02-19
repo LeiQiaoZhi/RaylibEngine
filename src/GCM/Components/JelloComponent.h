@@ -93,6 +93,10 @@ private:
         RK4,
         Euler
     };
+    enum class Interaction {
+        GlobalImpulse,
+        LocalImpulse,
+    };
 
     bool started = false;
     Matrix3D accelerations;
@@ -108,10 +112,15 @@ private:
     float collisionDamping = 0.25;
     float speed = 1.0f;
     float dragStrength = 0.5;
+    float dragStrengthDecay = 0.1;
 
     // interaction states
+    Interaction interaction = Interaction::LocalImpulse;
+    bool pointJustSelected = false;
+    Vector3 nearestPointLocal;
     MouseDragState dragState;
-    RayCollision collision;
+    Vector3 dragDir;
+    RayCollision selection = {0};
 
     // ui
     std::string statusText;
@@ -125,6 +134,7 @@ private:
     FloatSlider collisionElasticityProperty = FloatSlider(&collisionElasticity, "Col Elasticity", 0, 1000);
     FloatSlider collisionDampingProperty = FloatSlider(&collisionDamping, "Col Damping", 0, 1);
     FloatSlider dragStrengthProperty = FloatSlider(&dragStrength, "Drag Strength", 0, 1);
+    FloatSlider dragStrengthDecayProperty = FloatSlider(&dragStrengthDecay, "Drag Decay", 0, 1);
 
     // rk4 states
     Matrix3D k1PositionChanges;

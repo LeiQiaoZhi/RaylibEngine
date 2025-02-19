@@ -12,6 +12,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": false
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -28,9 +31,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            35.88670349121094,
-                            35.14939880371094,
-                            80.90540313720703
+                            -0.2287137657403946,
+                            5.651368618011475,
+                            95.06329345703125
                         ],
                         "cameraTarget": [
                             0.0,
@@ -43,6 +46,9 @@
                             0.0
                         ],
                         "enabled": true,
+                        "header": {
+                            "folded": false
+                        },
                         "type": "CameraComponent"
                     }
                 ],
@@ -62,6 +68,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -82,6 +91,9 @@
                                     0
                                 ],
                                 "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
                                 "intensity": 1.0,
                                 "lightType": 0,
                                 "range": 10.0,
@@ -102,6 +114,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -122,6 +137,9 @@
                                     0
                                 ],
                                 "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
                                 "intensity": 1.0,
                                 "lightType": 0,
                                 "range": 10.0,
@@ -141,6 +159,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": false
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -170,6 +191,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -197,6 +221,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -223,6 +250,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": true
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -241,7 +271,14 @@
                         "drawWireframe": true,
                         "enabled": true,
                         "filename": "",
-                        "materials": [],
+                        "header": {
+                            "folded": true
+                        },
+                        "materials": [
+                            {
+                                "path": ""
+                            }
+                        ],
                         "renderType": 0,
                         "type": "ModelComponent"
                     },
@@ -257,6 +294,9 @@
                             10.0
                         ],
                         "enabled": true,
+                        "header": {
+                            "folded": true
+                        },
                         "meshType": 0,
                         "planeSize": [
                             10.0,
@@ -272,9 +312,15 @@
                         "collisionDamping": 0.25,
                         "collisionElasticity": 400.0,
                         "damping": 0.25,
+                        "dragStrength": 0.5,
+                        "dragStrengthDecay": 0.16471746563911438,
                         "elasticity": 200.0,
                         "enabled": true,
+                        "header": {
+                            "folded": false
+                        },
                         "integrationMethod": 1,
+                        "interaction": 1,
                         "speed": 0.5497331023216248,
                         "totalMass": 2.0,
                         "type": "JelloComponent"
@@ -293,6 +339,9 @@
                     0.0,
                     0.0
                 ],
+                "header": {
+                    "folded": false
+                },
                 "position": [
                     0.0,
                     0.0,
@@ -313,6 +362,9 @@
                     50
                 ],
                 "enabled": true,
+                "header": {
+                    "folded": false
+                },
                 "size": [
                     40.0,
                     40.0,
@@ -330,6 +382,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739938834,
+    "saveTime": 1739953599,
     "selectedGameObjectUID": 6
 }

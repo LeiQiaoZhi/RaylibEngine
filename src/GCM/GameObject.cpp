@@ -43,6 +43,8 @@ GameObject::GameObject(nlohmann::json j, Scene *scene) {
         }
         if (component) {
             component->enabled = componentJson["enabled"];
+            if (componentJson.contains("header"))
+                component->headerProperty.FromJson(componentJson["header"]);
             component->FromJson(componentJson);
             AddComponent(component);
         }
@@ -186,6 +188,7 @@ nlohmann::json GameObject::ToJson() const {
     for (const auto *component: components) {
         nlohmann::json componentJson = component->ToJson();
         componentJson["enabled"] = component->enabled;
+        componentJson["header"] = component->headerProperty.ToJson();
         componentsJson.emplace_back(componentJson);
     }
 

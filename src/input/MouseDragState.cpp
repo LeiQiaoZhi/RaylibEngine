@@ -27,5 +27,5 @@ void MouseDragState::OnDrawGizmos(const Component *component) const {
     const Scene *scene = component->gameObject->scene;
     const Vector2 start = scene->GlobalToLocalScreenSpace(startDragPosition);
     const Vector2 current = scene->GlobalToLocalScreenSpace(GetMousePosition());
-    DrawLineV(start, current, RED);
+    DrawLineV(start, current, YELLOW);
 }

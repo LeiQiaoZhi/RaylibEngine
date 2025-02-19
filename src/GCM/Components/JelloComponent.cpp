@@ -29,14 +29,21 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
 
     massProperty.OnEditorGUI(rect);
     speedProperty.OnEditorGUI(rect);
-    dragStrengthProperty.OnEditorGUI(rect);
     elasticityProperty.OnEditorGUI(rect);
     dampingProperty.OnEditorGUI(rect);
     collisionElasticityProperty.OnEditorGUI(rect);
     collisionDampingProperty.OnEditorGUI(rect);
+    dragStrengthProperty.OnEditorGUI(rect);
+    dragStrengthDecayProperty.OnEditorGUI(rect);
 
     int *integrationMethodPtr = reinterpret_cast<int *>(&integrationMethod);
-    GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f}, "RK4;Euler", integrationMethodPtr);
+    GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f},
+                   "RK4;Euler", integrationMethodPtr);
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
+    int *interactionPtr = reinterpret_cast<int *>(&interaction);
+    GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f},
+                   "Global;Local", interactionPtr);
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     const char *buttonText = started ? "Restart" : "Start";
@@ -88,13 +95,16 @@ void JelloComponent::OnDraw(Scene *scene) const {
 }
 
 void JelloComponent::OnDrawGizmos(Scene *scene) const {
-    EndMode3D();
-    dragState.OnDrawGizmos(this);
-    BeginMode3D(*scene->GetMainCamera()->GetRaylibCamera());
+    if (interaction == Interaction::GlobalImpulse) {
+        EndMode3D();
+        dragState.OnDrawGizmos(this);
+        BeginMode3D(*scene->GetMainCamera()->GetRaylibCamera());
+    }
 
-    if (collision.hit) {
-        DrawSphere(collision.point, 1.0f, RED);
-        DrawLine3D(collision.point, collision.point + collision.normal * 10.0f, YELLOW);
+    if (interaction == Interaction::LocalImpulse && selection.hit && dragState.isDragging) {
+        const Vector3 selectionPos = LocalToWorld(&nearestPointLocal);
+        DrawSphere(selectionPos, 0.5f, YELLOW);
+        DrawLine3D(selectionPos, selectionPos + dragDir * 0.05f, YELLOW);
     }
 }
 
@@ -121,16 +131,26 @@ void JelloComponent::Update() {
 
     dragState.Update();
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
+    if (interaction == Interaction::LocalImpulse && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         const Vector2 mousePosition = gameObject->scene->GlobalToLocalScreenSpace(GetMousePosition());
-        const Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
         const float width = gameObject->scene->screenSpaceRect.width;
         const float height = gameObject->scene->screenSpaceRect.height;
         const Ray ray = GetScreenToWorldRayEx(mousePosition, *camera, width, height);
-        collision = RaylibUtils::GetRayCollisionModel(ray, *modelComponent->model);
-        std::cout << collision.hit << std::endl;
+        selection = RaylibUtils::GetRayCollisionModel(ray, *modelComponent->model);
+        pointJustSelected = selection.hit;
+        std::cout << selection.hit << std::endl;
+    } else {
+        pointJustSelected = false;
     }
 
+    // compute drag direction
+    const Vector3 up = GetCameraUp(camera);
+    const Vector3 right = GetCameraRight(camera);
+    const Vector2 dragScreenDir = GetMousePosition() - dragState.startDragPosition;
+    dragDir = right * dragScreenDir.x + up * -dragScreenDir.y;
+
+    // physics
     if (integrationMethod == IntegrationMethod::RK4) {
         RK4();
     } else {
@@ -148,20 +168,27 @@ void JelloComponent::ComputeAcceleration() {
         static_cast<int>(proceduralMeshComponent->cubeSize.z)
     };
 
-    Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
-    const Vector3 up = GetCameraUp(camera);
-    const Vector3 right = GetCameraRight(camera);
-    const Vector2 dragScreenDir = dragState.endDragPosition - dragState.startDragPosition;
-    const Vector3 dragDir = right * dragScreenDir.x + up * -dragScreenDir.y;
-
+    float minDistanceToSelection = 1000000;
     for (int i = 0; i < vertexCounts[0]; i++)
         for (int j = 0; j < vertexCounts[1]; j++)
             for (int k = 0; k < vertexCounts[2]; k++) {
                 accelerations[i][j][k] = {0, 0, 0};
 
                 // external input
-                if (dragState.JustFinishedDragging()) {
-                    accelerations[i][j][k] += dragDir * 500 * dragStrength;
+                if (interaction == Interaction::GlobalImpulse && dragState.JustFinishedDragging()) {
+                    accelerations[i][j][k] += dragDir * 100 * dragStrength / GetFrameTime();
+                }
+                if (interaction == Interaction::LocalImpulse && pointJustSelected) {
+                    const float d = Vector3DistanceSqr(selection.point, positions[i][j][k]);
+                    if (d < minDistanceToSelection) {
+                        minDistanceToSelection = d;
+                        nearestPointLocal = {static_cast<float>(i), static_cast<float>(j), static_cast<float>(k)};
+                    }
+                }
+                if (interaction == Interaction::LocalImpulse && dragState.JustFinishedDragging()) {
+                    const float d = Vector3DistanceSqr(positions[i][j][k], LocalToWorld(&nearestPointLocal));
+                    const float decay = exp(-d * dragStrengthDecay);
+                    accelerations[i][j][k] += dragDir * 100 * dragStrength * decay / GetFrameTime();
                 }
 
                 // gravity
@@ -407,6 +434,8 @@ nlohmann::json JelloComponent::ToJson() const {
     j["collisionDamping"] = collisionDamping;
     j["speed"] = speed;
     j["dragStrength"] = dragStrength;
+    j["dragStrengthDecay"] = dragStrengthDecay;
+    j["interaction"] = static_cast<int>(interaction);
     return j;
 }
 
@@ -420,6 +449,8 @@ void JelloComponent::FromJson(const nlohmann::json &json) {
     collisionDamping = json.value("collisionDamping", collisionDamping);
     speed = json.value("speed", speed);
     dragStrength = json.value("dragStrength", dragStrength);
+    dragStrengthDecay = json.value("dragStrengthDecay", dragStrengthDecay);
+    interaction = static_cast<Interaction>(json.value("interaction", static_cast<int>(interaction)));
 }
 
 

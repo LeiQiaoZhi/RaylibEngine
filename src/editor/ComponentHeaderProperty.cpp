@@ -61,3 +61,13 @@ bool ComponentHeaderProperty::IsFolded() const {
         return true;
     return folded || component->removed;
 }
+
+nlohmann::json ComponentHeaderProperty::ToJson() const {
+    nlohmann::json j;
+    j["folded"] = folded;
+    return j;
+}
+
+void ComponentHeaderProperty::FromJson(const nlohmann::json &json) {
+    folded = json["folded"];
+}
