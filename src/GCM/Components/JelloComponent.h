@@ -113,6 +113,8 @@ private:
     float speed = 1.0f;
     float dragStrength = 0.5;
     float dragStrengthDecay = 0.1;
+    float gravity = 9.8;
+    float airResistance = 0.1;
 
     // interaction states
     Interaction interaction = Interaction::LocalImpulse;
@@ -135,6 +137,9 @@ private:
     FloatSlider collisionDampingProperty = FloatSlider(&collisionDamping, "Col Damping", 0, 1);
     FloatSlider dragStrengthProperty = FloatSlider(&dragStrength, "Drag Strength", 0, 1);
     FloatSlider dragStrengthDecayProperty = FloatSlider(&dragStrengthDecay, "Drag Decay", 0, 1);
+    FloatSlider gravityProperty = FloatSlider(&gravity, "Gravity", 0, 10);
+    FloatSlider airResistanceProperty = FloatSlider(&airResistance, "Air Resistance", 0, 1);
+    MaterialProperty materialProperty = MaterialProperty(nullptr, 0);
 
     // rk4 states
     Matrix3D k1PositionChanges;

@@ -85,6 +85,7 @@ void main()
         }
     }
 
+    // finalColor = vec4(baseColor.rgb, 1.0);
     // finalColor = vec4(normal, 1.0);
     // finalColor = vec4(vec3(useNormalMap), 1.0);
 }

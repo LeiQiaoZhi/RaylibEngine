@@ -314,6 +314,7 @@ public:
                                       size[2] - 1) * (size[0] - 1));
         Vector3 *vertices = static_cast<Vector3 *>(RL_MALLOC(verticesCount*sizeof(Vector3)));
         Vector3 *normals = static_cast<Vector3 *>(RL_MALLOC(verticesCount*sizeof(Vector3)));
+        Vector2 *texcoords = static_cast<Vector2 *>(RL_MALLOC(verticesCount*sizeof(Vector2)));
         int *indices = static_cast<int *>(RL_MALLOC(trianglesCount*3*sizeof(int)));
         int verticesAdded = 0;
         int verticesPerPlane = size[0] * size[2];
@@ -327,6 +328,11 @@ public:
                     z * sizeWorld.z / (size[2] - 1)
                 };
                 normals[x * size[2] + z + verticesAdded] = {0, -1, 0};
+                // uv (0.25, 0.25) -> (0.5, 0.5)
+                texcoords[x * size[2] + z + verticesAdded] = {
+                    x * 0.25f / (size[0] - 1) + 0.25f,
+                    z * 0.25f / (size[2] - 1) + 0.25f
+                };
 
                 // Top
                 vertices[x * size[2] + z + verticesPerPlane + verticesAdded] = {
@@ -335,6 +341,11 @@ public:
                     z * sizeWorld.z / (size[2] - 1)
                 };
                 normals[x * size[2] + z + verticesPerPlane + verticesAdded] = {0, 1, 0};
+                // uv (0.25, 0.75) -> (0.5, 1.0)
+                texcoords[x * size[2] + z + verticesPerPlane + verticesAdded] = {
+                    (1 - static_cast<float>(x) / (size[0] - 1)) * 0.25f + 0.25f,
+                    static_cast<float>(z) / (size[2] - 1) * 0.25f + 0.75f
+                };
             }
         }
 
@@ -378,6 +389,11 @@ public:
                     z * sizeWorld.z / (size[2] - 1)
                 };
                 normals[y * size[2] + z + verticesAdded] = {-1, 0, 0};
+                // uv (0.0, 0.5) -> (0.25, 0.75)
+                texcoords[y * size[2] + z + verticesAdded] = {
+                    (1 - static_cast<float>(y) / (size[1] - 1)) * 0.25f,
+                    z * 0.25f / (size[2] - 1) + 0.5f
+                };
 
                 // Right
                 vertices[y * size[2] + z + verticesPerPlane + verticesAdded] = {
@@ -386,6 +402,11 @@ public:
                     z * sizeWorld.z / (size[2] - 1)
                 };
                 normals[y * size[2] + z + verticesPerPlane + verticesAdded] = {1, 0, 0};
+                // uv (0.5, 0.5) -> (0.75, 0.75)
+                texcoords[y * size[2] + z + verticesPerPlane + verticesAdded] = {
+                    y * 0.25f / (size[1] - 1) + 0.5f,
+                    z * 0.25f / (size[2] - 1) + 0.5f
+                };
             }
         }
 
@@ -422,21 +443,31 @@ public:
         verticesPerPlane = size[0] * size[1];
         for (int x = 0; x < size[0]; x++) {
             for (int y = 0; y < size[1]; y++) {
-                // Front
+                // Back
                 vertices[x * size[1] + y + verticesAdded] = {
                     x * sizeWorld.x / (size[0] - 1),
                     y * sizeWorld.y / (size[1] - 1),
                     0,
                 };
                 normals[x * size[1] + y + verticesAdded] = {0, 0, -1};
+                // uv (0.75, 0.5) -> (1.0, 0.75)
+                texcoords[x * size[1] + y + verticesAdded] = {
+                    (1 - static_cast<float>(x) / (size[0] - 1)) * 0.25f + 0.75f,
+                    y * 0.25f / (size[1] - 1) + 0.5f
+                };
 
-                // Right
+                // Front
                 vertices[x * size[1] + y + verticesPerPlane + verticesAdded] = {
                     x * sizeWorld.x / (size[0] - 1),
                     y * sizeWorld.y / (size[1] - 1),
                     sizeWorld.z,
                 };
                 normals[x * size[1] + y + verticesPerPlane + verticesAdded] = {0, 0, 1};
+                // uv (0.25, 0.5) -> (0.5, 0.75)
+                texcoords[x * size[1] + y + verticesPerPlane + verticesAdded] = {
+                    x * 0.25f / (size[0] - 1) + 0.25f,
+                    y * 0.25f / (size[1] - 1) + 0.5f
+                };
             }
         }
 
@@ -483,10 +514,10 @@ public:
         }
 
         // Mesh texcoords array
-        // for (int i = 0; i < mesh.vertexCount; i++) {
-        //     mesh.texcoords[2 * i] = texcoords[i].x;
-        //     mesh.texcoords[2 * i + 1] = texcoords[i].y;
-        // }
+        for (int i = 0; i < mesh.vertexCount; i++) {
+            mesh.texcoords[2 * i] = texcoords[i].x;
+            mesh.texcoords[2 * i + 1] = 1 - texcoords[i].y;
+        }
 
         // Mesh normals array
         for (int i = 0; i < mesh.vertexCount; i++) {
@@ -500,7 +531,7 @@ public:
 
         RL_FREE(vertices);
         RL_FREE(normals);
-        // RL_FREE(texcoords);
+        RL_FREE(texcoords);
         RL_FREE(indices);
 
         UploadMesh(&mesh, false);
@@ -637,6 +668,48 @@ public:
             model.transform = MatrixIdentity();
         }
         return model;
+    }
+
+    static void RecalculateMeshNormals(Mesh *mesh) {
+        float *vertices = mesh->vertices;
+        float *normals = mesh->normals;
+        unsigned short *indices = mesh->indices;
+
+        // For each triangle
+        for (int i = 0; i < mesh->triangleCount * 3; i += 3) {
+            // Get triangle vertices
+            Vector3 v0 = {
+                vertices[indices[i] * 3],
+                vertices[indices[i] * 3 + 1],
+                vertices[indices[i] * 3 + 2]
+            };
+            Vector3 v1 = {
+                vertices[indices[i + 1] * 3],
+                vertices[indices[i + 1] * 3 + 1],
+                vertices[indices[i + 1] * 3 + 2]
+            };
+            Vector3 v2 = {
+                vertices[indices[i + 2] * 3],
+                vertices[indices[i + 2] * 3 + 1],
+                vertices[indices[i + 2] * 3 + 2]
+            };
+
+            // Calculate triangle normal
+            Vector3 edge1 = Vector3Subtract(v1, v0);
+            Vector3 edge2 = Vector3Subtract(v2, v0);
+            Vector3 normal = Vector3Normalize(Vector3CrossProduct(edge1, edge2));
+
+            // Add to vertex normals
+            for (int j = 0; j < 3; j++) {
+                int idx = indices[i + j] * 3;
+                normals[idx] = normal.x;
+                normals[idx + 1] = normal.y;
+                normals[idx + 2] = normal.z;
+            }
+        }
+
+        // Update GPU buffer
+        UpdateMeshBuffer(*mesh, 2, normals, mesh->vertexCount * 3 * sizeof(float), 0);
     }
 };
 

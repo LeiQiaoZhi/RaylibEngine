@@ -28,12 +28,12 @@ public:
 
 private:
     Component* component;
-    bool showMessageBox;
+    bool showMessageBox = false;
     bool *enabled;
     bool folded = false;
 
     std::string statusText;
-    bool statusWarning;
+    bool statusWarning = false;
 };
 
 

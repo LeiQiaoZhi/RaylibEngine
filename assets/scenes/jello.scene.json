@@ -31,9 +31,9 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            -0.2287137657403946,
-                            5.651368618011475,
-                            95.06329345703125
+                            -68.41715240478516,
+                            16.35956573486328,
+                            51.0930061340332
                         ],
                         "cameraTarget": [
                             0.0,
@@ -85,18 +85,18 @@
                             },
                             {
                                 "color": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
+                                    255,
+                                    255,
+                                    255,
+                                    255
                                 ],
                                 "enabled": true,
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.0,
+                                "intensity": 0.2771884500980377,
                                 "lightType": 0,
-                                "range": 10.0,
+                                "range": 22.817020416259766,
                                 "type": "LightComponent"
                             }
                         ],
@@ -110,8 +110,8 @@
                             {
                                 "enabled": true,
                                 "eulerAngles": [
-                                    0.0,
-                                    0.0,
+                                    0.5,
+                                    -0.5,
                                     0.0
                                 ],
                                 "header": {
@@ -131,17 +131,17 @@
                             },
                             {
                                 "color": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
+                                    255,
+                                    255,
+                                    255,
+                                    255
                                 ],
                                 "enabled": true,
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.0,
-                                "lightType": 0,
+                                "intensity": 1.1082193851470947,
+                                "lightType": 1,
                                 "range": 10.0,
                                 "type": "LightComponent"
                             }
@@ -196,15 +196,32 @@
                                 },
                                 "position": [
                                     0.0,
-                                    0.0,
+                                    -20.0,
                                     0.0
                                 ],
                                 "scale": [
+                                    60.0,
                                     1.0,
-                                    1.0,
-                                    1.0
+                                    60.0
                                 ],
                                 "type": "TransformComponent"
+                            },
+                            {
+                                "drawBounds": true,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": true,
+                                "filename": "plane.glb",
+                                "header": {
+                                    "folded": false
+                                },
+                                "materials": [
+                                    {
+                                        "path": "plane.mat.json"
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
                             }
                         ],
                         "name": "Test Child 3",
@@ -266,9 +283,9 @@
                         "type": "TransformComponent"
                     },
                     {
-                        "drawBounds": true,
-                        "drawSurface": false,
-                        "drawWireframe": true,
+                        "drawBounds": false,
+                        "drawSurface": true,
+                        "drawWireframe": false,
                         "enabled": true,
                         "filename": "",
                         "header": {
@@ -319,8 +336,11 @@
                         "header": {
                             "folded": false
                         },
-                        "integrationMethod": 1,
+                        "integrationMethod": 0,
                         "interaction": 1,
+                        "material": {
+                            "path": "jello.mat.json"
+                        },
                         "speed": 0.5497331023216248,
                         "totalMass": 2.0,
                         "type": "JelloComponent"
@@ -382,6 +402,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739953599,
+    "saveTime": 1739959675,
     "selectedGameObjectUID": 6
 }

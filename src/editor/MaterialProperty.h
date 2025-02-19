@@ -31,6 +31,10 @@ public:
 
     void LoadMaterialFromFile(const char* fullPath);
 
+    void LoadMaterial() {
+        LoadMaterialFromFile(filename);
+    }
+
     void SendParamsToShader() const;
 
     nlohmann::json ToJson() const;

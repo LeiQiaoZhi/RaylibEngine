@@ -107,7 +107,7 @@ void MaterialProperty::SendParamsToShader() const {
 
 nlohmann::json MaterialProperty::ToJson() const {
     nlohmann::json j;
-    j["path"] = currentMaterialFilename;
+    j["path"] = filename;
     return j;
 }
 

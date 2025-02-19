@@ -35,6 +35,8 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
     collisionDampingProperty.OnEditorGUI(rect);
     dragStrengthProperty.OnEditorGUI(rect);
     dragStrengthDecayProperty.OnEditorGUI(rect);
+    gravityProperty.OnEditorGUI(rect);
+    airResistanceProperty.OnEditorGUI(rect);
 
     int *integrationMethodPtr = reinterpret_cast<int *>(&integrationMethod);
     GuiToggleGroup({rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f},
@@ -47,17 +49,22 @@ void JelloComponent::OnEditorGUI(Rectangle &rect) {
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     const char *buttonText = started ? "Restart" : "Start";
-    if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, buttonText)) {
+    if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 2.0f}, buttonText)) {
         started = !started;
         if (started)
             StartSimulation();
         statusText = started ? "Simulation started" : "Simulation stopped";
         statusWarning = false;
     }
-    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+    rect.y += Editor::TextSize() * 2.0f + Editor::SmallGap();
 
     // warning
     Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
+    // material
+    GuiLine({rect.x, rect.y, rect.width, Editor::LargeGap() * 1.0f}, nullptr);
+    rect.y += Editor::LargeGap();
+    materialProperty.OnEditorGUI(rect);
 
     // debug
     debugFoldout.OnEditorGUI(rect);
@@ -176,7 +183,7 @@ void JelloComponent::ComputeAcceleration() {
 
                 // external input
                 if (interaction == Interaction::GlobalImpulse && dragState.JustFinishedDragging()) {
-                    accelerations[i][j][k] += dragDir * 100 * dragStrength / GetFrameTime();
+                    accelerations[i][j][k] += dragDir * 50 * dragStrength / GetFrameTime();
                 }
                 if (interaction == Interaction::LocalImpulse && pointJustSelected) {
                     const float d = Vector3DistanceSqr(selection.point, positions[i][j][k]);
@@ -185,16 +192,16 @@ void JelloComponent::ComputeAcceleration() {
                         nearestPointLocal = {static_cast<float>(i), static_cast<float>(j), static_cast<float>(k)};
                     }
                 }
-                if (interaction == Interaction::LocalImpulse && dragState.JustFinishedDragging()) {
+                if (interaction == Interaction::LocalImpulse && dragState.JustFinishedDragging() && selection.hit) {
                     const float d = Vector3DistanceSqr(positions[i][j][k], LocalToWorld(&nearestPointLocal));
                     const float decay = exp(-d * dragStrengthDecay);
                     accelerations[i][j][k] += dragDir * 100 * dragStrength * decay / GetFrameTime();
                 }
 
                 // gravity
-                accelerations[i][j][k].y -= 1000;
+                accelerations[i][j][k].y -= 100 * gravity;
                 // air resistance
-                accelerations[i][j][k].y -= 10 * velocities[i][j][k].y;
+                accelerations[i][j][k] -= velocities[i][j][k] * airResistance * 100;
 
                 Vector3 current_local = {static_cast<float>(i), static_cast<float>(j), static_cast<float>(k)};
                 Vector3 neighbour_local;
@@ -244,6 +251,8 @@ void JelloComponent::ComputeAcceleration() {
 
 void JelloComponent::StartSimulation() {
     proceduralMeshComponent->GenerateMesh();
+    materialProperty.SetModel(modelComponent->model);
+    materialProperty.LoadMaterial();
 
     int vertexCounts[3] = {
         static_cast<int>(proceduralMeshComponent->cubeSize.x),
@@ -301,6 +310,8 @@ void JelloComponent::UpdateMesh() {
     }
     UpdateMeshBuffer(model->meshes[0], 0, model->meshes[0].vertices, model->meshes[0].vertexCount * sizeof(float) * 3,
                      0);
+
+    RaylibUtils::RecalculateMeshNormals(&model->meshes[0]);
 }
 
 std::vector<int> JelloComponent::LocalToMeshIndex(int x, int y, int z) const {
@@ -436,6 +447,7 @@ nlohmann::json JelloComponent::ToJson() const {
     j["dragStrength"] = dragStrength;
     j["dragStrengthDecay"] = dragStrengthDecay;
     j["interaction"] = static_cast<int>(interaction);
+    j["material"] = materialProperty.ToJson();
     return j;
 }
 
@@ -451,6 +463,7 @@ void JelloComponent::FromJson(const nlohmann::json &json) {
     dragStrength = json.value("dragStrength", dragStrength);
     dragStrengthDecay = json.value("dragStrengthDecay", dragStrengthDecay);
     interaction = static_cast<Interaction>(json.value("interaction", static_cast<int>(interaction)));
+    materialProperty.FromJson(json.value("material", materialProperty.ToJson()));
 }
 
 

@@ -1,0 +1,27 @@
+{
+  "Shader": {
+    "Vertex": "custom.vert",
+    "Fragment": "lighting.frag"
+  },
+  "Maps": [
+    {
+      "Type": 0,
+      "Path": "/textures/cube.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "Wrap": "repeat",
+      "Filter": "bilinear"
+    }
+  ],
+  "Params": [
+    {
+      "Name": "iSpecularPower",
+      "Type": "float",
+      "Value": 32.0
+    }
+  ]
+}
