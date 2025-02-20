@@ -3,7 +3,11 @@
 
 #include <string>
 
-#include "lua/lua.hpp"
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
 
 
 namespace LuaUtils {
@@ -13,15 +17,17 @@ namespace LuaUtils {
 
     // Functions
     int LuaCallVoidFunction(lua_State *L, const char *functionName);
-    int LuaCallVoidFunction(lua_State* L, const std::string& functionName);
+
+    int LuaCallVoidFunction(lua_State *L, const std::string &functionName);
 
     // Global Variables
     int LuaGetIntegerOrDefault(lua_State *L, const char *name, int defaultValue);
+
     int LuaGetIntegerOrDefault(lua_State *L, const std::string &name, int defaultValue);
 
     std::string LuaGetStringOrDefault(lua_State *L, const char *name, const std::string &defaultValue);
-    std::string LuaGetStringOrDefault(lua_State *L, const std::string &name, const std::string &defaultValue);
 
+    std::string LuaGetStringOrDefault(lua_State *L, const std::string &name, const std::string &defaultValue);
 }
 
 

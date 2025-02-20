@@ -5,9 +5,10 @@ project(raylib-starter)
 set(CMAKE_CXX_STANDARD 17)
 
 # Add Lua
-set(LUA_INCLUDE_DIR "/opt/homebrew/include")
-set(LUA_LIBRARY "/opt/homebrew/lib/liblua.dylib")
-include_directories(${LUA_INCLUDE_DIR})
+add_subdirectory(external/lua)
+#set(LUA_INCLUDE_DIR "/opt/homebrew/include")
+#set(LUA_LIBRARY "/opt/homebrew/lib/liblua.dylib")
+#include_directories(${LUA_INCLUDE_DIR})
 
 add_subdirectory(vendor/raylib)
 add_subdirectory(vendor/json)
@@ -44,7 +45,8 @@ endif ()
 
 
 # Link against raylib libraries and ANGLE if using ANGLE
-target_link_libraries(${PROJECT_NAME} raylib ${LUA_LIBRARY})
+target_link_libraries(${PROJECT_NAME} raylib)
+target_link_libraries(${PROJECT_NAME} lua::lib)
 target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
 
 if (USE_ANGLE)
