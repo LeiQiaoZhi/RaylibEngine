@@ -62,3 +62,9 @@ target_compile_definitions(
 )
 
 add_compile_options(-Wno-deprecated-declarations)
+
+if(MSVC)
+    add_compile_options(/Zc:preprocessor)  # for better C/C++ compatibility
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)  # disable warnings about secure CRT functions
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")  # more permissive mode
+endif()
