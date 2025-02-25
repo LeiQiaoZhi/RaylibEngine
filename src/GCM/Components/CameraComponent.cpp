@@ -1,8 +1,10 @@
 #include "CameraComponent.h"
 #include "raylib.h"
+#include "rlgl.h"
 #include "../../editor/Editor.h"
 
 void CameraComponent::OnEditorGUI(Rectangle &rect) {
+    const float originalY = rect.y;
     headerProperty.OnEditorGUI(rect);
     if (headerProperty.IsFolded()) return;
 
@@ -16,12 +18,26 @@ void CameraComponent::OnEditorGUI(Rectangle &rect) {
     fovRect.width -= Editor::TextSize() * 4.0;
     GuiSlider(fovRect, "", "", &camera->fovy, 1, 179.0);
     rect.y += Editor::TextSize() * 2 + Editor::SmallGap();
+
+    int *backgroundModePtr = reinterpret_cast<int *>(&backgroundMode);
+    GuiToggleGroup({rect.x, rect.y, rect.width / 2.0f, Editor::TextSize() * 1.5f},
+                   "Color;Skybox", backgroundModePtr);
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
+    if (backgroundMode == BackgroundMode::Color) {
+        backgroundColorProperty.OnEditorGUI(rect);
+    } else {
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Flip Y", &skyboxFlipY);
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+
+        skyboxMaterialProperty.OnEditorGUI(rect);
+    }
+
+    height = rect.y - originalY;
 }
 
 float CameraComponent::GetEditorHeight() const {
-    return headerProperty.IsFolded()
-               ? Editor::TextSize() + Editor::SmallGap()
-               : Editor::TextSize() * 5 + Editor::SmallGap() * 3;
+    return height;
 }
 
 void CameraComponent::OnDraw(Scene *scene) const {
@@ -61,9 +77,12 @@ nlohmann::json CameraComponent::ToJson() const {
     j["cameraTarget"] = {camera->target.x, camera->target.y, camera->target.z};
     j["cameraUp"] = {camera->up.x, camera->up.y, camera->up.z};
     j["cameraFovy"] = camera->fovy;
+    j["backgroundMode"] = backgroundMode;
+    j["backgroundColor"] = {backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a};
+    j["skyboxFlipY"] = skyboxFlipY;
+    j["skyboxMaterial"] = skyboxMaterialProperty.ToJson();
     return j;
 }
-
 
 void CameraComponent::FromJson(const nlohmann::json &json) {
     cameraMode = json["cameraMode"];
@@ -74,4 +93,29 @@ void CameraComponent::FromJson(const nlohmann::json &json) {
     if (json.contains("cameraUp"))
         camera->up = {json["cameraUp"][0], json["cameraUp"][1], json["cameraUp"][2]};
     camera->fovy = json.value("cameraFovy", 45.0f);
+    backgroundMode = static_cast<BackgroundMode>(json.value("backgroundMode", backgroundMode));
+    if (json.contains("backgroundColor"))
+        backgroundColor = {json["backgroundColor"][0], json["backgroundColor"][1], json["backgroundColor"][2], json["backgroundColor"][3]};
+    skyboxFlipY = json.value("skyboxFlipY", skyboxFlipY);
+    if (json.contains("skyboxMaterial"))
+        skyboxMaterialProperty.FromJson(json["skyboxMaterial"]);
+}
+
+void CameraComponent::DrawBackground() {
+    if (backgroundMode == BackgroundMode::Color) {
+        ClearBackground(backgroundColor);
+        return;
+    }
+
+    // Draw skybox
+    if (skybox.meshCount == 0) return;
+    rlDisableDepthMask();
+    rlDisableBackfaceCulling();
+    Material *material = &skybox.materials[0];
+    SetShaderValue(material->shader, GetShaderLocation(material->shader, "flipY"), &skyboxFlipY, SHADER_UNIFORM_INT);
+    SetShaderValue(material->shader, GetShaderLocation(material->shader, "viewPos"),
+                   &camera->position, SHADER_UNIFORM_VEC3);
+    DrawModel(skybox, camera->position, 1.0f, WHITE);
+    rlEnableBackfaceCulling();
+    rlEnableDepthMask();
 }

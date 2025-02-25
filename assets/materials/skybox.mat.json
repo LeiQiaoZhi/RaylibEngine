@@ -1,0 +1,20 @@
+{
+  "Shader": {
+    "Vertex": "custom.vert",
+    "Fragment": "skybox.frag"
+  },
+  "Maps": [
+    {
+      "Type": 7,
+      "Path": "/textures/skybox4.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "Params": [
+  ]
+}

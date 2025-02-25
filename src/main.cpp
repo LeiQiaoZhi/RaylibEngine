@@ -8,12 +8,7 @@
 #include "raylib.h"
 #include <iostream>
 #include "GCM/Scene.h"
-#include "GCM/Components/DebugGridBoxComponent.h"
-#include "GCM/Components/DebugGridComponent.h"
 #include "GCM/Components/JelloComponent.h"
-#include "GCM/Components/LightComponent.h"
-#include "GCM/Components/ModelComponent.h"
-#include "GCM/Components/ProceduralMeshComponent.h"
 #include "logger/Logger.h"
 #include "subviews/ConsoleSubView.h"
 #include "subviews/GameSubView.h"
@@ -80,35 +75,9 @@ int main() {
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 16 * uiScale);
 
-    // test scene set up
+    // Load start scene
     Scene scene;
-    scene.name = "Test Scene";
-    scene.SetRoot(new GameObject(scene.name, 1));
-    scene.GetRoot()->AddComponent(new DebugGridBoxComponent());
-    auto cameraGO = new GameObject("Camera", 2);
-    cameraGO->AddComponent(new CameraComponent());
-    scene.GetRoot()->AddChild(cameraGO);
-    auto lights = new GameObject("Lights", 3);
-    scene.GetRoot()->AddChild(lights);
-    auto light1 = new GameObject("Light 1", 4);
-    light1->AddComponent(new LightComponent());
-    lights->AddChild(light1);
-    auto light2 = new GameObject("Light 2", 5);
-    light2->AddComponent(new LightComponent());
-    lights->AddChild(light2);
-    auto model = new GameObject("Model", 6);
-    scene.GetRoot()->AddChild(model);
-    model->AddComponent(new ModelComponent());
-    model->AddComponent(new ProceduralMeshComponent());
-    model->AddComponent(new JelloComponent());
-    auto testChild3 = new GameObject("Test Child 3", 7);
-    model->AddChild(testChild3);
-    auto testChild4 = new GameObject("Test Child 4", 8);
-    model->AddChild(testChild4);
-
-    scene.GetMainCamera()->SetCameraMode(cameraMode);
-    scene.StartComponents();
-    scene.FindLights();
+    hierarchySubView.LoadScene(scene);
 
     //--------------------------------------------------------------------------------------
 

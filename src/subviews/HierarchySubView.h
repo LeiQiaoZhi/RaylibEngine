@@ -10,9 +10,11 @@ public:
 
     void Render(Scene &scene, Vector2 position = {0, 0});
 
+    void LoadScene(Scene &scene);
+
 private:
     ISubviewRenderer *renderer_;
-    char sceneFilename[32] = "jello.scene.json";
+    char sceneFilename[32] = "test.scene.json";
     bool editMode;
     std::string statusText;
     bool statusWarning;

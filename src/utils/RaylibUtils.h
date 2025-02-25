@@ -248,6 +248,7 @@ public:
             material.shader.locs[SHADER_LOC_MAP_ALBEDO] = GetShaderLocation(material.shader, "albedoMap");
             material.shader.locs[SHADER_LOC_COLOR_DIFFUSE] = GetShaderLocation(material.shader, "albedoColor");
             material.shader.locs[SHADER_LOC_MAP_NORMAL] = GetShaderLocation(material.shader, "normalMap");
+            material.shader.locs[SHADER_LOC_MAP_CUBEMAP] = GetShaderLocation(material.shader, "environmentMap");
         }
 
         // Textures
@@ -257,8 +258,17 @@ public:
 
             const int type = mapJson["Type"];
             std::string texturePath = ASSET_DIR + std::string(mapJson["Path"]);
-            material.maps[type].texture = LoadTexture(texturePath.c_str());
 
+            // Load texture
+            if (type == MATERIAL_MAP_CUBEMAP) {
+                Image image = LoadImage(texturePath.c_str());
+                material.maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(image, CUBEMAP_LAYOUT_AUTO_DETECT);
+                UnloadImage(image);
+            } else {
+                material.maps[type].texture = LoadTexture(texturePath.c_str());
+            }
+
+            // Set texture parameters
             if (mapJson.contains("Wrap")) {
                 const TextureWrap wrap = StringToTextureWrapEnum(mapJson["Wrap"]);
                 SetTextureWrap(material.maps[type].texture, wrap);
@@ -268,6 +278,7 @@ public:
                 SetTextureFilter(material.maps[type].texture, filter);
             }
 
+            // Other map properties
             auto &color = mapJson["Color"];
             material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
 

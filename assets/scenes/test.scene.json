@@ -12,6 +12,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": false
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -25,12 +28,19 @@
                         "type": "TransformComponent"
                     },
                     {
+                        "backgroundColor": [
+                            245,
+                            245,
+                            245,
+                            255
+                        ],
+                        "backgroundMode": 1,
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            14.033918380737305,
-                            8.353052139282227,
-                            22.7532958984375
+                            12.793922424316406,
+                            9.011874198913574,
+                            25.148174285888672
                         ],
                         "cameraTarget": [
                             0.0,
@@ -43,6 +53,13 @@
                             0.0
                         ],
                         "enabled": true,
+                        "header": {
+                            "folded": false
+                        },
+                        "skyboxFlipY": true,
+                        "skyboxMaterial": {
+                            "path": "skybox.mat.json"
+                        },
                         "type": "CameraComponent"
                     }
                 ],
@@ -62,6 +79,9 @@
                                     0.5,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -82,6 +102,9 @@
                                     255
                                 ],
                                 "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
                                 "intensity": 1.0,
                                 "lightType": 1,
                                 "range": 10.0,
@@ -102,6 +125,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -122,6 +148,9 @@
                                     255
                                 ],
                                 "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
                                 "intensity": 0.2829049229621887,
                                 "lightType": 0,
                                 "range": 10.0,
@@ -141,6 +170,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": false
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -170,6 +202,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -188,6 +223,9 @@
                                 "drawWireframe": false,
                                 "enabled": true,
                                 "filename": "plane.glb",
+                                "header": {
+                                    "folded": false
+                                },
                                 "materials": [
                                     {
                                         "path": "plane.mat.json"
@@ -197,7 +235,7 @@
                                 "type": "ModelComponent"
                             }
                         ],
-                        "name": "Test Child 3",
+                        "name": "Plane\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
                         "sceneDepth": 2,
                         "uid": 7
                     },
@@ -211,6 +249,9 @@
                                     0.0,
                                     0.0
                                 ],
+                                "header": {
+                                    "folded": false
+                                },
                                 "position": [
                                     0.0,
                                     0.0,
@@ -237,6 +278,9 @@
                             0.0,
                             0.0
                         ],
+                        "header": {
+                            "folded": false
+                        },
                         "position": [
                             0.0,
                             0.0,
@@ -255,6 +299,9 @@
                         "drawWireframe": false,
                         "enabled": true,
                         "filename": "old_car_new.glb",
+                        "header": {
+                            "folded": false
+                        },
                         "materials": [
                             {
                                 "path": "car.mat.json"
@@ -280,6 +327,9 @@
                     0.0,
                     0.0
                 ],
+                "header": {
+                    "folded": false
+                },
                 "position": [
                     0.0,
                     0.0,
@@ -300,6 +350,9 @@
                     50
                 ],
                 "enabled": false,
+                "header": {
+                    "folded": false
+                },
                 "size": [
                     100.0,
                     100.0
@@ -315,6 +368,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1739770214,
-    "selectedGameObjectUID": 7
+    "saveTime": 1740515536,
+    "selectedGameObjectUID": 6
 }

@@ -28,12 +28,19 @@
                         "type": "TransformComponent"
                     },
                     {
+                        "backgroundColor": [
+                            245,
+                            245,
+                            245,
+                            255
+                        ],
+                        "backgroundMode": 1,
                         "cameraFovy": 45.0,
                         "cameraMode": 4,
                         "cameraPosition": [
-                            61.04404830932617,
-                            4.690981864929199,
-                            -58.4105110168457
+                            -40.23109817504883,
+                            19.038253784179688,
+                            -95.665771484375
                         ],
                         "cameraTarget": [
                             0.0,
@@ -48,6 +55,10 @@
                         "enabled": true,
                         "header": {
                             "folded": false
+                        },
+                        "skyboxFlipY": true,
+                        "skyboxMaterial": {
+                            "path": "skybox.mat.json"
                         },
                         "type": "CameraComponent"
                     }
@@ -110,8 +121,8 @@
                             {
                                 "enabled": true,
                                 "eulerAngles": [
-                                    1.0,
-                                    1.0,
+                                    -0.6000000238418579,
+                                    -2.799999952316284,
                                     0.0
                                 ],
                                 "header": {
@@ -354,11 +365,7 @@
                         "header": {
                             "folded": true
                         },
-                        "materials": [
-                            {
-                                "path": ""
-                            }
-                        ],
+                        "materials": [],
                         "renderType": 0,
                         "type": "ModelComponent"
                     },
@@ -469,6 +476,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740008879,
-    "selectedGameObjectUID": 4
+    "saveTime": 1740515430,
+    "selectedGameObjectUID": 2
 }

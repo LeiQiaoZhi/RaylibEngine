@@ -17,6 +17,7 @@ void GameSubView::Render(Scene &scene, const Vector2 position) const {
     BeginMode3D(*raylibCamera);
     scene.screenSpaceRect = Rectangle{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT,
                                       renderer_->GetSize().x, renderer_->GetSize().y};
+    scene.DrawBackground();
     scene.DrawGizmosBottom(&scene);
     scene.Draw(&scene);
     scene.DrawGizmos(&scene);

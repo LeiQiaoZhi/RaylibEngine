@@ -41,18 +41,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) {
     }
     rect.x += textBoxWidth;
     if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, "Load")) {
-        const std::string path = std::string(ASSET_DIR) + "/scenes/" + sceneFilename;
-        if (!Utils::EndsWith(sceneFilename, ".scene.json")) {
-            statusText = "File does not have .scene.json extension";
-            statusWarning = true;
-        } else if (!FileExists(path.c_str())) {
-            statusText = "File does not exist";
-            statusWarning = true;
-        } else {
-            scene.Load(path.data());
-            statusText = "Scene loaded";
-            statusWarning = false;
-        }
+        LoadScene(scene);
     }
     rect.x += buttonWidth;
     if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, "Save")) {
@@ -113,4 +102,19 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) {
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, WHITE);
+}
+
+void HierarchySubView::LoadScene(Scene &scene) {
+    const std::string path = std::string(ASSET_DIR) + "/scenes/" + sceneFilename;
+    if (!Utils::EndsWith(sceneFilename, ".scene.json")) {
+        statusText = "File does not have .scene.json extension";
+        statusWarning = true;
+    } else if (!FileExists(path.c_str())) {
+        statusText = "File does not exist";
+        statusWarning = true;
+    } else {
+        scene.Load(path.data());
+        statusText = "Scene loaded";
+        statusWarning = false;
+    }
 }

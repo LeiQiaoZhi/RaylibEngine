@@ -40,7 +40,7 @@ public:
 
     void Save(const char *path);
 
-    void Load(const char* data);
+    void Load(const char *data);
 
     Vector2 GlobalToLocalScreenSpace(const Vector2 &position) const {
         return Vector2{position.x - screenSpaceRect.x, position.y - screenSpaceRect.y};
@@ -50,9 +50,12 @@ public:
         return Vector2{position.x + screenSpaceRect.x, position.y + screenSpaceRect.y};
     }
 
+    void DrawBackground();
+
     std::string name;
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};
+    Model skybox{};
 
 private:
     GameObject *root = nullptr;

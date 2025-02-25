@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include "rlgl.h"
 
 int Scene::GameObjectCount() const {
     return root->RecursiveChildCount() + 1;
@@ -122,4 +123,9 @@ void Scene::Load(const char *path) {
     // initialize scene
     StartComponents();
     FindLights();
+}
+
+void Scene::DrawBackground() {
+    GetMainCamera()->DrawBackground();
+
 }
