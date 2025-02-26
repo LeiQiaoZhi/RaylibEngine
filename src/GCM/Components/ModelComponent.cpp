@@ -35,8 +35,6 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
             statusWarning = true;
         } else {
             LoadModelFromFile(filename);
-            statusText = "Model loaded";
-            statusWarning = false;
         }
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
@@ -230,6 +228,7 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
     // test file exits
     if (!FileExists(path.c_str())) {
         statusText = "File does not exist";
+        statusWarning = true;
         return;
     }
     statusText = "";
@@ -248,8 +247,12 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         materialProps.clear();
         for (int i = 0; i < model->meshCount; i++)
             materialProps.emplace_back(model, i);
+
+        statusText = "Model loaded";
+        statusWarning = false;
     } else {
         statusText = "File format not supported";
+        statusWarning = true;
     }
 }
 
