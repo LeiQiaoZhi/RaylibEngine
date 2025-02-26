@@ -36,7 +36,14 @@
       "Name": "iSpecularStrength",
       "Type": "float",
       "Value": 0.1
+    },
+    {
+      "Name": "iTiling",
+      "Type": "vec2",
+      "Value": [
+        5,
+        5
+      ]
     }
   ]
 }
-

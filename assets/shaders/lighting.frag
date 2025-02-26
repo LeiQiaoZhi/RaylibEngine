@@ -37,11 +37,11 @@ uniform int lightsCount;
 uniform vec3 viewPos;
 uniform float iSpecularPower = 16.0;
 uniform float iSpecularStrength = 0.2;
+uniform vec2 iTiling = vec2(1.0);
 
 void main()
 {
-    vec2 tiling = vec2(1.0);
-    vec2 uv = vec2(fragTexCoord.x * tiling.x, fragTexCoord.y * tiling.y);
+    vec2 uv = vec2(fragTexCoord.x * iTiling.x, fragTexCoord.y * iTiling.y);
 
     finalColor = vec4(vec3(0.0), 1.0);
     vec4 baseColor = texture(albedoMap, uv) * albedoColor;
@@ -68,7 +68,7 @@ void main()
             float specular = pow(max(dot(toCamera, reflected), 0.0), iSpecularPower) * iSpecularStrength;
             finalColor.rgb += light.color * light.intensity * specular;
         }
-        else if (light.type == LIGHT_POINT) 
+        else if (light.type == LIGHT_POINT)
         {
             vec3 toLight = light.position - fragPosition;
             float d = length(toLight);

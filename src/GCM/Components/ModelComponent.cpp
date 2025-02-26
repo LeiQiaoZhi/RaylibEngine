@@ -230,7 +230,7 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
                 const Vector3 parentBonePosition = Vector3Transform(parentBoneTransform.translation, model->transform);
                 DrawLine3D(bonePosition, parentBonePosition, GREEN);
             }
-            DrawSphere(bonePosition, radius, GREEN);
+            // DrawSphere(bonePosition, radius, GREEN);
         }
     }
 
@@ -267,7 +267,7 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
                 const Vector3 parentBonePosition = Vector3Transform(parentBoneTransform.translation, model->transform);
                 DrawLine3D(bonePosition, parentBonePosition, ORANGE);
             }
-            DrawSphere(bonePosition, radius, ORANGE);
+            // DrawSphere(bonePosition, radius, ORANGE);
         }
     }
 

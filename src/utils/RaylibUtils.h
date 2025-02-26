@@ -138,7 +138,6 @@ public:
         DrawLine3D(corners[3], corners[7], color);
     }
 
-
     // Compute model bounding box limits (considers all meshes)
     static BoundingBox GetModelAABBAfterTransform(const Model &model) {
         BoundingBox bbox = {0};
@@ -231,7 +230,6 @@ public:
         }
     }
 
-
     static Material LoadMaterialFromFile(const char *path, std::vector<ShaderParam> &shaderParams) {
         json j = JsonUtils::JsonFromFile(path);
         Material material = LoadMaterialDefault();
@@ -279,7 +277,6 @@ public:
                 const TextureFilter filter = StringToTextureFilterEnum(mapJson["Filter"]);
                 SetTextureFilter(material.maps[type].texture, filter);
             }
-
             // Other map properties
             auto &color = mapJson["Color"];
             material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
@@ -551,7 +548,6 @@ public:
 
         return mesh;
     }
-
 
     // Draw a model (with texture if set)
     static void DrawModelWithShader(Model model, Vector3 position, float scale, Color tint, Shader shader) {
