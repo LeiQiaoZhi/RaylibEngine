@@ -15,5 +15,8 @@ out vec4 finalColor;
 
 void main()
 {
-    finalColor = vec4(1.0, 1.0, 0.0, 1.0);
+    vec3 color = texture(texture0, fragTexCoord).rgb;
+    vec3 yellow = vec3(1.0, 1.0, 0.0);
+    color = mix(color, yellow, 0.5);
+    finalColor = vec4(color, 1.0);
 }

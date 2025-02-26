@@ -140,10 +140,7 @@ void JelloComponent::Update() {
 
     Camera *camera = gameObject->scene->GetMainCamera()->GetRaylibCamera();
     if (interaction == Interaction::LocalImpulse && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        const Vector2 mousePosition = gameObject->scene->GlobalToLocalScreenSpace(GetMousePosition());
-        const float width = gameObject->scene->screenSpaceRect.width;
-        const float height = gameObject->scene->screenSpaceRect.height;
-        const Ray ray = GetScreenToWorldRayEx(mousePosition, *camera, width, height);
+        const Ray ray = gameObject->scene->GetMouseScreenToWorldRay();
         selection = RaylibUtils::GetRayCollisionModel(ray, *modelComponent->model);
         pointJustSelected = selection.hit;
         std::cout << selection.hit << std::endl;

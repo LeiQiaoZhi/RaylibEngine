@@ -8,6 +8,7 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "rlgl.h"
 #include "../../editor/Editor.h"
 #include "../../GCM/GameObject.h"
 
@@ -72,6 +73,10 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
         rect.x -= rect.width * .66f;
         rect.y += Editor::TextSize() + Editor::SmallGap();
 
+        // Picking
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Picking", &isPicking);
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+
         // Mesh
         std::ostringstream oss;
         oss.precision(2);
@@ -87,11 +92,12 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
             const Mesh mesh = model->meshes[i];
             int materialIndex = model->meshMaterial[i];
             const float buttonWidth = Editor::TextWidth("Highlight") + Editor::LargeGap();
-            if (GuiButton({rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, highlighed ? "Cancel" : "Highlight")) {
+            if (GuiButton({rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f},
+                          highlighed ? "Cancel" : "Highlight")) {
                 if (highlighed)
-                    highlightedMeshIndex = -1;
+                    SetHighlightedMesh(-1);
                 else
-                    highlightedMeshIndex = i;
+                    SetHighlightedMesh(i);
             }
             Editor::BeginIndent(rect, buttonWidth);
             oss.str("");
@@ -173,8 +179,34 @@ void ModelComponent::OnDrawGizmos(Scene *scene) const {
 }
 
 void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
-    if (drawBounds && model != nullptr)
+    if (model == nullptr) return;
+    if (drawBounds)
         RaylibUtils::DrawModelBoundingBoxAfterTransform(*model, GRAY);
+
+    // show picking information
+    if (isPicking && highlightedMeshIndex != -1) {
+        EndMode3D();
+        rlDisableDepthTest();
+
+        const Mesh *mesh = &model->meshes[highlightedMeshIndex];
+        const Vector3 worldPosition = Vector3Transform({
+                                                           mesh->vertices[0], mesh->vertices[1], mesh->vertices[2]
+                                                       }, model->transform);
+        const float padding = 5;
+        const float width = MeasureText(gameObject->GetName(), 10);
+        const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
+        const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, scene->screenSpaceRect.width,
+                                                          scene->screenSpaceRect.height);
+        DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
+                      width + padding * 2, Editor::TextSize() + padding * 2, BLACK);
+        std::ostringstream oss;
+        oss << "Mesh: [" << std::to_string(highlightedMeshIndex)
+                << "], Material: [" << std::to_string(model->meshMaterial[highlightedMeshIndex]) << "]" << std::endl;
+        DrawText(oss.str().c_str(), screenPosition.x, screenPosition.y, Editor::TextSize(), WHITE);
+
+        BeginMode3D(*camera);
+        rlEnableDepthTest();
+    }
 }
 
 void ModelComponent::Start() {
@@ -183,6 +215,14 @@ void ModelComponent::Start() {
 void ModelComponent::Update() {
     if (model == nullptr) return;
     model->transform = gameObject->GetTransform()->GetTransformMatrix();
+
+    if (isPicking && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        const Ray ray = gameObject->scene->GetMouseScreenToWorldRay();
+        int selectedMeshIndex = -1;
+        RayCollision selection = RaylibUtils::GetRayCollisionModel(ray, *model, &selectedMeshIndex);
+        std::cout << "Selection: " << selectedMeshIndex << std::endl;
+        SetHighlightedMesh(selectedMeshIndex);
+    }
 }
 
 void ModelComponent::LoadModelFromFile(const std::string &filename) {
@@ -234,6 +274,7 @@ nlohmann::json ModelComponent::ToJson() const {
     j["drawBounds"] = drawBounds;
     j["drawWireframe"] = drawWireframe;
     j["renderType"] = static_cast<int>(renderType);
+    j["isPicking"] = isPicking;
 
     std::vector<nlohmann::json> materialPropsJson;
     for (const auto &materialProp: materialProps)
@@ -248,6 +289,7 @@ void ModelComponent::FromJson(const nlohmann::json &json) {
     drawBounds = json.at("drawBounds").get<bool>();
     drawWireframe = json.at("drawWireframe").get<bool>();
     renderType = static_cast<RenderType>(json.at("renderType").get<int>());
+    isPicking = json.value("isPicking", isPicking);
 
     LoadModelFromFile(filename);
 
@@ -260,5 +302,20 @@ void ModelComponent::FromJson(const nlohmann::json &json) {
         }
         materialProps[i].FromJson(materialPropJson);
         i++;
+    }
+}
+
+void ModelComponent::SetHighlightedMesh(int index) {
+    // reset material
+    if (highlightedMeshIndex != -1)
+        model->materials[model->meshMaterial[highlightedMeshIndex]].shader = originalShader;
+
+    highlightedMeshIndex = index;
+
+    // set material
+    if (index != -1) {
+        highlightedMaterial = model->materials[model->meshMaterial[highlightedMeshIndex]];
+        originalShader = highlightedMaterial.shader;
+        highlightedMaterial.shader = highlightedShader;
     }
 }

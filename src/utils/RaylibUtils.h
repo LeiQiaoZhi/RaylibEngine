@@ -192,7 +192,7 @@ public:
         return result;
     }
 
-    static RayCollision GetRayCollisionModel(const Ray &ray, const Model &model) {
+    static RayCollision GetRayCollisionModel(const Ray &ray, const Model &model, int *closestMeshIndex = nullptr) {
         RayCollision result = {0};
         // check AABB
         const BoundingBox aabb = GetModelAABBAfterTransform(model);
@@ -205,8 +205,10 @@ public:
             const Mesh mesh = model.meshes[i];
             RayCollision meshCollision = GetRayCollisionMesh(ray, mesh, model.transform);
             if (meshCollision.hit) {
-                if (!result.hit || meshCollision.distance < result.distance)
+                if (!result.hit || meshCollision.distance < result.distance) {
                     result = meshCollision;
+                    if (closestMeshIndex) *closestMeshIndex = i;
+                }
             }
         }
         return result;

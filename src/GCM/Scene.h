@@ -52,6 +52,8 @@ public:
 
     void DrawBackground();
 
+    Ray GetMouseScreenToWorldRay();
+
     std::string name;
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};

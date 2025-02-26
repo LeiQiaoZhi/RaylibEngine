@@ -127,5 +127,12 @@ void Scene::Load(const char *path) {
 
 void Scene::DrawBackground() {
     GetMainCamera()->DrawBackground();
+}
 
+Ray Scene::GetMouseScreenToWorldRay() {
+    const Vector2 mousePosition = GlobalToLocalScreenSpace(GetMousePosition());
+    const float width = screenSpaceRect.width;
+    const float height = screenSpaceRect.height;
+    const Ray ray = GetScreenToWorldRayEx(mousePosition, *GetMainCamera()->GetRaylibCamera(), width, height);
+    return ray;
 }

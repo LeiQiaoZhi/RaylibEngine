@@ -13,14 +13,13 @@ public:
     explicit ModelComponent() {
         headerProperty.label = "Model";
 
-        // const auto path = std::string(ASSET_DIR) + "/models/" + "duck_floaty.glb";
-        const auto path = std::string(SHADER_EXAMPLES_ASSET_DIR) + "/models/old_car_new.glb";
-        LoadModelFromFile(path); // TODO: remove this
-
-        highlightedMaterial = LoadMaterialDefault();
-        highlightedMaterial.shader = LoadShader(
+        highlightedShader = LoadShader(
             (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
             (std::string(INTERNAL_ASSET_DIR) + "/shaders/highlight.frag").c_str());
+        if (highlightedShader.id == 0) {
+            statusText = "Shader error, not loaded";
+            statusWarning = true;
+        }
     }
 
     ~ModelComponent() override {
@@ -54,8 +53,9 @@ public:
 
     void FromJson(const nlohmann::json &json) override;
 
+    void SetHighlightedMesh(int index);
+
     Model *model = nullptr;
-    Material highlightedMaterial;
 
 private:
     enum class RenderType: unsigned int {
@@ -80,7 +80,12 @@ private:
     bool statusWarning = false;
     float height;
     int highlightedMeshIndex = -1;
+    bool isPicking = false;
+    Material highlightedMaterial;
+    Shader highlightedShader;
+    Shader originalShader;
 };
+
 
 
 #endif //MODELCOMPONENT_H
