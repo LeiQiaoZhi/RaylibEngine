@@ -73,6 +73,13 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
 
         // Picking
         GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Picking", &isPicking);
+        rect.x += rect.width * .33f;
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Bones Lines",
+                    &drawBonesLines);
+        rect.x += rect.width * .33f;
+        GuiCheckBox({rect.x, rect.y, Editor::TextSize() * 1.0f, Editor::TextSize() * 1.0f}, "Bone Names",
+                    &drawBoneNames);
+        rect.x -= rect.width * .66f;
         rect.y += Editor::TextSize() + Editor::SmallGap();
 
         // Mesh
@@ -174,10 +181,16 @@ void ModelComponent::OnDraw(Scene *scene) const {
 }
 
 void ModelComponent::OnDrawGizmos(Scene *scene) const {
+    if (model == nullptr) return;
 }
 
 void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
     if (model == nullptr) return;
+    const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
+    const Vector3 worldPosition = gameObject->GetTransform()->GetWorldPosition();
+    const float distToCamera = Vector3Distance(worldPosition, camera->position);
+    const float radius = distToCamera * 0.002f;
+
     if (drawBounds)
         RaylibUtils::DrawModelBoundingBoxAfterTransform(*model, GRAY);
 
@@ -191,17 +204,89 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
                                                            mesh->vertices[0], mesh->vertices[1], mesh->vertices[2]
                                                        }, model->transform);
         const float padding = 5;
-        const float width = MeasureText(gameObject->GetName(), 10);
-        const Camera *camera = scene->GetMainCamera()->GetRaylibCamera();
         const Vector2 screenPosition = GetWorldToScreenEx(worldPosition, *camera, scene->screenSpaceRect.width,
                                                           scene->screenSpaceRect.height);
-        DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
-                      width + padding * 2, Editor::TextSize() + padding * 2, BLACK);
         std::ostringstream oss;
         oss << "Mesh: [" << std::to_string(highlightedMeshIndex)
                 << "], Material: [" << std::to_string(model->meshMaterial[highlightedMeshIndex]) << "]" << std::endl;
+        const float width = MeasureText(oss.str().c_str(), Editor::TextSize());
+        DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
+                      width + padding * 2, Editor::TextSize() + padding * 2, BLACK);
         DrawText(oss.str().c_str(), screenPosition.x, screenPosition.y, Editor::TextSize(), WHITE);
 
+        BeginMode3D(*camera);
+        rlEnableDepthTest();
+    }
+
+    // bones
+    if (drawBonesLines) {
+        rlDisableDepthTest();
+        for (int i = 0; i < model->boneCount; i++) {
+            const BoneInfo bone = model->bones[i];
+            const Transform boneTransform = model->bindPose[i];
+            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
+            if (bone.parent >= 0 && bone.parent < model->boneCount) {
+                const Transform parentBoneTransform = model->bindPose[bone.parent];
+                const Vector3 parentBonePosition = Vector3Transform(parentBoneTransform.translation, model->transform);
+                DrawLine3D(bonePosition, parentBonePosition, GREEN);
+            }
+            DrawSphere(bonePosition, radius, GREEN);
+        }
+    }
+
+    if (drawBoneNames) {
+        EndMode3D();
+        for (int i = 0; i < model->boneCount; i++) {
+            const BoneInfo bone = model->bones[i];
+            const Transform boneTransform = model->bindPose[i];
+            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
+
+            const float padding = 5;
+            const float width = MeasureText(bone.name, 10);
+            Vector2 screenPosition = GetWorldToScreenEx(bonePosition, *camera, scene->screenSpaceRect.width,
+                                                        scene->screenSpaceRect.height);
+            screenPosition += Vector2{radius, -radius}; // offset a bit
+            DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
+                          width + padding * 2, 10 + padding * 2, Fade(BLACK, 0.5f));
+            DrawText(bone.name, screenPosition.x, screenPosition.y, 10, WHITE);
+        }
+        BeginMode3D(*camera);
+        rlEnableDepthTest();
+    }
+
+    // bones -- when playing animation
+    ModelAnimation *animation = &animations[0];
+    if (drawBonesLines) {
+        rlDisableDepthTest();
+        for (int i = 0; i < animation->boneCount; i++) {
+            const BoneInfo bone = animation->bones[i];
+            const Transform boneTransform = animation->framePoses[animationFrameCounter][i];
+            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
+            if (bone.parent >= 0 && bone.parent < model->boneCount) {
+                const Transform parentBoneTransform = animation->framePoses[animationFrameCounter][bone.parent];
+                const Vector3 parentBonePosition = Vector3Transform(parentBoneTransform.translation, model->transform);
+                DrawLine3D(bonePosition, parentBonePosition, ORANGE);
+            }
+            DrawSphere(bonePosition, radius, ORANGE);
+        }
+    }
+
+    if (drawBoneNames) {
+        EndMode3D();
+        for (int i = 0; i < animation->boneCount; i++) {
+            const BoneInfo bone = animation->bones[i];
+            const Transform boneTransform = animation->framePoses[animationFrameCounter][i];
+            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
+
+            const float padding = 5;
+            const float width = MeasureText(bone.name, 10);
+            Vector2 screenPosition = GetWorldToScreenEx(bonePosition, *camera, scene->screenSpaceRect.width,
+                                                        scene->screenSpaceRect.height);
+            screenPosition += Vector2{radius, -radius}; // offset a bit
+            DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
+                          width + padding * 2, 10 + padding * 2, Fade(BLACK, 0.5f));
+            DrawText(bone.name, screenPosition.x, screenPosition.y, 10, WHITE);
+        }
         BeginMode3D(*camera);
         rlEnableDepthTest();
     }
@@ -220,6 +305,11 @@ void ModelComponent::Update() {
         RayCollision selection = RaylibUtils::GetRayCollisionModel(ray, *model, &selectedMeshIndex);
         std::cout << "Selection: " << selectedMeshIndex << std::endl;
         SetHighlightedMesh(selectedMeshIndex);
+    }
+
+    if (animationCount > 0) {
+        animationFrameCounter = (animationFrameCounter + 1) % animations[0].frameCount;
+        UpdateModelAnimation(*model, animations[0], animationFrameCounter);
     }
 }
 
@@ -247,6 +337,11 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         materialProps.clear();
         for (int i = 0; i < model->meshCount; i++)
             materialProps.emplace_back(model, i);
+
+        // load animation
+        if (!IsFileExtension(path.c_str(), ".obj") && !IsFileExtension(path.c_str(), ".vox")) {
+            animations = LoadModelAnimations(path.c_str(), &animationCount);
+        }
 
         statusText = "Model loaded";
         statusWarning = false;
@@ -276,6 +371,8 @@ nlohmann::json ModelComponent::ToJson() const {
     j["drawSurface"] = drawSurface;
     j["drawBounds"] = drawBounds;
     j["drawWireframe"] = drawWireframe;
+    j["drawBonesLines"] = drawBonesLines;
+    j["drawBoneNames"] = drawBoneNames;
     j["renderType"] = static_cast<int>(renderType);
     j["isPicking"] = isPicking;
 
@@ -288,9 +385,11 @@ nlohmann::json ModelComponent::ToJson() const {
 
 void ModelComponent::FromJson(const nlohmann::json &json) {
     std::strncpy(filename, json.at("filename").get<std::string>().c_str(), 32);
-    drawSurface = json.at("drawSurface").get<bool>();
-    drawBounds = json.at("drawBounds").get<bool>();
-    drawWireframe = json.at("drawWireframe").get<bool>();
+    drawSurface = json.value("drawSurface", drawSurface);
+    drawBounds = json.value("drawBounds", drawBounds);
+    drawWireframe = json.value("drawWireframe", drawWireframe);
+    drawBonesLines = json.value("drawBonesLines", drawBonesLines);
+    drawBoneNames = json.value("drawBoneNames", drawBoneNames);
     renderType = static_cast<RenderType>(json.at("renderType").get<int>());
     isPicking = json.value("isPicking", isPicking);
 

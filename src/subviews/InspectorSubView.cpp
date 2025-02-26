@@ -48,7 +48,7 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) {
         GuiLabel({rect.x + rect.width - uidWidth, rect.y, uidWidth, Editor::TextSize() * 1.0f}, uidString.c_str());
         Editor::EndIndent(rect, labelWidth);
         rect.y += Editor::TextSize() + Editor::SmallGap();
-
+        height += Editor::TextSize() + Editor::SmallGap();
 
         // Components
         std::vector<Component *> componentsToRemove;

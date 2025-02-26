@@ -38,14 +38,14 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 1,
                         "cameraPosition": [
-                            4.120477676391602,
-                            5.287532806396484,
-                            21.134925842285156
+                            3.5156030654907227,
+                            5.844825744628906,
+                            22.44805908203125
                         ],
                         "cameraTarget": [
-                            -2.18332576751709,
-                            -8.093125343322754,
-                            -60.182952880859375
+                            3.0276365280151367,
+                            -23.157485961914063,
+                            -150.81629943847656
                         ],
                         "cameraUp": [
                             -0.0031218656804412603,
@@ -218,6 +218,8 @@
                                 "type": "TransformComponent"
                             },
                             {
+                                "drawBoneNames": false,
+                                "drawBonesLines": false,
                                 "drawBounds": false,
                                 "drawSurface": true,
                                 "drawWireframe": false,
@@ -246,7 +248,7 @@
                             {
                                 "enabled": true,
                                 "eulerAngles": [
-                                    1.5700000524520874,
+                                    0.0,
                                     0.0,
                                     0.0
                                 ],
@@ -259,26 +261,25 @@
                                     10.0
                                 ],
                                 "scale": [
-                                    4.0,
-                                    4.0,
-                                    4.0
+                                    0.4000000059604645,
+                                    0.4000000059604645,
+                                    0.4000000059604645
                                 ],
                                 "type": "TransformComponent"
                             },
                             {
+                                "drawBoneNames": false,
+                                "drawBonesLines": true,
                                 "drawBounds": true,
                                 "drawSurface": true,
                                 "drawWireframe": false,
                                 "enabled": true,
-                                "filename": "navia.glb",
+                                "filename": "jogging.glb",
                                 "header": {
                                     "folded": false
                                 },
                                 "isPicking": true,
                                 "materials": [
-                                    {
-                                        "path": ""
-                                    },
                                     {
                                         "path": ""
                                     },
@@ -322,6 +323,8 @@
                         "type": "TransformComponent"
                     },
                     {
+                        "drawBoneNames": false,
+                        "drawBonesLines": false,
                         "drawBounds": true,
                         "drawSurface": true,
                         "drawWireframe": false,
@@ -397,6 +400,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740548201,
+    "saveTime": 1740564016,
     "selectedGameObjectUID": 8
 }

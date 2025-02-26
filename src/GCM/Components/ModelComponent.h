@@ -69,7 +69,13 @@ private:
     bool drawSurface = true;
     bool drawBounds = true;
     bool drawWireframe = false;
+    bool drawBonesLines = false;
+    bool drawBoneNames = false;
     RenderType renderType = RenderType::Default;
+
+    ModelAnimation *animations = nullptr;
+    int animationCount = 0;
+    int animationFrameCounter = 0;
 
     // UI
     FoldoutProperty materialsFoldout = FoldoutProperty("Materials");
