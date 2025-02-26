@@ -81,15 +81,29 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
         rect.y += Editor::TextSize() + Editor::SmallGap();
         Editor::BeginIndent(rect, Editor::LargeGap());
         for (int i = 0; i < model->meshCount; i++) {
+            const bool highlighed = highlightedMeshIndex == i;
+            DrawRectangleRec({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                             highlighed ? Editor::DisabledColor() : Editor::BackgroundColor());
             const Mesh mesh = model->meshes[i];
             int materialIndex = model->meshMaterial[i];
+            const float buttonWidth = Editor::TextWidth("Highlight") + Editor::LargeGap();
+            if (GuiButton({rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, highlighed ? "Cancel" : "Highlight")) {
+                if (highlighed)
+                    highlightedMeshIndex = -1;
+                else
+                    highlightedMeshIndex = i;
+            }
+            Editor::BeginIndent(rect, buttonWidth);
             oss.str("");
             oss << i << ". " << mesh.vertexCount << " vertices, " << mesh.triangleCount << " triangles" <<
                     ", material: [" << materialIndex << "]" << std::endl;
+            rect.y += Editor::TextSize() * 0.5f + Editor::SmallGap();
             GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
-            rect.y += Editor::TextSize() + Editor::SmallGap();
+            rect.y += Editor::TextSize() * 0.5f + Editor::SmallGap();
+            Editor::EndIndent(rect, buttonWidth);
         }
         Editor::EndIndent(rect, Editor::LargeGap());
+        rect.y += Editor::TextSize() + Editor::SmallGap();
 
         // Material
         oss.str("");
@@ -140,7 +154,11 @@ void ModelComponent::OnDraw(Scene *scene) const {
             // custom params
             for (auto &materialProp: materialProps)
                 materialProp.SendParamsToShader();
+
             DrawModel(*model, {0, 0, 0}, 1.0f, WHITE);
+
+            if (highlightedMeshIndex != -1)
+                DrawMesh(model->meshes[highlightedMeshIndex], highlightedMaterial, model->transform);
         } else if (renderType == RenderType::DebugUV)
             RaylibUtils::DrawModelWithShader(*model, {0, 0, 0}, 1.0f, WHITE, RaylibUtils::GetUVShader());
         else if (renderType == RenderType::DebugNormal)

@@ -36,21 +36,21 @@
                         ],
                         "backgroundMode": 1,
                         "cameraFovy": 45.0,
-                        "cameraMode": 4,
+                        "cameraMode": 1,
                         "cameraPosition": [
-                            12.793922424316406,
-                            9.011874198913574,
-                            25.148174285888672
+                            1.0636029243469238,
+                            7.911584377288818,
+                            22.89168357849121
                         ],
                         "cameraTarget": [
-                            0.0,
-                            0.0,
-                            0.0
+                            3.370562791824341,
+                            -4.454132556915283,
+                            -28.82780647277832
                         ],
                         "cameraUp": [
-                            0.0,
-                            1.0,
-                            0.0
+                            -0.029072273522615433,
+                            0.9993550777435303,
+                            -0.021147461608052254
                         ],
                         "enabled": true,
                         "header": {
@@ -253,19 +253,129 @@
                                     "folded": false
                                 },
                                 "position": [
+                                    3.0,
                                     0.0,
-                                    0.0,
-                                    0.0
+                                    10.0
                                 ],
                                 "scale": [
-                                    1.0,
-                                    1.0,
-                                    1.0
+                                    4.0,
+                                    4.0,
+                                    4.0
                                 ],
                                 "type": "TransformComponent"
+                            },
+                            {
+                                "drawBounds": true,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": true,
+                                "filename": "furina.obj",
+                                "header": {
+                                    "folded": false
+                                },
+                                "materials": [
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    },
+                                    {
+                                        "path": ""
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
                             }
                         ],
-                        "name": "Test Child 4",
+                        "name": "Character",
                         "sceneDepth": 2,
                         "uid": 8
                     }
@@ -368,6 +478,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740515536,
-    "selectedGameObjectUID": 6
+    "saveTime": 1740530750,
+    "selectedGameObjectUID": 8
 }

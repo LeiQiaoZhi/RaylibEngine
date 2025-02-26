@@ -20,25 +20,50 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     Editor::EndIndent(rect, labelWidth + Editor::SmallGap());
 
     // load material
-    const float buttonWidth = rect.width - Editor::TextWidth("Default") - Editor::SmallGap() * 2;
-    if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.5f}, "Load Material")) {
+    const float defaultWidth = Editor::TextWidth("Default") + Editor::SmallGap() * 2;
+    const float highlightWidth = Editor::TextWidth("Highlight") + Editor::SmallGap() * 2;
+    const float loadWidth = rect.width - defaultWidth - highlightWidth;
+    if (GuiButton(Rectangle{rect.x, rect.y, loadWidth, Editor::TextSize() * 1.5f}, "Load Material")) {
         LoadMaterialFromFile(filename);
+    }
+    Editor::BeginIndent(rect, loadWidth);
+    if (GuiButton(Rectangle{rect.x, rect.y, highlightWidth, Editor::TextSize() * 1.5f},
+                  highlighted ? "Cancel" : "Highlight")) {
+        if (model == nullptr) {
+            statusText = "Model is null";
+            statusWarning = true;
+        } else {
+            highlighted = !highlighted;
+            statusText = highlighted ? "Material highlighted" : "Material unhighlighted";
+            statusWarning = false;
+            if (highlighted) {
+                originalShader = model->materials[materialIndex].shader;
+                model->materials[materialIndex].shader = highlightShader;
+            } else {
+                model->materials[materialIndex].shader = originalShader;
+            }
+        }
     }
 
     // load default
-    Editor::BeginIndent(rect, buttonWidth);
-    if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Default")) {
+    Editor::BeginIndent(rect, highlightWidth);
+    if (GuiButton(Rectangle{rect.x, rect.y, defaultWidth, Editor::TextSize() * 1.5f}, "Default")) {
         if (model == nullptr) {
             statusText = "Model is null";
             statusWarning = true;
             return;
         }
         UnloadMaterial(model->materials[materialIndex]);
+
         model->materials[materialIndex] = LoadMaterialDefault();
         statusText = "Material set to default";
         statusWarning = false;
+
+        highlighted = false;
+        originalShader = model->materials[materialIndex].shader;
     }
-    Editor::EndIndent(rect, buttonWidth);
+    Editor::EndIndent(rect, highlightWidth);
+    Editor::EndIndent(rect, loadWidth);
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     // status

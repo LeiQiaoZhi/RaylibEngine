@@ -1,0 +1,31 @@
+{
+  "Shader": {
+    "Vertex": "custom.vert",
+    "Fragment": "custom.frag"
+  },
+  "Maps": [
+    {
+      "Type": 0,
+      "Path": "/textures/furina_body.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ]
+    }
+  ],
+  "Params": [
+    {
+      "Name": "iSpecularPower",
+      "Type": "float",
+      "Value": 20.0
+    },
+    {
+      "Name": "iSpecularStrength",
+      "Type": "float",
+      "Value": 0.1
+    }
+  ]
+}
+

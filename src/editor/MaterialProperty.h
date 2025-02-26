@@ -11,13 +11,16 @@ class MaterialProperty {
 public:
     explicit MaterialProperty(Model *model, const int materialIndex)
         : model(model), materialIndex(materialIndex) {
+        highlightShader = LoadShader(
+            (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
+            (std::string(INTERNAL_ASSET_DIR) + "/shaders/highlight.frag").c_str());
     }
 
     void OnEditorGUI(Rectangle &rect);
 
     float GetEditorHeight() const;
 
-    void SetModel(Model * model) {
+    void SetModel(Model *model) {
         this->model = model;
     }
 
@@ -29,7 +32,7 @@ public:
         std::strncpy(filename, input, sizeof(filename));
     }
 
-    void LoadMaterialFromFile(const char* fullPath);
+    void LoadMaterialFromFile(const char *fullPath);
 
     void LoadMaterial() {
         LoadMaterialFromFile(filename);
@@ -47,6 +50,9 @@ private:
     int materialIndex = 0;
     std::string currentMaterialFilename; // only change when loaded
     std::vector<ShaderParam> shaderParams;
+    Shader highlightShader;
+    Shader originalShader;
+    bool highlighted = false;
 
     float height;
     std::string statusText = "";
