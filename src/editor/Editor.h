@@ -58,17 +58,27 @@ public:
                              Fade(ContrastBlackOrWhite(TextColor()), 0.5f));
             GuiLabel({rect.x, rect.y, rect.width, TextSize() * 1.0f}, text);
 
-            const char * cross = GuiIconText(ICON_CROSS_SMALL, "");
+            const char *cross = GuiIconText(ICON_CROSS_SMALL, "");
             if (GuiLabelButton(
                 {rect.x + rect.width - TextSize() * 1.0f, rect.y, TextSize() * 1.0f, TextSize() * 1.0f},
                 cross
-                )) {
+            )) {
                 statusText.clear();
             }
 
             rect.y += TextSize() + SmallGap();
             EndTextColor(originalColor);
         }
+    }
+
+    static Color BeginButtonColor(Color color) {
+        Color original = GetColor(GuiGetStyle(BUTTON, BASE_COLOR_NORMAL));
+        GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt(color));
+        return original;
+    }
+
+    static void EndButtonColor(Color color) {
+        GuiSetStyle(BUTTON, BASE_COLOR_NORMAL, ColorToInt(color));
     }
 };
 

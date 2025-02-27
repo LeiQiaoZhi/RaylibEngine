@@ -38,14 +38,14 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 1,
                         "cameraPosition": [
-                            -20.338172912597656,
-                            11.900888442993164,
-                            42.66120147705078
+                            14.55783462524414,
+                            10.897583961486816,
+                            39.11933898925781
                         ],
                         "cameraTarget": [
-                            93.25843048095703,
-                            -18.80525779724121,
-                            -87.77970123291016
+                            -22.54241943359375,
+                            -8.871224403381348,
+                            -139.6289520263672
                         ],
                         "cameraUp": [
                             -0.0031218656804412603,
@@ -111,7 +111,7 @@
                                 "type": "LightComponent"
                             }
                         ],
-                        "name": "Light 1",
+                        "name": "Directi",
                         "sceneDepth": 2,
                         "uid": 4
                     },
@@ -157,7 +157,7 @@
                                 "type": "LightComponent"
                             }
                         ],
-                        "name": "Light 2",
+                        "name": "Ambient",
                         "sceneDepth": 2,
                         "uid": 5
                     }
@@ -238,7 +238,7 @@
                                 "type": "ModelComponent"
                             }
                         ],
-                        "name": "Plane\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+                        "name": "Ground",
                         "sceneDepth": 2,
                         "uid": 7
                     },
@@ -269,12 +269,12 @@
                             },
                             {
                                 "drawBoneNames": false,
-                                "drawBonesLines": true,
+                                "drawBonesLines": false,
                                 "drawBounds": true,
                                 "drawSurface": true,
                                 "drawWireframe": false,
                                 "enabled": true,
-                                "filename": "jogging.glb",
+                                "filename": "lisa.glb",
                                 "header": {
                                     "folded": false
                                 },
@@ -383,7 +383,7 @@
                 ],
                 "enabled": false,
                 "header": {
-                    "folded": false
+                    "folded": true
                 },
                 "size": [
                     100.0,
@@ -400,6 +400,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740565955,
-    "selectedGameObjectUID": 7
+    "saveTime": 1740643498,
+    "selectedGameObjectUID": 8
 }

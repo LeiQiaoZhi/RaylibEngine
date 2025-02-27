@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include <string>
 
+#include "../../editor/AnimationProperty.h"
 #include "../../editor/FoldoutProperty.h"
 #include "../../editor/MaterialProperty.h"
 
@@ -45,6 +46,8 @@ public:
 
     void LoadModelFromFile(const std::string &path);
 
+    void LoadModelAnimationsFromPath(const std::string &path);
+
     void SetModelFromMesh(const Mesh &mesh);
 
     void OnDrawGizmosBottom(Scene *scene) const override;
@@ -74,12 +77,13 @@ private:
     RenderType renderType = RenderType::Default;
 
     ModelAnimation *animations = nullptr;
-    int animationCount = 0;
-    int animationFrameCounter = 0;
+    int activeAnimationIndex = -1;
 
     // UI
     FoldoutProperty materialsFoldout = FoldoutProperty("Materials");
     std::vector<MaterialProperty> materialProps = {};
+    FoldoutProperty animationsFoldout = FoldoutProperty("Animations");
+    std::vector<AnimationProperty> animationProps = {};
     FoldoutProperty debugFoldout = FoldoutProperty("Debug");
     bool editMode;
     std::string statusText;

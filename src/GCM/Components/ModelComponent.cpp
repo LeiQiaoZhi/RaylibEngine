@@ -42,7 +42,7 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
     // status
     Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
-    // Material Loading
+    // Materials
     materialsFoldout.SetLabel(TextFormat("Materials [%d]", materialProps.size()));
     materialsFoldout.OnEditorGUI(rect);
     if (!materialsFoldout.IsFolded()) {
@@ -52,6 +52,18 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
         Editor::EndIndent(rect, Editor::LargeGap());
     }
 
+    // Animations
+    animationsFoldout.SetLabel(TextFormat("Animations [%d]", animationProps.size()));
+    animationsFoldout.OnEditorGUI(rect);
+    if (!animationsFoldout.IsFolded()) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        for (auto &animationProp: animationProps)
+            animationProp.OnEditorGUI(rect);
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
+
+
+    // Debug
     debugFoldout.OnEditorGUI(rect);
     if (!debugFoldout.IsFolded() && model != nullptr) {
         Editor::BeginIndent(rect, Editor::LargeGap());
@@ -254,42 +266,10 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
         rlEnableDepthTest();
     }
 
-    // bones -- when playing animation
-    ModelAnimation *animation = &animations[0];
-    if (drawBonesLines) {
-        rlDisableDepthTest();
-        for (int i = 0; i < animation->boneCount; i++) {
-            const BoneInfo bone = animation->bones[i];
-            const Transform boneTransform = animation->framePoses[animationFrameCounter][i];
-            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
-            if (bone.parent >= 0 && bone.parent < model->boneCount) {
-                const Transform parentBoneTransform = animation->framePoses[animationFrameCounter][bone.parent];
-                const Vector3 parentBonePosition = Vector3Transform(parentBoneTransform.translation, model->transform);
-                DrawLine3D(bonePosition, parentBonePosition, ORANGE);
-            }
-            // DrawSphere(bonePosition, radius, ORANGE);
-        }
+    if (activeAnimationIndex != -1) {
+        animationProps[activeAnimationIndex].DrawGizmos(scene, drawBonesLines, drawBoneNames, radius);
     }
 
-    if (drawBoneNames) {
-        EndMode3D();
-        for (int i = 0; i < animation->boneCount; i++) {
-            const BoneInfo bone = animation->bones[i];
-            const Transform boneTransform = animation->framePoses[animationFrameCounter][i];
-            const Vector3 bonePosition = Vector3Transform(boneTransform.translation, model->transform);
-
-            const float padding = 5;
-            const float width = MeasureText(bone.name, 10);
-            Vector2 screenPosition = GetWorldToScreenEx(bonePosition, *camera, scene->screenSpaceRect.width,
-                                                        scene->screenSpaceRect.height);
-            screenPosition += Vector2{radius, -radius}; // offset a bit
-            DrawRectangle(screenPosition.x - padding, screenPosition.y - padding,
-                          width + padding * 2, 10 + padding * 2, Fade(BLACK, 0.5f));
-            DrawText(bone.name, screenPosition.x, screenPosition.y, 10, WHITE);
-        }
-        BeginMode3D(*camera);
-        rlEnableDepthTest();
-    }
 }
 
 void ModelComponent::Start() {
@@ -307,9 +287,8 @@ void ModelComponent::Update() {
         SetHighlightedMesh(selectedMeshIndex);
     }
 
-    if (animationCount > 0) {
-        animationFrameCounter = (animationFrameCounter + 1) % animations[0].frameCount;
-        UpdateModelAnimation(*model, animations[0], animationFrameCounter);
+    if (activeAnimationIndex != -1) {
+        animationProps[activeAnimationIndex].Update();
     }
 }
 
@@ -338,10 +317,7 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         for (int i = 0; i < model->meshCount; i++)
             materialProps.emplace_back(model, i);
 
-        // load animation
-        if (!IsFileExtension(path.c_str(), ".obj") && !IsFileExtension(path.c_str(), ".vox")) {
-            animations = LoadModelAnimations(path.c_str(), &animationCount);
-        }
+        LoadModelAnimationsFromPath(path);
 
         statusText = "Model loaded";
         statusWarning = false;
@@ -349,6 +325,17 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         statusText = "File format not supported";
         statusWarning = true;
     }
+}
+
+void ModelComponent::LoadModelAnimationsFromPath(const std::string &path) {
+    if (IsFileExtension(path.c_str(), ".obj") || IsFileExtension(path.c_str(), ".vox")) return;
+
+    int animationCount = 0;
+    animations = LoadModelAnimations(path.c_str(), &animationCount);
+
+    animationProps.clear();
+    for (int i = 0; i < animationCount; i++)
+        animationProps.emplace_back(model, &animations[i], i, &activeAnimationIndex);
 }
 
 void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
@@ -359,6 +346,9 @@ void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
     materialProps.clear();
     for (int i = 0; i < model->meshCount; i++)
         materialProps.emplace_back(model, i);
+
+    // mesh has no animations
+    animationProps.clear();
 }
 
 void ModelComponent::OnDrawGizmosBottom(Scene *scene) const {
