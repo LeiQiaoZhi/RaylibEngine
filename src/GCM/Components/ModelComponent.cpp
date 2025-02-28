@@ -279,11 +279,12 @@ void ModelComponent::Update() {
     if (model == nullptr) return;
     model->transform = gameObject->GetTransform()->GetTransformMatrix();
 
-    if (isPicking && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    bool insidePanel = gameObject->scene->IsInsideScenePanel(GetMousePosition());
+    if (isPicking && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && insidePanel) {
         const Ray ray = gameObject->scene->GetMouseScreenToWorldRay();
         int selectedMeshIndex = -1;
         RayCollision selection = RaylibUtils::GetRayCollisionModel(ray, *model, &selectedMeshIndex);
-        std::cout << "Selection: " << selectedMeshIndex << std::endl;
+        std::cout << "Selected mesh: " << selectedMeshIndex << std::endl;
         SetHighlightedMesh(selectedMeshIndex);
     }
 

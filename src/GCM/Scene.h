@@ -3,6 +3,7 @@
 #include <string>
 
 #include "GameObject.h"
+#include "../editor/GameObjectHierarchyProperty.h"
 #include "Components/CameraComponent.h"
 #include "Components/LightComponent.h"
 
@@ -54,10 +55,14 @@ public:
 
     Ray GetMouseScreenToWorldRay();
 
+    bool IsInsideScenePanel(const Vector2 point) const {
+        return CheckCollisionPointRec(point, screenSpaceRect);
+    }
+
     std::string name;
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};
-    Model skybox{};
+    GameObjectHierarchyProperty* rootFileHierarchyProperty = nullptr;
 
 private:
     GameObject *root = nullptr;

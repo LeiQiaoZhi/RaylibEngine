@@ -1,6 +1,7 @@
 #include "CameraComponent.h"
 #include "raylib.h"
 #include "rlgl.h"
+#include "../Scene.h"
 #include "../../editor/Editor.h"
 
 void CameraComponent::OnEditorGUI(Rectangle &rect) {
@@ -54,14 +55,11 @@ void CameraComponent::Start() {
 }
 
 void CameraComponent::Update() {
-    if (IsCursorHidden())
+    if (!gameObject->scene->IsInsideScenePanel(GetMousePosition())) return;
+    if (updating)
         UpdateCamera(camera, cameraMode);
     if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-        if (IsCursorHidden()) {
-            EnableCursor();
-        } else {
-            DisableCursor();
-        }
+        updating = !updating;
     }
 }
 
@@ -95,7 +93,10 @@ void CameraComponent::FromJson(const nlohmann::json &json) {
     camera->fovy = json.value("cameraFovy", 45.0f);
     backgroundMode = static_cast<BackgroundMode>(json.value("backgroundMode", backgroundMode));
     if (json.contains("backgroundColor"))
-        backgroundColor = {json["backgroundColor"][0], json["backgroundColor"][1], json["backgroundColor"][2], json["backgroundColor"][3]};
+        backgroundColor = {
+            json["backgroundColor"][0], json["backgroundColor"][1], json["backgroundColor"][2],
+            json["backgroundColor"][3]
+        };
     skyboxFlipY = json.value("skyboxFlipY", skyboxFlipY);
     if (json.contains("skyboxMaterial"))
         skyboxMaterialProperty.FromJson(json["skyboxMaterial"]);

@@ -123,6 +123,8 @@ void Scene::Load(const char *path) {
     // initialize scene
     StartComponents();
     FindLights();
+
+    rootFileHierarchyProperty = new GameObjectHierarchyProperty(root, false);
 }
 
 void Scene::DrawBackground() {

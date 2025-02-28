@@ -111,7 +111,7 @@
                                 "type": "LightComponent"
                             }
                         ],
-                        "name": "Directi",
+                        "name": "Directional",
                         "sceneDepth": 2,
                         "uid": 4
                     },
@@ -160,6 +160,52 @@
                         "name": "Ambient",
                         "sceneDepth": 2,
                         "uid": 5
+                    },
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "header": {
+                                    "folded": false
+                                },
+                                "position": [
+                                    15.0,
+                                    10.0,
+                                    -5.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            },
+                            {
+                                "color": [
+                                    231,
+                                    174,
+                                    233,
+                                    255
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
+                                "intensity": 1.3642096519470215,
+                                "lightType": 2,
+                                "range": 23.363656997680664,
+                                "type": "LightComponent"
+                            }
+                        ],
+                        "name": "Point",
+                        "sceneDepth": 2,
+                        "uid": 1947351954
                     }
                 ],
                 "components": [
@@ -265,7 +311,7 @@
                                     "folded": false
                                 },
                                 "position": [
-                                    6.0,
+                                    8.0,
                                     0.0,
                                     0.0
                                 ],
@@ -284,7 +330,7 @@
                                     "folded": true
                                 },
                                 "drawBoneNames": false,
-                                "drawBonesLines": false,
+                                "drawBonesLines": true,
                                 "drawBounds": true,
                                 "drawSurface": true,
                                 "drawWireframe": false,
@@ -373,7 +419,7 @@
                         "type": "ModelComponent"
                     }
                 ],
-                "name": "Model",
+                "name": "Models",
                 "sceneDepth": 1,
                 "uid": 6
             }
@@ -427,6 +473,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740645992,
+    "saveTime": 1740733782,
     "selectedGameObjectUID": 8
 }

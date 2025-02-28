@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Scene.h"
+#include "../utils/Utils.h"
 #include "Components/Component.h"
 #include "Components/TransformComponent.h"
 
@@ -118,6 +119,13 @@ public:
     void TryRemoveComponent(Component *component, std::string *status_text, bool *status_warning);
 
     void RemoveComponent(Component *component);
+
+    void AddChild(const char *str) {
+        GameObject *newObj = new GameObject(str, Utils::GenerateUID(str));
+        AddChild(newObj);
+    }
+
+    void RemoveChild(GameObject *child);
 
     Scene *scene = nullptr;
 

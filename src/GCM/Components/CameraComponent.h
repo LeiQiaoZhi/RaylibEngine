@@ -74,6 +74,7 @@ private:
     ColorProperty backgroundColorProperty = ColorProperty(&backgroundColor, "Background Color", false);
     MaterialProperty skyboxMaterialProperty = MaterialProperty(&skybox, 0);
     float height;
+    bool updating = false;
 };
 
 

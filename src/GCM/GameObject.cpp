@@ -267,3 +267,12 @@ void GameObject::RemoveComponent(Component *component) {
         delete component;
     }
 }
+
+void GameObject::RemoveChild(GameObject *child) {
+    // remove child from children
+    const auto toRemoveIterator = std::find(children.begin(), children.end(), child);
+    if (toRemoveIterator != children.end()) {
+        children.erase(toRemoveIterator);
+        delete child;
+    }
+}

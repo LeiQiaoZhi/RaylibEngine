@@ -63,39 +63,42 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) {
 
     Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
-    // DFS to draw all game objects
-    std::vector<GameObject *> toDraw;
-    toDraw.push_back(scene.GetRoot());
-    int i = 0;
-    while (!toDraw.empty()) {
-        const GameObject *current = toDraw.back();
-        toDraw.pop_back();
-        if (!current) continue;
-        std::string spaces(current->GetSceneDepth() * 4, ' ');
-        const Rectangle itemRect = {
-            rect.x, rect.y,
-            rect.width, Editor::TextSizeF()
-        };
-        Color buttonColor = bgColor;
-        if (scene.selectedGameObjectUID == current->GetUID()) {
-            buttonColor = Editor::DisabledColor(); // selected
-        }
-        if (CheckCollisionPointRec(GetMousePosition(), itemRect)) {
-            buttonColor = Editor::DisabledColor(); // hover
-            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                scene.selectedGameObjectUID = current->GetUID();
-            }
-        }
-        DrawRectangleRec(itemRect, buttonColor);
-        std::string text = spaces + current->GetName();
-        GuiLabel(itemRect, text.c_str());
-        rect.y += Editor::TextSize();
+    if (scene.rootFileHierarchyProperty != nullptr)
+        scene.rootFileHierarchyProperty->OnEditorGUI(rect);
 
-        toDraw.insert(toDraw.end(), current->GetChildren().rbegin(), current->GetChildren().rend());
-        i++;
-        if (i > totalCount)
-            break;
-    }
+    // DFS to draw all game objects
+    // std::vector<GameObject *> toDraw;
+    // toDraw.push_back(scene.GetRoot());
+    // int i = 0;
+    // while (!toDraw.empty()) {
+    //     const GameObject *current = toDraw.back();
+    //     toDraw.pop_back();
+    //     if (!current) continue;
+    //     std::string spaces(current->GetSceneDepth() * 4, ' ');
+    //     const Rectangle itemRect = {
+    //         rect.x, rect.y,
+    //         rect.width, Editor::TextSizeF()
+    //     };
+    //     Color buttonColor = bgColor;
+    //     if (scene.selectedGameObjectUID == current->GetUID()) {
+    //         buttonColor = Editor::DisabledColor(); // selected
+    //     }
+    //     if (CheckCollisionPointRec(GetMousePosition(), itemRect)) {
+    //         buttonColor = Editor::DisabledColor(); // hover
+    //         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    //             scene.selectedGameObjectUID = current->GetUID();
+    //         }
+    //     }
+    //     DrawRectangleRec(itemRect, buttonColor);
+    //     std::string text = spaces + current->GetName();
+    //     GuiLabel(itemRect, text.c_str());
+    //     rect.y += Editor::TextSize();
+    //
+    //     toDraw.insert(toDraw.end(), current->GetChildren().rbegin(), current->GetChildren().rend());
+    //     i++;
+    //     if (i > totalCount)
+    //         break;
+    // }
 
     renderer_->SetContentSize(renderer_->GetContentSize().x, rect.y - renderer_->GetContentTopLeft().y);
     renderer_->End();
