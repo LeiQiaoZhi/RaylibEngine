@@ -365,6 +365,9 @@ nlohmann::json ModelComponent::ToJson() const {
     j["drawBoneNames"] = drawBoneNames;
     j["renderType"] = static_cast<int>(renderType);
     j["isPicking"] = isPicking;
+    j["materialFoldout"] = materialsFoldout.ToJson();
+    j["animationFoldout"] = animationsFoldout.ToJson();
+    j["debugFoldout"] = debugFoldout.ToJson();
 
     std::vector<nlohmann::json> materialPropsJson;
     for (const auto &materialProp: materialProps)
@@ -382,6 +385,9 @@ void ModelComponent::FromJson(const nlohmann::json &json) {
     drawBoneNames = json.value("drawBoneNames", drawBoneNames);
     renderType = static_cast<RenderType>(json.at("renderType").get<int>());
     isPicking = json.value("isPicking", isPicking);
+    materialsFoldout.FromJson(json.value("materialFoldout", materialsFoldout.ToJson()));
+    animationsFoldout.FromJson(json.value("animationFoldout", animationsFoldout.ToJson()));
+    debugFoldout.FromJson(json.value("debugFoldout", debugFoldout.ToJson()));
 
     LoadModelFromFile(filename);
 

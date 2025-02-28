@@ -218,6 +218,12 @@
                                 "type": "TransformComponent"
                             },
                             {
+                                "animationFoldout": {
+                                    "folded": false
+                                },
+                                "debugFoldout": {
+                                    "folded": false
+                                },
                                 "drawBoneNames": false,
                                 "drawBonesLines": false,
                                 "drawBounds": false,
@@ -229,6 +235,9 @@
                                     "folded": false
                                 },
                                 "isPicking": false,
+                                "materialFoldout": {
+                                    "folded": false
+                                },
                                 "materials": [
                                     {
                                         "path": "plane.mat.json"
@@ -268,6 +277,12 @@
                                 "type": "TransformComponent"
                             },
                             {
+                                "animationFoldout": {
+                                    "folded": false
+                                },
+                                "debugFoldout": {
+                                    "folded": true
+                                },
                                 "drawBoneNames": false,
                                 "drawBonesLines": false,
                                 "drawBounds": true,
@@ -279,6 +294,9 @@
                                     "folded": false
                                 },
                                 "isPicking": true,
+                                "materialFoldout": {
+                                    "folded": true
+                                },
                                 "materials": [
                                     {
                                         "path": ""
@@ -323,6 +341,12 @@
                         "type": "TransformComponent"
                     },
                     {
+                        "animationFoldout": {
+                            "folded": false
+                        },
+                        "debugFoldout": {
+                            "folded": true
+                        },
                         "drawBoneNames": false,
                         "drawBonesLines": false,
                         "drawBounds": true,
@@ -334,6 +358,9 @@
                             "folded": false
                         },
                         "isPicking": false,
+                        "materialFoldout": {
+                            "folded": true
+                        },
                         "materials": [
                             {
                                 "path": "car.mat.json"
@@ -400,6 +427,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740643498,
+    "saveTime": 1740645992,
     "selectedGameObjectUID": 8
 }

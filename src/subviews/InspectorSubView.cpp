@@ -71,7 +71,7 @@ void InspectorSubView::Render(Scene &scene, Vector2 position) {
         rect.y += Editor::LargeGap();
         addComponentProperty.SetTargetGameObject(selectedGameObject);
         addComponentProperty.OnEditorGUI(rect);
-        height += addComponentProperty.GetEditorHeight();
+        height += addComponentProperty.GetEditorHeight() + Editor::LargeGap();
     }
     renderer_->End();
     renderer_->SetContentSize(renderer_->GetContentSize().x, height);

@@ -23,6 +23,10 @@ public:
         label = str;
     }
 
+    void FromJson(const nlohmann::json &json);
+
+    nlohmann::json ToJson() const;
+
 private:
     std::string label;
     bool folded;

@@ -14,3 +14,13 @@ void FoldoutProperty::OnEditorGUI(Rectangle &rect) {
 float FoldoutProperty::GetEditorHeight() const {
     return Editor::TextSize() * 1 + Editor::SmallGap();
 }
+
+void FoldoutProperty::FromJson(const nlohmann::json &json) {
+    folded = json["folded"];
+}
+
+nlohmann::json FoldoutProperty::ToJson() const {
+    json j;
+    j["folded"] = folded;
+    return j;
+}
