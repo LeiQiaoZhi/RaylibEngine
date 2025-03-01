@@ -22,7 +22,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE vendor/raylib/src)
 # Add raygui include directory
 target_include_directories(${PROJECT_NAME} PRIVATE vendor/raygui/src)
 
-target_include_directories(${PROJECT_NAME} PRIVATE vendor/sol2/single)
+target_include_directories(${PROJECT_NAME} PRIVATE vendor/sol2/include)
 
 
 # Define path to ANGLE libraries if using ANGLE

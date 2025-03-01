@@ -16,23 +16,9 @@
 #include "subviews/AssetsSubView.h"
 #include "subviews/HierarchySubView.h"
 #include "subviews/InspectorSubView.h"
+#include "sol/sol.hpp"
 
 Logger logger;
-
-int LuaPrint(lua_State *L) {
-    const char *message = lua_tostring(L, 1); // get argument
-    if (!message) message = "(error: message is not a string)";
-
-    lua_Debug d;
-    if (lua_getstack(L, 1, &d)) {
-        lua_getinfo(L, "nSl", &d); // name, source, line
-        logger.Log(TextFormat("%s:%d: %s", d.short_src, d.currentline, message));
-    } else {
-        logger.Log(message);
-    }
-    return 0;
-}
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -41,22 +27,18 @@ int main() {
     //--------------------------------------------------------------------------------------
 
     // Lua
-    lua_State *L = luaL_newstate();
-    luaL_openlibs(L);
+    sol::state lua;
+    lua.open_libraries(sol::lib::base);
 
-    lua_register(L, "log", LuaPrint);
-
-    LuaUtils::LuaDoFile(L, std::string(ASSET_DIR) + "/lua/test.lua");
+    lua.script_file(std::string(ASSET_DIR) + "/lua/test.lua");
 
     // lua config
-    LuaUtils::LuaDoFile(L, std::string(ASSET_DIR) + "/lua/config.lua");
-    const int windowWidth = LuaUtils::LuaGetIntegerOrDefault(L, "windowWidth", 800);
-    const int windowHeight = LuaUtils::LuaGetIntegerOrDefault(L, "windowHeight", 450);
-    const std::string windowName = LuaUtils::LuaGetStringOrDefault(L, "windowName", "Engine");
-    const std::string style = LuaUtils::LuaGetStringOrDefault(L, "style", "dark");
-    const int cameraMode = LuaUtils::LuaGetIntegerOrDefault(L, "cameraMode", CAMERA_ORBITAL);
-    const int uiScale = LuaUtils::LuaGetIntegerOrDefault(L, "uiScale", 1);
-
+    lua.script_file(std::string(ASSET_DIR) + "/lua/config.lua");
+    const int windowWidth = lua["windowWidth"].get_or(800);
+    const int windowHeight = lua["windowHeight"].get_or(450);
+    const std::string windowName = lua["windowName"].get_or(std::string("Engine"));
+    const std::string style = lua["style"].get_or(std::string("dark"));
+    const int uiScale = lua["uiScale"].get_or(1);
     InitWindow(windowWidth, windowHeight, windowName.c_str());
 
     const GameSubView gameSubView(windowWidth / 2, windowHeight);
@@ -89,18 +71,11 @@ int main() {
         scene.UpdateComponents();
         //----------------------------------------------------------------------------------
 
-        // Lua
-        lua_getglobal(L, "update");
-        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-            std::cerr << "Error calling function: " << lua_tostring(L, -1) << std::endl;
-            lua_pop(L, 1);
-        }
-
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
-        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
         gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
         consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
@@ -112,14 +87,12 @@ int main() {
 
         DrawFPS(windowWidth - 80, 0);
 
-
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    lua_close(L);
     CloseWindow(); // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
 
