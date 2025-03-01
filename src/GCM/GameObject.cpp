@@ -21,24 +21,12 @@ GameObject::GameObject(nlohmann::json j, Scene *scene) {
 
     // components
     for (const auto &componentJson: j["components"]) {
-        Component *component = nullptr;
+        if (!componentJson.contains("type"))
+            continue;
         const std::string type = componentJson["type"];
-        if (type == "CameraComponent") {
-            component = new CameraComponent();
-        } else if (type == "DebugGridBoxComponent") {
-            component = new DebugGridBoxComponent();
-        } else if (type == "DebugGridComponent") {
-            component = new DebugGridComponent();
-        } else if (type == "JelloComponent") {
-            component = new JelloComponent();
-        } else if (type == "LightComponent") {
-            component = new LightComponent();
-        } else if (type == "ModelComponent") {
-            component = new ModelComponent();
-        } else if (type == "ProceduralMeshComponent") {
-            component = new ProceduralMeshComponent();
-        } else if (type == "TransformComponent") {
-            component = new TransformComponent();
+        const std::function<Component *()> componentFactory = Component::ComponentTypeMap()[type];
+        Component *component = componentFactory();
+        if (type == "TransformComponent") {
             transform = dynamic_cast<TransformComponent *>(component);
         }
         if (component) {
@@ -203,15 +191,19 @@ nlohmann::json GameObject::ToJson() const {
 void GameObject::TryAddComponent(Component *component, std::string *status_text, bool *status_warning) {
     if (typeid(*component) == typeid(TransformComponent)) {
         if (transform) {
-            *status_text = "Transform component already exists";
-            *status_warning = true;
+            if (status_text != nullptr)
+                *status_text = "Transform component already exists";
+            if (status_warning != nullptr)
+                *status_warning = true;
             return;
         }
         transform = dynamic_cast<TransformComponent *>(component);
     } else {
         AddComponent(component);
-        *status_text = "Component added";
-        *status_warning = false;
+        if (status_text != nullptr)
+            *status_text = "Component added";
+        if (status_warning != nullptr)
+            *status_warning = false;
     }
 }
 

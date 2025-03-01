@@ -422,6 +422,44 @@
                 "name": "Models",
                 "sceneDepth": 1,
                 "uid": 6
+            },
+            {
+                "children": [],
+                "components": [
+                    {
+                        "enabled": true,
+                        "eulerAngles": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        "header": {
+                            "folded": false
+                        },
+                        "position": [
+                            -0.06613226234912872,
+                            0.0,
+                            0.9192063808441162
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "type": "TransformComponent"
+                    },
+                    {
+                        "enabled": true,
+                        "header": {
+                            "folded": false
+                        },
+                        "loadedScriptName": "test.lua",
+                        "type": "ScriptComponent"
+                    }
+                ],
+                "name": "Custom Script",
+                "sceneDepth": 1,
+                "uid": 1947399925
             }
         ],
         "components": [
@@ -473,6 +511,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740733782,
-    "selectedGameObjectUID": 8
+    "saveTime": 1740820060,
+    "selectedGameObjectUID": 1947399925
 }

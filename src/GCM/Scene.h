@@ -6,6 +6,7 @@
 #include "../editor/GameObjectHierarchyProperty.h"
 #include "Components/CameraComponent.h"
 #include "Components/LightComponent.h"
+#include "../context/RuntimeContext.h"
 
 #define MAX_LIGHTS 4
 
@@ -63,6 +64,9 @@ public:
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};
     GameObjectHierarchyProperty* rootFileHierarchyProperty = nullptr;
+
+    // TODO: differentiate editor and runtime context, and handle lifetime of contexts
+    RuntimeContext runtimeContext;
 
 private:
     GameObject *root = nullptr;

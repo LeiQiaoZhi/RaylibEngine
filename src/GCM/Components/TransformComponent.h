@@ -46,6 +46,14 @@ public:
 
     void FromJson(const nlohmann::json &json) override;
 
+    Vector3 GetLocalPosition() const {
+        return position;
+    }
+
+    void SetLocalPosition(const Vector3 &pos) {
+        position = pos;
+    }
+
 private:
     Vector3 position = {0.0f, 0.0f, 0.0f};
     Vector3 eulerAngles = {0.0f, 0.0f, 0.0f};

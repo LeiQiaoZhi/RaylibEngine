@@ -26,8 +26,11 @@ int main() {
     // Initialization
     //--------------------------------------------------------------------------------------
 
+    // Load start scene
+    Scene scene;
+
     // Lua
-    sol::state lua;
+    sol::state &lua = scene.runtimeContext.luaManager.lua;
     lua.open_libraries(sol::lib::base);
 
     lua.script_file(std::string(ASSET_DIR) + "/lua/test.lua");
@@ -57,10 +60,7 @@ int main() {
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 16 * uiScale);
 
-    // Load start scene
-    Scene scene;
     hierarchySubView.LoadScene(scene);
-
     //--------------------------------------------------------------------------------------
 
     // Main game loop

@@ -121,7 +121,7 @@ void Scene::Load(const char *path) {
     root = new GameObject(j["root"], this);
 
     // initialize scene
-    StartComponents();
+    // StartComponents();
     FindLights();
 
     rootFileHierarchyProperty = new GameObjectHierarchyProperty(root, false);

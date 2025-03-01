@@ -9,6 +9,7 @@
 #include "DebugGridComponent.h"
 #include "JelloComponent.h"
 #include "LightComponent.h"
+#include "ScriptComponent.h"
 #include "TransformComponent.h"
 
 std::map<std::string, std::function<Component *()> > &Component::ComponentTypeMap() {
@@ -21,6 +22,7 @@ std::map<std::string, std::function<Component *()> > &Component::ComponentTypeMa
         {"ModelComponent", []() { return new ModelComponent(); }},
         {"ProceduralMeshComponent", []() { return new ProceduralMeshComponent(); }},
         {"TransformComponent", []() { return new TransformComponent(); }},
+        {"ScriptComponent", []() { return new ScriptComponent(); }},
     };
     return map;
 }
