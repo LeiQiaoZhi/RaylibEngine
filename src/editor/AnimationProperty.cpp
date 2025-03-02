@@ -38,7 +38,8 @@ void AnimationProperty::OnEditorGUI(Rectangle &rect) {
     Editor::BeginIndent(rect, resetWidth);
     const char *loopLabel = GuiIconText(ICON_RESTART, "");
     const float loopWidth = Editor::TextWidth(loopLabel);
-    Color originalButtonColor = Editor::BeginButtonColor(isLooping ? Editor::FocusedColor() : Editor::BackgroundColor());
+    Color originalButtonColor =
+            Editor::BeginButtonColor(isLooping ? Editor::FocusedColor() : Editor::BackgroundColor());
     if (GuiButton({rect.x, rect.y, loopWidth, lineHeight}, loopLabel)) {
         isLooping = !isLooping;
     }
@@ -71,7 +72,8 @@ void AnimationProperty::Update() {
         currentFrame %= animation->frameCount;
     else
         currentFrame = std::min(currentFrame, animation->frameCount - 1);
-    UpdateModelAnimation(*model, *animation, currentFrame);
+    // UpdateModelAnimation(*model, *animation, currentFrame);
+    UpdateModelAnimationBones(*model, *animation, currentFrame);
 }
 
 void AnimationProperty::DrawGizmos(const Scene *scene, bool drawBonesLines, bool drawBoneNames, float radius) const {

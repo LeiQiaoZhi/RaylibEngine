@@ -1,0 +1,10 @@
+{
+  "Shader": {
+    "Vertex": "skinning.vert",
+    "Fragment": "custom.frag"
+  },
+  "Maps": [
+  ],
+  "Params": [
+  ]
+}

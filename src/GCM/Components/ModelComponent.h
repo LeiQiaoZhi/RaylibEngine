@@ -26,7 +26,9 @@ public:
     ~ModelComponent() override {
         if (model) {
             UnloadModel(*model);
-            delete model;
+        }
+        if (animations) {
+            UnloadModelAnimations(animations, animationProps.size());
         }
     }
 
@@ -95,7 +97,6 @@ private:
     Shader highlightedShader;
     Shader originalShader;
 };
-
 
 
 #endif //MODELCOMPONENT_H

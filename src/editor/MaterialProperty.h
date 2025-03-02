@@ -9,8 +9,8 @@
 
 class MaterialProperty {
 public:
-    explicit MaterialProperty(Model *model, const int materialIndex)
-        : model(model), materialIndex(materialIndex) {
+    explicit MaterialProperty(Model *model, const int meshIndex)
+        : model(model), meshIndex(meshIndex) {
         highlightShader = LoadShader(
             (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
             (std::string(INTERNAL_ASSET_DIR) + "/shaders/highlight.frag").c_str());
@@ -19,6 +19,8 @@ public:
     void OnEditorGUI(Rectangle &rect);
 
     float GetEditorHeight() const;
+
+    Shader LoadShaderFromMaterialFile(const char *filename);
 
     void SetModel(Model *model) {
         this->model = model;
@@ -47,7 +49,7 @@ public:
 private:
     Model *model = nullptr;
     char filename[256] = "";
-    int materialIndex = 0;
+    int meshIndex = 0;
     std::string currentMaterialFilename; // only change when loaded
     std::vector<ShaderParam> shaderParams;
     Shader highlightShader;

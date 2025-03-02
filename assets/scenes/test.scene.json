@@ -38,14 +38,14 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 1,
                         "cameraPosition": [
-                            14.55783462524414,
-                            10.897583961486816,
-                            39.11933898925781
+                            -13.347145080566406,
+                            11.583700180053711,
+                            32.75776672363281
                         ],
                         "cameraTarget": [
-                            -22.54241943359375,
-                            -8.871224403381348,
-                            -139.6289520263672
+                            82.1063232421875,
+                            -15.421138763427734,
+                            -121.76617431640625
                         ],
                         "cameraUp": [
                             -0.0031218656804412603,
@@ -58,6 +58,7 @@
                         },
                         "skyboxFlipY": true,
                         "skyboxMaterial": {
+                            "inputText": "skybox.mat.json",
                             "path": "skybox.mat.json"
                         },
                         "type": "CameraComponent"
@@ -286,6 +287,7 @@
                                 },
                                 "materials": [
                                     {
+                                        "inputText": "plane.mat.json",
                                         "path": "plane.mat.json"
                                     }
                                 ],
@@ -327,7 +329,7 @@
                                     "folded": false
                                 },
                                 "debugFoldout": {
-                                    "folded": true
+                                    "folded": false
                                 },
                                 "drawBoneNames": false,
                                 "drawBonesLines": true,
@@ -341,16 +343,19 @@
                                 },
                                 "isPicking": true,
                                 "materialFoldout": {
-                                    "folded": true
+                                    "folded": false
                                 },
                                 "materials": [
                                     {
+                                        "inputText": "skin.mat.json",
                                         "path": ""
                                     },
                                     {
+                                        "inputText": "",
                                         "path": ""
                                     },
                                     {
+                                        "inputText": "",
                                         "path": ""
                                     }
                                 ],
@@ -391,7 +396,7 @@
                             "folded": false
                         },
                         "debugFoldout": {
-                            "folded": true
+                            "folded": false
                         },
                         "drawBoneNames": false,
                         "drawBonesLines": false,
@@ -405,13 +410,15 @@
                         },
                         "isPicking": false,
                         "materialFoldout": {
-                            "folded": true
+                            "folded": false
                         },
                         "materials": [
                             {
+                                "inputText": "car.mat.json",
                                 "path": "car.mat.json"
                             },
                             {
+                                "inputText": "",
                                 "path": ""
                             }
                         ],
@@ -437,9 +444,9 @@
                             "folded": false
                         },
                         "position": [
-                            -0.06613226234912872,
+                            -6.2289557456970215,
                             0.0,
-                            0.9192063808441162
+                            -0.4332682192325592
                         ],
                         "scale": [
                             1.0,
@@ -511,6 +518,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740820060,
-    "selectedGameObjectUID": 1947399925
+    "saveTime": 1740881036,
+    "selectedGameObjectUID": 8
 }

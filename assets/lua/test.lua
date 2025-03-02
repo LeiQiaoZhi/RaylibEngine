@@ -10,7 +10,7 @@ properties = {
 time = 0
 
 function update()
-    print(properties.bool)
+    -- print(properties.bool)
     speed = properties.speed
 
     time = time + DeltaTime();
