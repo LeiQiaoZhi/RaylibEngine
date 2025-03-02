@@ -284,7 +284,7 @@ void ModelComponent::Update() {
         const Ray ray = gameObject->scene->GetMouseScreenToWorldRay();
         int selectedMeshIndex = -1;
         RayCollision selection = RaylibUtils::GetRayCollisionModel(ray, *model, &selectedMeshIndex);
-        std::cout << "Selected mesh: " << selectedMeshIndex << std::endl;
+        GetLogger().Log(TextFormat("Selected mesh: %d", selectedMeshIndex));
         SetHighlightedMesh(selectedMeshIndex);
     }
 

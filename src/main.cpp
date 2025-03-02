@@ -18,7 +18,6 @@
 #include "subviews/InspectorSubView.h"
 #include "sol/sol.hpp"
 
-Logger logger;
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -78,7 +77,7 @@ int main() {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
         gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
-        consoleSubView.Render(logger, {0, static_cast<float>(windowHeight) * .75f});
+        consoleSubView.Render(scene.runtimeContext.logger, {0, static_cast<float>(windowHeight) * .75f});
         hierarchySubView.Render(scene, {
                                     static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
                                 });

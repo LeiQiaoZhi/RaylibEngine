@@ -25,7 +25,7 @@ void ProceduralMeshComponent::OnEditorGUI(Rectangle &rect) {
                 &createOnStart);
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
-    std::cout << "meshType: " << static_cast<int>(meshType) << std::endl;
+    GetLogger().Log(TextFormat("meshType: %d", static_cast<int>(meshType)));
     if (meshType == MeshType::Cube) {
         sizeProperty.OnEditorGUI(rect);
         worldSizeProperty.OnEditorGUI(rect);

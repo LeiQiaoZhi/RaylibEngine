@@ -7,6 +7,7 @@
 
 class Scene;
 class GameObject;
+class Logger;
 
 class Component {
 public:
@@ -49,6 +50,9 @@ public:
     static std::map<std::string, std::function<Component *()> > &ComponentTypeMap();
 
     static std::vector<std::string> &GetAvailableComponentTypes();
+
+protected:
+    Logger &GetLogger() const;
 
 public:
     GameObject *gameObject = nullptr;

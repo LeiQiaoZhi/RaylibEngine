@@ -37,3 +37,7 @@ std::vector<std::string> &Component::GetAvailableComponentTypes() {
     }
     return types;
 }
+
+Logger& Component::GetLogger() const {
+    return gameObject->scene->runtimeContext.logger;
+}

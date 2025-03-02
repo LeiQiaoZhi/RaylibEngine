@@ -6,9 +6,11 @@
 #define RUNTIMECONTEXT_H
 
 #include "../luautils/LuaManager.h"
+#include "../logger/Logger.h"
 
 struct RuntimeContext {
     LuaManager luaManager;
+    Logger logger;
 };
 
 #endif //RUNTIMECONTEXT_H
