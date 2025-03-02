@@ -8,6 +8,10 @@
 #include "../../editor/VectorProperty.h"
 #include <sol/sol.hpp>
 
+#include "../../editor/SingleValueProperty.h"
+
+
+class LuaProperty;
 
 class ScriptComponent final : public Component {
 public:
@@ -33,8 +37,7 @@ public:
 
     void FromJson(const nlohmann::json &json) override;
 
-    void LoadScriptFromPath(const std::string & path);
-
+    void LoadScriptFromPath(const std::string &path);
 
 private:
     char nameBuffer[256];
@@ -44,6 +47,8 @@ private:
     sol::function updateFunc;
 
     // ui
+    FoldoutProperty propertiesFoldout = FoldoutProperty("Properties");
+    std::vector<LuaProperty> properties;
     bool statusWarning = false;
     std::string statusText;
     float height;

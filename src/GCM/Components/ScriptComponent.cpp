@@ -7,6 +7,7 @@
 #include "rlgl.h"
 #include "../GameObject.h"
 #include "../../editor/Editor.h"
+#include "../../editor/LuaProperty.h"
 
 ScriptComponent::ScriptComponent() {
     headerProperty.label = "Script";
@@ -20,6 +21,7 @@ void ScriptComponent::OnEditorGUI(Rectangle &rect) {
         return;
     }
 
+    // Load script
     const float labelWidth = Editor::TextWidth("File path:") + Editor::SmallGap();
     GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "File path:");
     Editor::BeginIndent(rect, labelWidth);
@@ -47,7 +49,18 @@ void ScriptComponent::OnEditorGUI(Rectangle &rect) {
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
+    // Status
     Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
+    propertiesFoldout.OnEditorGUI(rect);
+    if (!propertiesFoldout.IsFolded()) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        // Properties
+        for (auto &prop: properties) {
+            prop.OnEditorGUI(rect);
+        }
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
 
     height = rect.y - originalY;
 }
@@ -108,6 +121,21 @@ void ScriptComponent::LoadScriptFromPath(const std::string &name) {
         loadedScriptName = name;
         updateFunc = luaEnv["update"];
         luaManager.RegisterAtGameObjectLevel(luaEnv, gameObject);
+
+        // Properties
+        properties.clear();
+        sol::optional<sol::table> propsTableO = luaEnv["properties"];
+        if (!propsTableO) {
+            statusText = "No properties table found";
+            statusWarning = true;
+            return;
+        }
+        sol::table propsTable = propsTableO.value();
+        for (auto &pair: propsTable) {
+            sol::object key = pair.first;
+            sol::object value = pair.second;
+            properties.emplace_back(key.as<std::string>(), value, propsTable);
+        }
 
         statusText = "Script loaded";
         statusWarning = false;

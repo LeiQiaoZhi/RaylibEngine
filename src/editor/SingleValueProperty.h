@@ -34,12 +34,20 @@ public:
 
         Editor::BeginIndent(rect, labelWidth);
         const Rectangle positionRect = {rect.x, rect.y, rect.width / 3 - Editor::SmallGap(), Editor::TextSize() * 1.0f};
-        float floatValue = static_cast<float>(*value);
-        if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValue, &floatValue, editMode)) {
-            editMode = !editMode;
-            *value = static_cast<int>(floatValue);
+        if constexpr (isInt) {
+            int intMin = std::numeric_limits<int>::min();
+            int intMax = std::numeric_limits<int>::max();
+            if (GuiValueBox(positionRect, nullptr, value, intMin, intMax, editMode)) {
+                editMode = !editMode;
+            }
+
+        } else {
+            if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValue, value, editMode)) {
+                editMode = !editMode;
+            }
         }
 
+        float floatValue = static_cast<float>(*value);
         if constexpr (hasSlider) {
             if (GuiSlider({
                               rect.x + rect.width / 3 + Editor::SmallGap(), rect.y,
