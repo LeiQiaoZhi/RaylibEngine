@@ -73,10 +73,49 @@ void GameObject::AddComponent(Component *component) {
     component->gameObject = this;
     components.push_back(component);
 
-    component->Start();
+    component->EditorStart();
 }
 
-void GameObject::UpdateComponents() const {
+void GameObject::EditorUpdate() const {
+    // update own components
+    for (auto *component: components) {
+        if (component->enabled)
+            component->EditorUpdate();
+    }
+
+    // update children
+    for (const auto *child: children) {
+        child->EditorUpdate();
+    }
+}
+
+void GameObject::Draw(Scene *scene) const {
+    // own components draw
+    for (const auto *component: components) {
+        if (component->enabled)
+            component->OnDraw(scene);
+    }
+
+    // children draw
+    for (const auto *child: children) {
+        child->Draw(scene);
+    }
+}
+
+void GameObject::Start() const {
+    // start own components
+    for (auto *component: components) {
+        if (component->enabled)
+            component->Start();
+    }
+
+    // start children
+    for (const auto *child: children) {
+        child->Start();
+    }
+}
+
+void GameObject::Update() const {
     // update own components
     for (auto *component: components) {
         if (component->enabled)
@@ -85,7 +124,7 @@ void GameObject::UpdateComponents() const {
 
     // update children
     for (const auto *child: children) {
-        child->UpdateComponents();
+        child->Update();
     }
 }
 
@@ -137,29 +176,29 @@ void GameObject::DrawGizmosSelected(Scene *scene) const {
     }
 }
 
-void GameObject::Draw(Scene *scene) const {
+void GameObject::EditorDraw(Scene *scene) const {
     // own components draw
     for (const auto *component: components) {
         if (component->enabled)
-            component->OnDraw(scene);
+            component->OnEditorDraw(scene);
     }
 
     // children draw
     for (const auto *child: children) {
-        child->Draw(scene);
+        child->EditorDraw(scene);
     }
 }
 
-void GameObject::StartComponents() const {
+void GameObject::EditorStart() const {
     // start own components
     for (auto *component: components) {
         if (component->enabled)
-            component->Start();
+            component->EditorStart();
     }
 
     // start children
     for (const auto *child: children) {
-        child->StartComponents();
+        child->EditorStart();
     }
 }
 

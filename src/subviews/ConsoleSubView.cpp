@@ -3,14 +3,16 @@
 
 #include "ScrollPanelRenderer.h"
 #include "../logger/Logger.h"
+#include "../GCM/Scene.h"
 #include "../editor/Editor.h"
 
 ConsoleSubView::ConsoleSubView(const int width, const int height) {
     renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
 }
 
-void ConsoleSubView::Render(const Logger &logger, const Vector2 position) const {
+void ConsoleSubView::Render(const Scene &scene, const Vector2 position) const {
     const int textSize = GuiGetStyle(DEFAULT, TEXT_SIZE);
+    const auto &logger = scene.logger;
     const auto &logEntries = logger.GetLogEntries();
 
     GuiStatusBar({
@@ -26,7 +28,7 @@ void ConsoleSubView::Render(const Logger &logger, const Vector2 position) const 
     };
 
     for (int i = 0; i < logEntries.size(); ++i) {
-        const float timeWidth = Editor::TextWidth(logEntries[i].GetTimestampString().c_str()) + Editor::MediumGap();
+        const float timeWidth = Editor::TextWidth(logEntries[i].GetTimestampString().c_str()) + Editor::LargeGap();
 
         const char* message = GuiIconText(logEntries[i].GetIcon(), logEntries[i].message.c_str());
         GuiLabel({rect.x, rect.y, rect.width - timeWidth, Editor::TextSize() * 1.0f}, message);
@@ -41,5 +43,5 @@ void ConsoleSubView::Render(const Logger &logger, const Vector2 position) const 
     renderer_->SetContentSize(renderer_->GetContentSize().x, (logEntries.size() + 1) * textSize + 10);
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
-    renderer_->Show(contentPosition, WHITE);
+    renderer_->Show(contentPosition, scene.GetTint());
 }

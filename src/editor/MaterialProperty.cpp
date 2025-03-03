@@ -40,6 +40,11 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
             statusWarning = false;
             if (highlighted) {
                 originalShader = model->materials[model->meshMaterial[meshIndex]].shader;
+                if (highlightShader.id == 0) {
+                    highlightShader = LoadShader(
+                        (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
+                        (std::string(INTERNAL_ASSET_DIR) + "/shaders/highlight.frag").c_str());
+                }
                 model->materials[model->meshMaterial[meshIndex]].shader = highlightShader;
             } else {
                 model->materials[model->meshMaterial[meshIndex]].shader = originalShader;
@@ -72,7 +77,8 @@ void MaterialProperty::OnEditorGUI(Rectangle &rect) {
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.5f}, "Load Shader Only")) {
         LoadShaderFromMaterialFile(filename);
     }
-    if (GuiButton(Rectangle{rect.x + rect.width/2, rect.y, rect.width / 2, Editor::TextSize() * 1.5f}, "Load Shader For All")) {
+    if (GuiButton(Rectangle{rect.x + rect.width / 2, rect.y, rect.width / 2, Editor::TextSize() * 1.5f},
+                  "Load Shader For All")) {
         const Shader shader = LoadShaderFromMaterialFile(filename);
         if (!statusWarning) {
             for (int i = 0; i < model->meshCount; i++) {
@@ -136,7 +142,8 @@ void MaterialProperty::LoadMaterialFromFile(const char *filename) {
         UnloadMaterial(model->materials[model->meshMaterial[meshIndex]]);
 
         const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(filename);
-        model->materials[model->meshMaterial[meshIndex]] = RaylibUtils::LoadMaterialFromFile(fullPath.c_str(), shaderParams);
+        model->materials[model->meshMaterial[meshIndex]] = RaylibUtils::LoadMaterialFromFile(
+            fullPath.c_str(), shaderParams);
         statusText = "Material loaded";
         statusWarning = false;
 

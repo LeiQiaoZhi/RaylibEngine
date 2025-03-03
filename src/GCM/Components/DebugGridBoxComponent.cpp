@@ -19,7 +19,7 @@ float DebugGridBoxComponent::GetEditorHeight() const {
     return editorHeight;
 }
 
-void DebugGridBoxComponent::OnDraw(Scene *scene) const {
+void DebugGridBoxComponent::OnEditorDraw(Scene *scene) const {
 }
 
 void DebugGridBoxComponent::OnDrawGizmos(Scene *scene) const {
@@ -52,10 +52,10 @@ void DebugGridBoxComponent::OnDrawGizmos(Scene *scene) const {
 void DebugGridBoxComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
-void DebugGridBoxComponent::Start() {
+void DebugGridBoxComponent::EditorStart() {
 }
 
-void DebugGridBoxComponent::Update() {
+void DebugGridBoxComponent::EditorUpdate() {
 }
 
 void DebugGridBoxComponent::OnDrawGizmosBottom(Scene *scene) const {

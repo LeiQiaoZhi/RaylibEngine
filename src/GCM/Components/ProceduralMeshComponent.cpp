@@ -53,7 +53,7 @@ float ProceduralMeshComponent::GetEditorHeight() const {
     return height;
 }
 
-void ProceduralMeshComponent::OnDraw(Scene *scene) const {
+void ProceduralMeshComponent::OnEditorDraw(Scene *scene) const {
 }
 
 void ProceduralMeshComponent::OnDrawGizmos(Scene *scene) const {
@@ -62,7 +62,7 @@ void ProceduralMeshComponent::OnDrawGizmos(Scene *scene) const {
 void ProceduralMeshComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
-void ProceduralMeshComponent::Start() {
+void ProceduralMeshComponent::EditorStart() {
     modelComponent = gameObject->GetComponent<ModelComponent>();
     if (!modelComponent) {
         statusText = "Model Component not found";
@@ -74,7 +74,7 @@ void ProceduralMeshComponent::Start() {
     }
 }
 
-void ProceduralMeshComponent::Update() {
+void ProceduralMeshComponent::EditorUpdate() {
 }
 
 void ProceduralMeshComponent::OnDrawGizmosBottom(Scene *scene) const {

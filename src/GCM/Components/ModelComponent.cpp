@@ -167,7 +167,7 @@ float ModelComponent::GetEditorHeight() const {
     return height;
 }
 
-void ModelComponent::OnDraw(Scene *scene) const {
+void ModelComponent::OnEditorDraw(Scene *scene) const {
     if (model == nullptr) return;
 
     if (drawSurface) {
@@ -272,10 +272,10 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
 
 }
 
-void ModelComponent::Start() {
+void ModelComponent::EditorStart() {
 }
 
-void ModelComponent::Update() {
+void ModelComponent::EditorUpdate() {
     if (model == nullptr) return;
     model->transform = gameObject->GetTransform()->GetTransformMatrix();
 

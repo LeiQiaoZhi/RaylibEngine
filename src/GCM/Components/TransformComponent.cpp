@@ -95,11 +95,11 @@ void TransformComponent::FromJson(const nlohmann::json &json) {
 void TransformComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 
-void TransformComponent::OnDraw(Scene *scene) const {
+void TransformComponent::OnEditorDraw(Scene *scene) const {
 }
 
 
-void TransformComponent::Start() {
+void TransformComponent::EditorStart() {
 }
 
 void TransformComponent::OnDrawGizmos(Scene *scene) const {
@@ -138,7 +138,7 @@ void TransformComponent::OnDrawGizmosSelected(Scene *scene) const {
     rlEnableDepthTest();
 }
 
-void TransformComponent::Update() {
+void TransformComponent::EditorUpdate() {
 }
 
 Matrix TransformComponent::GetTransformMatrix() const {

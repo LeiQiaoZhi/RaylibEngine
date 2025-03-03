@@ -16,7 +16,7 @@ public:
 
     void OnEditorGUI(Rectangle &rect) override;
 
-    void OnDraw(Scene *scene) const override;
+    void OnEditorDraw(Scene *scene) const override;
 
     void OnDrawGizmos(Scene *scene) const override;
 
@@ -26,9 +26,9 @@ public:
 
     float GetEditorHeight() const override;
 
-    void Start() override;
+    void EditorStart() override;
 
-    void Update() override;
+    void EditorUpdate() override;
 
     Matrix GetTransformMatrix() const;
 

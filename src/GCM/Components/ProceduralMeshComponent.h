@@ -19,15 +19,15 @@ public:
 
     float GetEditorHeight() const override;
 
-    void OnDraw(::Scene *scene) const override;
+    void OnEditorDraw(::Scene *scene) const override;
 
     void OnDrawGizmos(Scene *scene) const override;
 
     void OnDrawGizmosSelected(Scene *scene) const override;
 
-    void Start() override;
+    void EditorStart() override;
 
-    void Update() override;
+    void EditorUpdate() override;
 
     void OnDrawGizmosBottom(Scene *scene) const override;
 

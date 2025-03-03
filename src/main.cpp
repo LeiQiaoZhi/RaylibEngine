@@ -43,7 +43,7 @@ int main() {
     const int uiScale = lua["uiScale"].get_or(1);
     InitWindow(windowWidth, windowHeight, windowName.c_str());
 
-    const GameSubView gameSubView(windowWidth / 2, windowHeight);
+    GameSubView gameSubView(windowWidth / 2, windowHeight);
     const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
     HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
     InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
@@ -67,7 +67,10 @@ int main() {
     {
         // Update
         //----------------------------------------------------------------------------------
-        scene.UpdateComponents();
+        if (scene.isPlayMode)
+            scene.Update();
+        else
+            scene.EditorUpdate();
         //----------------------------------------------------------------------------------
 
         // Draw
@@ -77,7 +80,7 @@ int main() {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
         gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
-        consoleSubView.Render(scene.runtimeContext.logger, {0, static_cast<float>(windowHeight) * .75f});
+        consoleSubView.Render(scene, {0, static_cast<float>(windowHeight) * .75f});
         hierarchySubView.Render(scene, {
                                     static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
                                 });

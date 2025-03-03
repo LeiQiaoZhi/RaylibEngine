@@ -1,4 +1,36 @@
 {
+    "editorCamera": {
+        "backgroundColor": [
+            255,
+            163,
+            163,
+            255
+        ],
+        "backgroundMode": 1,
+        "cameraFovy": 45.0,
+        "cameraMode": 1,
+        "cameraPosition": [
+            17.02988052368164,
+            19.41962432861328,
+            40.07605743408203
+        ],
+        "cameraTarget": [
+            6.897564888000488,
+            9.219976425170898,
+            -1.0347099304199219
+        ],
+        "cameraUp": [
+            0.0,
+            1.0,
+            0.0
+        ],
+        "skyboxFlipY": false,
+        "skyboxMaterial": {
+            "inputText": "skybox.mat.json",
+            "path": "skybox.mat.json"
+        },
+        "type": "CameraComponent"
+    },
     "name": "Test Scene",
     "root": {
         "children": [
@@ -38,14 +70,14 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 1,
                         "cameraPosition": [
-                            -13.347145080566406,
-                            11.583700180053711,
-                            32.75776672363281
+                            -56.61181640625,
+                            5.661649703979492,
+                            66.20758056640625
                         ],
                         "cameraTarget": [
-                            82.1063232421875,
-                            -15.421138763427734,
-                            -121.76617431640625
+                            116.44377136230469,
+                            18.743064880371094,
+                            -85.97613525390625
                         ],
                         "cameraUp": [
                             -0.0031218656804412603,
@@ -444,9 +476,9 @@
                             "folded": false
                         },
                         "position": [
-                            -6.2289557456970215,
+                            -8.566189765930176,
                             0.0,
-                            -0.4332682192325592
+                            -2.5758912563323975
                         ],
                         "scale": [
                             1.0,
@@ -518,6 +550,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740881036,
+    "saveTime": 1740974798,
     "selectedGameObjectUID": 8
 }

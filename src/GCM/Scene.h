@@ -7,26 +7,37 @@
 #include "Components/CameraComponent.h"
 #include "Components/LightComponent.h"
 #include "../context/RuntimeContext.h"
+#include "../context/EditorContext.h"
 
 #define MAX_LIGHTS 4
 
 class Scene {
 public:
+    ~Scene();
+
     int GameObjectCount() const;
 
     CameraComponent *GetMainCamera() const;
 
-    void UpdateComponents() const;
-
     GameObject *GetGameObjectByUID(int uid) const;
 
+    // Event Functions
     void DrawGizmos(Scene *scene) const;
-
-    void Draw(Scene *scene);
 
     void DrawGizmosBottom(Scene *scene);
 
-    void StartComponents() const;
+    void EditorDraw(Scene *scene) const;
+
+    void EditorStart() const;
+
+    void EditorUpdate() const;
+
+    void Draw(Scene *scene) const;
+
+    void Start() const;
+
+    void Update() const;
+
 
     void SetRoot(GameObject *gameObject);
 
@@ -60,13 +71,23 @@ public:
         return CheckCollisionPointRec(point, screenSpaceRect);
     }
 
+    void SwitchMode();
+
+    Color GetTint() const {
+        return isPlayMode ? Fade(RED, 0.1f) : Fade(WHITE, 0.0f);
+    }
+
     std::string name;
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};
-    GameObjectHierarchyProperty* rootFileHierarchyProperty = nullptr;
+    GameObjectHierarchyProperty *rootFileHierarchyProperty = nullptr;
 
-    // TODO: differentiate editor and runtime context, and handle lifetime of contexts
-    RuntimeContext runtimeContext;
+    bool isPlayMode = false;
+    LuaManager luaManager;
+    Logger logger;
+    EditorContext editorContext = EditorContext(luaManager, logger);
+    RuntimeContext runtimeContext = RuntimeContext(luaManager, logger);
+    CameraComponent *editorCamera;
 
 private:
     GameObject *root = nullptr;

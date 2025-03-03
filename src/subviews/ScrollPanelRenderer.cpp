@@ -23,6 +23,7 @@ void ScrollPanelRenderer::End() {
 void ScrollPanelRenderer::Show(const Vector2 position, Color tint) {
     panelRec.x = position.x;
     panelRec.y = position.y;
+    DrawRectangleRec(panelRec, tint);
 }
 
 Vector2 ScrollPanelRenderer::GetContentTopLeft() const {

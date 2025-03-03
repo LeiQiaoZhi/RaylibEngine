@@ -72,10 +72,10 @@ float ScriptComponent::GetEditorHeight() const {
 void ScriptComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 
-void ScriptComponent::OnDraw(Scene *scene) const {
+void ScriptComponent::OnEditorDraw(Scene *scene) const {
 }
 
-void ScriptComponent::Start() {
+void ScriptComponent::EditorStart() {
     if (!loadedScriptName.empty())
         LoadScriptFromPath(loadedScriptName);
 }
@@ -84,6 +84,11 @@ void ScriptComponent::OnDrawGizmos(Scene *scene) const {
 }
 
 void ScriptComponent::OnDrawGizmosSelected(Scene *scene) const {
+}
+
+void ScriptComponent::EditorUpdate() {
+    if (editorUpdateFunc.valid())
+        editorUpdateFunc();
 }
 
 void ScriptComponent::Update() {
@@ -120,6 +125,7 @@ void ScriptComponent::LoadScriptFromPath(const std::string &name) {
     } else {
         loadedScriptName = name;
         updateFunc = luaEnv["update"];
+        editorUpdateFunc = luaEnv["editorUpdate"];
         luaManager.RegisterAtGameObjectLevel(luaEnv, gameObject);
 
         // Properties

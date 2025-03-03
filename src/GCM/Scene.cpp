@@ -2,17 +2,22 @@
 #include "GameObject.h"
 #include "rlgl.h"
 
+Scene::~Scene() {
+    delete root;
+    delete editorCamera->gameObject;
+}
+
 int Scene::GameObjectCount() const {
     return root->RecursiveChildCount() + 1;
 }
 
 CameraComponent *Scene::GetMainCamera() const {
-    return root->GetComponentInChildren<CameraComponent>();
+    if (isPlayMode)
+        return root->GetComponentInChildren<CameraComponent>();
+    else
+        return editorCamera;
 }
 
-void Scene::UpdateComponents() const {
-    root->UpdateComponents();
-}
 
 GameObject *Scene::GetGameObjectByUID(const int uid) const {
     if (uid < 0)
@@ -33,16 +38,36 @@ void Scene::DrawGizmos(Scene *scene) const {
     }
 }
 
-void Scene::Draw(Scene *scene) {
-    root->Draw(scene);
-}
 
 void Scene::DrawGizmosBottom(Scene *scene) {
     root->DrawGizmosBottom(scene);
 }
 
-void Scene::StartComponents() const {
-    root->StartComponents();
+void Scene::EditorDraw(Scene *scene) const {
+    root->EditorDraw(scene);
+    editorCamera->OnEditorDraw(scene);
+}
+
+void Scene::EditorUpdate() const {
+    root->EditorUpdate();
+    editorCamera->EditorUpdate();
+}
+
+void Scene::EditorStart() const {
+    root->EditorStart();
+    editorCamera->EditorStart();
+}
+
+void Scene::Draw(Scene *scene) const {
+    root->Draw(scene);
+}
+
+void Scene::Update() const {
+    root->Update();
+}
+
+void Scene::Start() const {
+    root->Start();
 }
 
 void Scene::SetRoot(GameObject *gameObject) {
@@ -107,6 +132,7 @@ void Scene::Save(const char *path) {
     j["root"] = root->ToJson();
     j["selectedGameObjectUID"] = selectedGameObjectUID;
     j["saveTime"] = time(nullptr);
+    j["editorCamera"] = editorCamera->ToJson();
     JsonUtils::JsonToFile(j, path);
 }
 
@@ -120,6 +146,15 @@ void Scene::Load(const char *path) {
     selectedGameObjectUID = j["selectedGameObjectUID"];
     root = new GameObject(j["root"], this);
 
+    if (editorCamera == nullptr) {
+        editorCamera = new CameraComponent();
+        // hidden obj to hold editor camera
+        GameObject* hiddenObj = new GameObject("Editor Camera", Utils::GenerateUID("Editor Camera"));
+        hiddenObj->scene = this;
+        hiddenObj->AddComponent(editorCamera);
+    }
+    if (j.contains("editorCamera"))
+        editorCamera->FromJson(j["editorCamera"]);
     // initialize scene
     // StartComponents();
     FindLights();
@@ -137,4 +172,8 @@ Ray Scene::GetMouseScreenToWorldRay() {
     const float height = screenSpaceRect.height;
     const Ray ray = GetScreenToWorldRayEx(mousePosition, *GetMainCamera()->GetRaylibCamera(), width, height);
     return ray;
+}
+
+void Scene::SwitchMode() {
+    isPlayMode = !isPlayMode;
 }

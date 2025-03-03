@@ -9,8 +9,10 @@
 #include "../logger/Logger.h"
 
 struct RuntimeContext {
-    LuaManager luaManager;
-    Logger logger;
+    RuntimeContext(LuaManager& luaManager, Logger& logger) : luaManager(luaManager), logger(logger) {}
+
+    LuaManager& luaManager;
+    Logger& logger;
 };
 
 #endif //RUNTIMECONTEXT_H

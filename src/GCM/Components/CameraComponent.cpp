@@ -41,7 +41,7 @@ float CameraComponent::GetEditorHeight() const {
     return height;
 }
 
-void CameraComponent::OnDraw(Scene *scene) const {
+void CameraComponent::OnEditorDraw(Scene *scene) const {
 }
 
 void CameraComponent::OnDrawGizmos(Scene *scene) const {
@@ -51,10 +51,10 @@ void CameraComponent::OnDrawGizmos(Scene *scene) const {
 void CameraComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
-void CameraComponent::Start() {
+void CameraComponent::EditorStart() {
 }
 
-void CameraComponent::Update() {
+void CameraComponent::EditorUpdate() {
     if (!gameObject->scene->IsInsideScenePanel(GetMousePosition())) return;
     if (updating)
         UpdateCamera(camera, cameraMode);

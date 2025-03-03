@@ -7,10 +7,11 @@ class GameSubView {
 public:
     GameSubView(int width, int height);
 
-    void Render(Scene &scene, Vector2 position = {0, 0}) const;
+    void Render(Scene &scene, Vector2 position = {0, 0});
 
 private:
     ISubviewRenderer *renderer_;
+    bool showCameraSettings = false;
 };
 
 

@@ -18,7 +18,7 @@ public:
     virtual float GetEditorHeight() const = 0;
 
     // render in scene view every frame
-    virtual void OnDraw(Scene *scene) const = 0;
+    virtual void OnEditorDraw(Scene *scene) const = 0;
 
     // when gizmos are enabled, render gizmos every frame
     virtual void OnDrawGizmos(Scene *scene) const = 0;
@@ -26,10 +26,23 @@ public:
     // when gizmos are enabled, render gizmos every frame when selected
     virtual void OnDrawGizmosSelected(Scene *scene) const = 0;
 
-    virtual void Start() = 0;
+    virtual void EditorStart() = 0;
 
-    // TODO: differentiate between Editor and Game mode
-    virtual void Update() = 0;
+    virtual void EditorUpdate() = 0;
+
+    // runtime events
+
+    virtual void OnDraw(Scene *scene) const {
+        OnEditorDraw(scene);
+    }
+
+    virtual void Start() {
+        EditorStart();
+    }
+
+    virtual void Update() {
+        EditorUpdate();
+    }
 
     //    virtual void OnEnable() = 0;
     //    virtual void OnDisable() = 0;

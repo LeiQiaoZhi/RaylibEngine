@@ -54,10 +54,10 @@ void LightComponent::FromJson(const nlohmann::json &json) {
     colorProperty.UpdateColor(color);
 }
 
-void LightComponent::OnDraw(Scene *scene) const {
+void LightComponent::OnEditorDraw(Scene *scene) const {
 }
 
-void LightComponent::Start() {
+void LightComponent::EditorStart() {
 }
 
 void LightComponent::OnDrawGizmos(Scene *scene) const {
@@ -82,5 +82,5 @@ void LightComponent::OnDrawGizmosSelected(Scene *scene) const {
     }
 }
 
-void LightComponent::Update() {
+void LightComponent::EditorUpdate() {
 }

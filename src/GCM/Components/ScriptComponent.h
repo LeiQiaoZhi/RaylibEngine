@@ -19,7 +19,7 @@ public:
 
     void OnEditorGUI(Rectangle &rect) override;
 
-    void OnDraw(Scene *scene) const override;
+    void OnEditorDraw(Scene *scene) const override;
 
     void OnDrawGizmos(Scene *scene) const override;
 
@@ -29,7 +29,9 @@ public:
 
     float GetEditorHeight() const override;
 
-    void Start() override;
+    void EditorStart() override;
+
+    void EditorUpdate() override;
 
     void Update() override;
 
@@ -45,6 +47,7 @@ private:
     bool nameEditMode = false;
     sol::environment luaEnv;
     sol::function updateFunc;
+    sol::function editorUpdateFunc;
 
     // ui
     FoldoutProperty propertiesFoldout = FoldoutProperty("Properties");

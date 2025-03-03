@@ -11,9 +11,6 @@ class MaterialProperty {
 public:
     explicit MaterialProperty(Model *model, const int meshIndex)
         : model(model), meshIndex(meshIndex) {
-        highlightShader = LoadShader(
-            (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
-            (std::string(INTERNAL_ASSET_DIR) + "/shaders/highlight.frag").c_str());
     }
 
     void OnEditorGUI(Rectangle &rect);

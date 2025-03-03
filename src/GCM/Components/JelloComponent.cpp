@@ -98,7 +98,7 @@ float JelloComponent::GetEditorHeight() const {
     return height;
 }
 
-void JelloComponent::OnDraw(Scene *scene) const {
+void JelloComponent::OnEditorDraw(Scene *scene) const {
 }
 
 void JelloComponent::OnDrawGizmos(Scene *scene) const {
@@ -118,7 +118,7 @@ void JelloComponent::OnDrawGizmos(Scene *scene) const {
 void JelloComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
-void JelloComponent::Start() {
+void JelloComponent::EditorStart() {
     modelComponent = gameObject->GetComponent<ModelComponent>();
     if (!modelComponent) {
         statusText = "Model Component not found";
@@ -133,7 +133,7 @@ void JelloComponent::Start() {
     }
 }
 
-void JelloComponent::Update() {
+void JelloComponent::EditorUpdate() {
     if (!started) return;
 
     dragState.Update();

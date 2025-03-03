@@ -97,10 +97,9 @@ public:
         return result;
     }
 
-
-    void UpdateComponents() const;
-
     GameObject *GetGameObjectByUID(int uid);
+
+    // Event functions
 
     void DrawGizmosBottom(Scene *scene) const;
 
@@ -108,9 +107,17 @@ public:
 
     void DrawGizmosSelected(Scene *scene) const;
 
+    void EditorDraw(Scene *scene) const;
+
+    void EditorStart() const;
+
+    void EditorUpdate() const;
+
     void Draw(Scene *scene) const;
 
-    void StartComponents() const;
+    void Start() const;
+
+    void Update() const;
 
     nlohmann::json ToJson() const;
 

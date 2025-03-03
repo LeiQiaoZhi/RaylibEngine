@@ -70,7 +70,7 @@ void HierarchySubView::Render(Scene &scene, Vector2 position) {
     renderer_->End();
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
-    renderer_->Show(contentPosition, WHITE);
+    renderer_->Show(contentPosition, scene.GetTint());
 }
 
 void HierarchySubView::LoadScene(Scene &scene) {

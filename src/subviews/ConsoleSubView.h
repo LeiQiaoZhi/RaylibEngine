@@ -5,11 +5,13 @@
 #include "../logger/Logger.h"
 
 
+class Scene;
+
 class ConsoleSubView{
 public:
     ConsoleSubView(int width, int height);
 
-    void Render(const Logger &logger, Vector2 position = {0, 0}) const;
+    void Render(const Scene &scene, Vector2 position = {0, 0}) const;
 
 private:
     ISubviewRenderer* renderer_;
