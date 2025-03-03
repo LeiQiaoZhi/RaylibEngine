@@ -49,6 +49,8 @@ private:
     sol::function updateFunc;
     sol::function editorUpdateFunc;
 
+    nlohmann::json serializedProperties;
+
     // ui
     FoldoutProperty propertiesFoldout = FoldoutProperty("Properties");
     std::vector<LuaProperty> properties;

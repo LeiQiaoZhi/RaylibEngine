@@ -31,6 +31,10 @@ public:
 
     nlohmann::json ToJson() const;
 
+    std::string GetKey() const {
+        return key;
+    }
+
 private:
     std::string key;
     sol::object value;

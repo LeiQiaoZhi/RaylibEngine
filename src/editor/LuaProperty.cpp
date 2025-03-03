@@ -45,9 +45,25 @@ float LuaProperty::GetEditorHeight() const {
 }
 
 void LuaProperty::FromJson(const nlohmann::json &json) {
+    // json: { value = ... }
+    if (value.get_type() == sol::type::boolean) {
+        boolValue = json["value"].get<bool>();
+    } else if (value.get_type() == sol::type::number) {
+        numberValue = json["value"].get<float>();
+        numberProperty = FloatProperty(&numberValue, key.c_str());
+    } else if (value.get_type() == sol::type::string) {
+        std::strncpy(stringValue, json["value"].get<std::string>().c_str(), sizeof(stringValue));
+    }
 }
 
 nlohmann::json LuaProperty::ToJson() const {
     json j;
+    if (value.get_type() == sol::type::boolean) {
+        j["value"] = boolValue;
+    } else if (value.get_type() == sol::type::number) {
+        j["value"] = numberValue;
+    } else if (value.get_type() == sol::type::string) {
+        j["value"] = std::string(stringValue);
+    }
     return j;
 }

@@ -476,9 +476,9 @@
                             "folded": false
                         },
                         "position": [
-                            -8.566189765930176,
+                            -12.92766284942627,
                             0.0,
-                            -2.5758912563323975
+                            14.127742767333984
                         ],
                         "scale": [
                             1.0,
@@ -493,6 +493,20 @@
                             "folded": false
                         },
                         "loadedScriptName": "test.lua",
+                        "serializedProperties": {
+                            "bool": {
+                                "value": true
+                            },
+                            "health": {
+                                "value": 20.0
+                            },
+                            "name": {
+                                "value": "test"
+                            },
+                            "speed": {
+                                "value": 10.0
+                            }
+                        },
                         "type": "ScriptComponent"
                     }
                 ],
@@ -550,6 +564,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1740974798,
-    "selectedGameObjectUID": 8
+    "saveTime": 1741029340,
+    "selectedGameObjectUID": 1947399925
 }

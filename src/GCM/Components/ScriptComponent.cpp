@@ -101,6 +101,12 @@ nlohmann::json ScriptComponent::ToJson() const {
     j["type"] = "ScriptComponent";
     if (!loadedScriptName.empty())
         j["loadedScriptName"] = loadedScriptName;
+
+    // serialize properties
+    for (auto &prop: properties) {
+        j["serializedProperties"][prop.GetKey()] = prop.ToJson();
+    }
+
     return j;
 }
 
@@ -108,6 +114,9 @@ void ScriptComponent::FromJson(const nlohmann::json &json) {
     if (json.contains("loadedScriptName")) {
         loadedScriptName = json["loadedScriptName"].get<std::string>();
         std::strncpy(nameBuffer, loadedScriptName.c_str(), sizeof(nameBuffer));
+    }
+    if (json.contains("serializedProperties")) {
+        serializedProperties = json["serializedProperties"];
     }
 }
 
@@ -141,6 +150,17 @@ void ScriptComponent::LoadScriptFromPath(const std::string &name) {
             sol::object key = pair.first;
             sol::object value = pair.second;
             properties.emplace_back(key.as<std::string>(), value, propsTable);
+        }
+        std::sort(properties.begin(), properties.end(), [](const LuaProperty &a, const LuaProperty &b) {
+            return a.GetKey() < b.GetKey();
+        });
+
+        // Deserialize properties
+        for (auto &prop: properties) {
+            const std::string key = prop.GetKey();
+            if (serializedProperties.contains(key)) {
+                prop.FromJson(serializedProperties[key]);
+            }
         }
 
         statusText = "Script loaded";
