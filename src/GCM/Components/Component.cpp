@@ -9,7 +9,9 @@
 #include "DebugGridComponent.h"
 #include "JelloComponent.h"
 #include "LightComponent.h"
+#include "RigidbodyComponent.h"
 #include "ScriptComponent.h"
+#include "SphereColliderComponent.h"
 #include "TransformComponent.h"
 
 std::map<std::string, std::function<Component *()> > &Component::ComponentTypeMap() {
@@ -23,6 +25,8 @@ std::map<std::string, std::function<Component *()> > &Component::ComponentTypeMa
         {"ProceduralMeshComponent", []() { return new ProceduralMeshComponent(); }},
         {"TransformComponent", []() { return new TransformComponent(); }},
         {"ScriptComponent", []() { return new ScriptComponent(); }},
+        {"SphereColliderComponent", []() { return new SphereColliderComponent(); }},
+        {"RigidbodyComponent", []() { return new RigidbodyComponent(); }},
     };
     return map;
 }
@@ -38,6 +42,6 @@ std::vector<std::string> &Component::GetAvailableComponentTypes() {
     return types;
 }
 
-Logger& Component::GetLogger() const {
+Logger &Component::GetLogger() const {
     return gameObject->scene->runtimeContext.logger;
 }

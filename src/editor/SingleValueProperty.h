@@ -28,7 +28,8 @@ public:
         }
     }
 
-    void OnEditorGUI(Rectangle &rect) {
+    bool OnEditorGUI(Rectangle &rect) {
+        bool changed = false;
         const int labelWidth = Editor::LabelWidth();
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, label.c_str());
 
@@ -39,11 +40,13 @@ public:
             int intMax = std::numeric_limits<int>::max();
             if (GuiValueBox(positionRect, nullptr, value, intMin, intMax, editMode)) {
                 editMode = !editMode;
+                changed = true;
             }
 
         } else {
             if (GuiValueBoxFloat(positionRect, nullptr, valueBoxTextValue, value, editMode)) {
                 editMode = !editMode;
+                changed = true;
             }
         }
 
@@ -57,6 +60,7 @@ public:
                           nullptr, nullptr, &floatValue, minValue, maxValue)) {
                 *value = static_cast<T>(floatValue);
                 SetValueBoxText();
+                changed = true;
             }
         }
         if (!editMode) {
@@ -66,6 +70,8 @@ public:
         Editor::EndIndent(rect, labelWidth);
 
         rect.y += Editor::TextSize() + Editor::SmallGap();
+
+        return changed;
     }
 
     float GetEditorHeight() const {
