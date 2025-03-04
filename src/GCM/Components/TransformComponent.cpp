@@ -92,6 +92,12 @@ void TransformComponent::FromJson(const nlohmann::json &json) {
     scale = {json["scale"][0], json["scale"][1], json["scale"][2]};
 }
 
+void TransformComponent::SetWorldPosition(const Vector3 target) {
+    const Vector3 worldPosition = GetWorldPosition();
+    const Vector3 toTarget = target - worldPosition;
+    position += toTarget;
+}
+
 void TransformComponent::OnDrawGizmosBottom(Scene *scene) const {
 }
 

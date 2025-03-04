@@ -54,6 +54,8 @@ public:
         position = pos;
     }
 
+    void SetWorldPosition(Vector3 target);
+
 private:
     Vector3 position = {0.0f, 0.0f, 0.0f};
     Vector3 eulerAngles = {0.0f, 0.0f, 0.0f};

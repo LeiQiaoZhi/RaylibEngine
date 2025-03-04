@@ -56,8 +56,11 @@ void CameraComponent::EditorStart() {
 
 void CameraComponent::EditorUpdate() {
     if (!gameObject->scene->IsInsideScenePanel(GetMousePosition())) return;
-    if (updating)
+    camera->position = gameObject->GetTransform()->GetWorldPosition();
+    if (updating) {
         UpdateCamera(camera, cameraMode);
+        gameObject->GetTransform()->SetWorldPosition(camera->position);
+    }
     if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
         updating = !updating;
     }
