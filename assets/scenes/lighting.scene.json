@@ -10,21 +10,21 @@
         "cameraFovy": 45.0,
         "cameraMode": 1,
         "cameraPosition": [
-            22.666887283325195,
-            11.59691333770752,
-            22.561927795410156
+            31.62095069885254,
+            5.174068450927734,
+            26.860538482666016
         ],
         "cameraTarget": [
-            -8.327396392822266,
-            1.5079030990600586,
-            -9.386297225952148
+            0.38332176208496094,
+            6.99412202835083,
+            -6.316059112548828
         ],
         "cameraUp": [
-            -0.012163051404058933,
-            0.9998131394386292,
-            0.015137770213186741
+            -0.00573592958971858,
+            0.9999344944953918,
+            0.010120184160768986
         ],
-        "skyboxFlipY": false,
+        "skyboxFlipY": true,
         "skyboxMaterial": {
             "inputText": "skybox.mat.json",
             "path": "skybox.mat.json"
@@ -48,9 +48,9 @@
                             "folded": false
                         },
                         "position": [
-                            -59.63954162597656,
-                            9.836320877075195,
-                            -0.4825735092163086
+                            -106.23165893554688,
+                            32.2999267578125,
+                            -18.29901885986328
                         ],
                         "scale": [
                             1.0,
@@ -70,19 +70,19 @@
                         "cameraFovy": 45.0,
                         "cameraMode": 1,
                         "cameraPosition": [
-                            -59.63954162597656,
-                            9.836320877075195,
-                            -0.4825735092163086
+                            -106.23165893554688,
+                            32.2999267578125,
+                            -18.29901885986328
                         ],
                         "cameraTarget": [
-                            111.24185180664063,
-                            -18.60626792907715,
-                            14.3562650680542
+                            106.66073608398438,
+                            -23.9510498046875,
+                            29.440818786621094
                         ],
                         "cameraUp": [
-                            -0.017671208828687668,
-                            0.9996155500411987,
-                            -0.021591536700725555
+                            -0.02005191147327423,
+                            0.9997040033340454,
+                            -0.014133518561720848
                         ],
                         "enabled": true,
                         "header": {
@@ -210,7 +210,7 @@
                                 "position": [
                                     15.0,
                                     10.0,
-                                    -5.0
+                                    -15.0
                                 ],
                                 "scale": [
                                     1.0,
@@ -221,24 +221,190 @@
                             },
                             {
                                 "color": [
-                                    231,
-                                    174,
-                                    233,
+                                    246,
+                                    71,
+                                    255,
+                                    255
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": true
+                                },
+                                "intensity": 2.306532859802246,
+                                "lightType": 2,
+                                "range": 23.363656997680664,
+                                "type": "LightComponent"
+                            },
+                            {
+                                "animationFoldout": {
+                                    "folded": false
+                                },
+                                "debugFoldout": {
+                                    "folded": false
+                                },
+                                "drawBoneNames": false,
+                                "drawBonesLines": false,
+                                "drawBounds": true,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": false,
+                                "filename": "",
+                                "header": {
+                                    "folded": false
+                                },
+                                "isPicking": false,
+                                "materialFoldout": {
+                                    "folded": false
+                                },
+                                "materials": [
+                                    {
+                                        "inputText": "",
+                                        "path": ""
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
+                            },
+                            {
+                                "createOnStart": true,
+                                "cubeSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "cubeWorldSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
+                                "meshType": 2,
+                                "planeSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "planeWorldSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "sphereRadius": 0.5603278279304504,
+                                "sphereRings": 16,
+                                "sphereSlices": 16,
+                                "type": "ProceduralMeshComponent"
+                            }
+                        ],
+                        "name": "Point",
+                        "sceneDepth": 2,
+                        "uid": 1947351954
+                    },
+                    {
+                        "children": [],
+                        "components": [
+                            {
+                                "enabled": true,
+                                "eulerAngles": [
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "header": {
+                                    "folded": false
+                                },
+                                "position": [
+                                    15.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "scale": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "TransformComponent"
+                            },
+                            {
+                                "animationFoldout": {
+                                    "folded": false
+                                },
+                                "debugFoldout": {
+                                    "folded": false
+                                },
+                                "drawBoneNames": false,
+                                "drawBonesLines": false,
+                                "drawBounds": true,
+                                "drawSurface": true,
+                                "drawWireframe": false,
+                                "enabled": false,
+                                "filename": "",
+                                "header": {
+                                    "folded": true
+                                },
+                                "isPicking": false,
+                                "materialFoldout": {
+                                    "folded": false
+                                },
+                                "materials": [
+                                    {
+                                        "inputText": "",
+                                        "path": ""
+                                    }
+                                ],
+                                "renderType": 0,
+                                "type": "ModelComponent"
+                            },
+                            {
+                                "createOnStart": true,
+                                "cubeSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "cubeWorldSize": [
+                                    10.0,
+                                    10.0,
+                                    10.0
+                                ],
+                                "enabled": true,
+                                "header": {
+                                    "folded": false
+                                },
+                                "meshType": 2,
+                                "planeSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "planeWorldSize": [
+                                    10.0,
+                                    10.0
+                                ],
+                                "sphereRadius": 0.5,
+                                "sphereRings": 16,
+                                "sphereSlices": 16,
+                                "type": "ProceduralMeshComponent"
+                            },
+                            {
+                                "color": [
+                                    255,
+                                    185,
+                                    2,
                                     255
                                 ],
                                 "enabled": true,
                                 "header": {
                                     "folded": false
                                 },
-                                "intensity": 1.3642096519470215,
+                                "intensity": 1.3465243577957153,
                                 "lightType": 2,
-                                "range": 23.363656997680664,
+                                "range": 22.872398376464844,
                                 "type": "LightComponent"
                             }
                         ],
-                        "name": "Point",
+                        "name": "Point 2",
                         "sceneDepth": 2,
-                        "uid": 1947351954
+                        "uid": 1947396450
                     }
                 ],
                 "components": [
@@ -368,7 +534,7 @@
                                 "drawBounds": true,
                                 "drawSurface": true,
                                 "drawWireframe": false,
-                                "enabled": true,
+                                "enabled": false,
                                 "filename": "lisa.glb",
                                 "header": {
                                     "folded": false
@@ -513,51 +679,6 @@
                 "name": "Custom Script",
                 "sceneDepth": 1,
                 "uid": 1947399925
-            },
-            {
-                "children": [],
-                "components": [
-                    {
-                        "enabled": true,
-                        "eulerAngles": [
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        "header": {
-                            "folded": false
-                        },
-                        "position": [
-                            -10.0,
-                            0.0,
-                            0.0
-                        ],
-                        "scale": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "type": "TransformComponent"
-                    },
-                    {
-                        "enabled": true,
-                        "header": {
-                            "folded": false
-                        },
-                        "radius": 4.0,
-                        "type": "SphereColliderComponent"
-                    },
-                    {
-                        "enabled": true,
-                        "header": {
-                            "folded": false
-                        },
-                        "type": "RigidbodyComponent"
-                    }
-                ],
-                "name": "Physics",
-                "sceneDepth": 1,
-                "uid": 1947396261
             }
         ],
         "components": [
@@ -609,6 +730,6 @@
         "sceneDepth": 0,
         "uid": 1
     },
-    "saveTime": 1741847717,
-    "selectedGameObjectUID": 2
+    "saveTime": 1741850023,
+    "selectedGameObjectUID": -1
 }

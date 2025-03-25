@@ -7,16 +7,10 @@
 
 #include "raylib.h"
 #include <iostream>
-#include "common/GCM/Scene.h"
-#include "common/GCM/Components/JelloComponent.h"
-#include "common/logger/Logger.h"
-#include "common/subviews/ConsoleSubView.h"
-#include "common/subviews/GameSubView.h"
-#include "common/luautils/LuaUtils.h"
-#include "common/subviews/AssetsSubView.h"
-#include "common/subviews/HierarchySubView.h"
-#include "common/subviews/InspectorSubView.h"
-#include "sol/sol.hpp"
+
+#include "../common/input/MouseDragState.h"
+#include "nodes/Node.h"
+#include "Context.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -26,28 +20,12 @@ int main() {
     //--------------------------------------------------------------------------------------
 
     // Load start scene
-    Scene scene;
-
-    // Lua
-    sol::state &lua = scene.runtimeContext.luaManager.lua;
-    lua.open_libraries(sol::lib::base);
-
-    lua.script_file(std::string(ASSET_DIR) + "/lua/test.lua");
-
-    // lua config
-    lua.script_file(std::string(ASSET_DIR) + "/lua/config.lua");
-    const int windowWidth = lua["windowWidth"].get_or(800);
-    const int windowHeight = lua["windowHeight"].get_or(450);
-    const std::string windowName = lua["windowName"].get_or(std::string("Engine"));
-    const std::string style = lua["style"].get_or(std::string("dark"));
-    const int uiScale = lua["uiScale"].get_or(1);
+    const int windowWidth = (1600);
+    const int windowHeight = (900);
+    const std::string windowName = (std::string("Engine"));
+    const std::string style = (std::string("dark"));
+    const int uiScale = (1);
     InitWindow(windowWidth, windowHeight, windowName.c_str());
-
-    GameSubView gameSubView(windowWidth / 2, windowHeight);
-    const ConsoleSubView consoleSubView(windowWidth / 4, windowHeight / 4);
-    HierarchySubView hierarchySubView(windowWidth / 4, windowHeight / 2);
-    InspectorSubView inspectorSubView(windowWidth / 4, windowHeight * 3 / 4);
-    AssetsSubView assetsSubView(windowWidth / 4, windowHeight / 2);
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -59,7 +37,15 @@ int main() {
     GuiSetStyle(SCROLLBAR, BORDER_WIDTH, 0);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 16 * uiScale);
 
-    hierarchySubView.LoadScene(scene);
+    MouseDragState dragState;
+    Node node;
+    Camera2D camera = {0};
+    camera.target = (Vector2){0, 0};
+    camera.offset = (Vector2){windowWidth / 2.0f, windowHeight / 2.0f};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
+    Context context(dragState, camera);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -67,28 +53,34 @@ int main() {
     {
         // Update
         //----------------------------------------------------------------------------------
-        if (scene.isPlayMode)
-            scene.Update();
-        else
-            scene.EditorUpdate();
         //----------------------------------------------------------------------------------
+        // TODO: update camera
+
+        // TODO: test dragging
+        dragState.Update();
+        Vector2 mouseScreenPos = GetMousePosition();
+        Vector2 mousePos = GetScreenToWorld2D(mouseScreenPos, camera);
+        context.mousePos = mousePos;
+        node.Update(context);
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
-
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-        gameSubView.Render(scene, {static_cast<float>(windowWidth) / 2, 0});
-        consoleSubView.Render(scene, {0, static_cast<float>(windowHeight) * .75f});
-        hierarchySubView.Render(scene, {
-                                    static_cast<float>(windowWidth) * .25f, static_cast<float>(windowHeight) * .5f
-                                });
-        inspectorSubView.Render(scene, {0, 0});
-        assetsSubView.Render(scene, {static_cast<float>(windowWidth) * .25f, 0});
+        BeginMode2D(camera);
+        node.OnDraw();
+
+        // debug
+        DrawText(TextFormat("Mouse Position: [%i, %i]", (int) mousePos.x, (int) mousePos.y), mousePos.x, mousePos.y, 10,
+                 WHITE);
+        if (dragState.isDragging) {
+            Vector2 mouseStart = GetScreenToWorld2D(dragState.startDragPosition, camera);
+            DrawLineV(mouseStart, mousePos, YELLOW);
+        }
+        EndMode2D();
 
         DrawFPS(windowWidth - 80, 0);
-
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

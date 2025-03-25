@@ -27,7 +27,7 @@
       ]
     },
     {
-      "Enabled": true,
+      "Enabled": false,
       "Type": 2,
       "Path": "/textures/old_car_n.png",
       "Color": [

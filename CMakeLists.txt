@@ -6,15 +6,20 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Add Lua
 add_subdirectory(external/lua)
-#set(LUA_INCLUDE_DIR "/opt/homebrew/include")
-#set(LUA_LIBRARY "/opt/homebrew/lib/liblua.dylib")
-#include_directories(${LUA_INCLUDE_DIR})
 
 add_subdirectory(vendor/raylib)
 add_subdirectory(vendor/json)
 
-file(GLOB_RECURSE SOURCES "src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_library(common_defs INTERFACE)
+target_compile_definitions(common_defs INTERFACE
+        PROJECT_DIR="${CMAKE_SOURCE_DIR}"
+        ASSET_DIR="${CMAKE_SOURCE_DIR}/assets"
+        INTERNAL_ASSET_DIR="${CMAKE_SOURCE_DIR}/internal-assets"
+        SHADER_EXAMPLES_ASSET_DIR="${CMAKE_SOURCE_DIR}/vendor/raylib/examples/shaders/resources"
+)
+
+file(GLOB_RECURSE COMMON_SOURCES "src/common/*.cpp")
+add_executable(${PROJECT_NAME} ${COMMON_SOURCES} src/main.cpp)
 
 # Add raylib include directory
 target_include_directories(${PROJECT_NAME} PRIVATE vendor/raylib/src)
@@ -55,13 +60,8 @@ if (USE_ANGLE)
     target_link_libraries(${PROJECT_NAME} ${ANGLE_GLESv2_LIBRARY} ${ANGLE_EGL_LIBRARY})
 endif ()
 
-target_compile_definitions(
-        ${PROJECT_NAME}
-        PRIVATE PROJECT_DIR="${CMAKE_SOURCE_DIR}"
-        PRIVATE ASSET_DIR="${CMAKE_SOURCE_DIR}/assets"
-        PRIVATE INTERNAL_ASSET_DIR="${CMAKE_SOURCE_DIR}/internal-assets"
-        PRIVATE SHADER_EXAMPLES_ASSET_DIR="${CMAKE_SOURCE_DIR}/vendor/raylib/examples/shaders/resources"
-)
+target_link_libraries(${PROJECT_NAME} common_defs)
+
 
 add_compile_options(-Wno-deprecated-declarations)
 
@@ -70,3 +70,18 @@ if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)  # disable warnings about secure CRT functions
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")  # more permissive mode
 endif()
+
+# Shader editor executable using raylib and raygui only.
+file(GLOB_RECURSE SHADER_GRAPH_SOURCES "src/shader-graph/*.cpp")
+add_executable(shader_editor ${SHADER_GRAPH_SOURCES} ${COMMON_SOURCES})
+
+target_include_directories(shader_editor PRIVATE vendor/raylib/src)
+target_include_directories(shader_editor PRIVATE vendor/raygui/src)
+target_include_directories(shader_editor PRIVATE vendor/sol2/include)
+target_include_directories(shader_editor PRIVATE /src)
+
+target_link_libraries(shader_editor raylib)
+target_link_libraries(shader_editor lua::lib)
+target_link_libraries(shader_editor nlohmann_json::nlohmann_json)
+target_link_libraries(shader_editor common_defs)
+

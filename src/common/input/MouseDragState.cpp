@@ -1,8 +1,6 @@
 #include "MouseDragState.h"
 #include "../GCM/Components/Component.h"
 
-#include <iostream>
-
 #include "../GCM/GameObject.h"
 
 void MouseDragState::Update() {
