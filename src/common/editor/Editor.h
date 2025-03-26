@@ -17,6 +17,16 @@ public:
     static int LargeGap() { return 20; }
     static int LabelWidth() { return TextSize() * 5 + LargeGap(); }
 
+    static Font GetFont() {
+        static Font font;
+        static bool initialized = false;
+        if (!initialized) {
+            initialized = true;
+            font = LoadFont((std::string(INTERNAL_ASSET_DIR) + "/fonts/MapleMono-NF-Regular.ttf").c_str());
+        }
+        return font;
+    }
+
     static void BeginIndent(Rectangle &rect, int indent) {
         rect.x += indent;
         rect.width -= indent;
@@ -46,7 +56,7 @@ public:
     }
 
     static float TextWidth(const char *str) {
-        return MeasureTextEx(GuiGetFont(), str, TextSize(), 0).x;
+        return MeasureTextEx(GuiGetFont(), str, TextSize(), 1).x;
     }
 
     static void DrawStatusInfoBox(Rectangle &rect, std::string &statusText, const bool isWarning) {

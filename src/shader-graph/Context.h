@@ -7,13 +7,33 @@
 
 #include "../common/input/MouseDragState.h"
 
+class NodeInput;
+class NodeOutput;
+
+// Higher => more priority, override lower priority
+enum class InteractionState {
+    None = 0,
+    Hovering, // for a node
+    Dragging, // for a node
+    IOHovering, // for input/output circle
+    Connecting, // for connecting input/output
+};
+
 struct Context {
     Vector2 mousePos;
     MouseDragState &mouseDragState;
     Camera2D &camera;
+    InteractionState interactionState;
 
-    Context (MouseDragState &mouseDragState, Camera2D &camera)
+    NodeInput *connectionInput;
+    NodeOutput *connectionOutput;
+
+    Context(MouseDragState &mouseDragState, Camera2D &camera)
         : mousePos(), mouseDragState(mouseDragState), camera(camera) {
+    }
+
+    bool interactionStateLowerThan(InteractionState state) {
+        return static_cast<int>(interactionState) < static_cast<int>(state);
     }
 };
 
