@@ -80,9 +80,29 @@ void Node::Update(Context &context) {
     }
 
     // handle dragging
-    if (dragState.JustFinishedDragging() && wasHovered
-        && context.interactionStateLowerThan(InteractionState::Dragging)) {
+    if (dragState.JustStartedDragging() && isHovering && context.
+        interactionStateLowerThan(InteractionState::Dragging)) {
+        dragging = true;
+    }
+    if (dragging && context.interactionStateLowerThan(InteractionState::Dragging)) {
         context.interactionState = InteractionState::Dragging;
-        position += context.mousePos - startMouseWorldPos;
+    }
+    if (dragState.JustFinishedDragging()) {
+        dragging = false;
+    }
+}
+
+void Node::Resolve(Context &context) {
+    // resolve connections
+    for (auto &input: inputs) {
+        input.Resolve(context);
+    }
+    for (auto &output: outputs) {
+        output.Resolve(context);
+    }
+
+    // resolve dragging
+    if (dragging && context.interactionState == InteractionState::Dragging) {
+        position += context.mouseDragState.delta;
     }
 }

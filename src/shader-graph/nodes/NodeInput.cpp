@@ -56,13 +56,17 @@ void NodeInput::Update(Context &context) {
     //     && context.interactionStateLowerThan(InteractionState::Connecting)) {
     //     context.interactionState = InteractionState::Connecting;
     // }
+}
 
-    // handle being connected
-    if (context.interactionState == InteractionState::Connecting && isHovering) {
+void NodeInput::Resolve(Context &context) {
+    const bool isHovering = CheckCollisionPointCircle(context.mousePos, circleCenter, radius * 2.);
+
+    // resolve being connected
+    if (context.mouseDragState.JustFinishedDragging() && context.interactionState == InteractionState::Connecting &&
+        isHovering) {
         if (context.connectionOutput != nullptr) {
             context.connectionOutput->target = this;
             source = context.connectionOutput;
-            context.connectionOutput = nullptr;
         }
     }
 }

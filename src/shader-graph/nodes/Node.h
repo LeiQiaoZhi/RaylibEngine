@@ -22,6 +22,8 @@ public:
 
     void Update(Context &context);
 
+    void Resolve(Context & context);
+
     // type, inputs, outputs, size
     Vector2 position;
     Vector2 size = {100, 100};
@@ -29,6 +31,7 @@ public:
     std::vector<NodeInput> inputs;
     std::vector<NodeOutput> outputs;
     bool hovering;
+    bool dragging;
 };
 
 

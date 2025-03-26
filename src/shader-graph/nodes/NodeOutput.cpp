@@ -49,9 +49,19 @@ void NodeOutput::Update(Context &context) {
     }
 
     // handle dragging
-    if (dragState.JustFinishedDragging() && wasHovered
-        && context.interactionStateLowerThan(InteractionState::Connecting)) {
+    if (dragState.JustStartedDragging() && isHovering) {
+        dragging = true;
+    }
+
+    if (dragging && context.interactionStateLowerThan(InteractionState::Connecting)) {
         context.interactionState = InteractionState::Connecting;
         context.connectionOutput = this;
     }
+
+    if (dragState.JustFinishedDragging()) {
+        dragging = false;
+    }
+}
+
+void NodeOutput::Resolve(Context &context) {
 }

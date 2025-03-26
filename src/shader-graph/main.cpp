@@ -5,7 +5,8 @@
 #include "raygui.h"
 #undef RAYGUI_IMPLEMENTATION
 
-#include "raylib.h"
+#include <raylib.h>
+#include <raymath.h>
 #include <iostream>
 
 #include "../common/input/MouseDragState.h"
@@ -59,6 +60,11 @@ int main() {
     camera.zoom = 1.0f;
 
     Context context(dragState, camera);
+
+    Shader bgShader = LoadShader(
+        (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
+        (std::string(INTERNAL_ASSET_DIR) + "/shaders/bg.frag").c_str()
+    );
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -68,20 +74,55 @@ int main() {
         //----------------------------------------------------------------------------------
         //----------------------------------------------------------------------------------
         context.mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
-        context.interactionState = InteractionState::None;
-
-        // TODO: update camera
-
-        // TODO: test dragging
         dragState.Update();
+        // reset immediate states
+        context.interactionState = InteractionState::None;
+        if (context.connectionOutput != nullptr) {
+            // context.connectionOutput->target = nullptr;
+            context.connectionOutput = nullptr;
+        }
+        if (context.connectionInput != nullptr) {
+            // context.connectionInput->source = nullptr;
+            context.connectionInput = nullptr;
+        }
+
+        // update camera
+        camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
+        camera.zoom = std::clamp(camera.zoom, 0.1f, 3.0f);
+        if (context.mouseDragState.isDragging && IsKeyDown(KEY_LEFT_ALT)) {
+            camera.target -= context.mouseDragState.delta;
+        }
+
+        // test dragging
         for (auto &node: nodes) {
             node.Update(context);
+        }
+        for (auto &node: nodes) {
+            node.Resolve(context);
+        }
+
+        if (context.interactionState == InteractionState::Dragging) {
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+        } else if (context.interactionState == InteractionState::Connecting) {
+            SetMouseCursor(MOUSE_CURSOR_CROSSHAIR);
+        } else {
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         }
 
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        // background
+        SetShaderValue(bgShader, GetShaderLocation(bgShader, "resolution"), (float[2]){windowWidth, windowHeight},
+                       SHADER_UNIFORM_VEC2);
+        SetShaderValue(bgShader, GetShaderLocation(bgShader, "zoom"), &camera.zoom, SHADER_UNIFORM_FLOAT);
+        SetShaderValue(bgShader, GetShaderLocation(bgShader, "cameraPos"), (float[2]){camera.target.x, camera.target.y},
+                       SHADER_UNIFORM_VEC2);
+        BeginShaderMode(bgShader);
+        DrawRectangle(0, 0, windowWidth, windowHeight, WHITE);
+        EndShaderMode();
 
         BeginMode2D(camera);
         for (auto &node: nodes) {
@@ -99,9 +140,18 @@ int main() {
 
         EndMode2D();
 
-        DrawTextEx(Editor::GetFont(), TextFormat("Interaction State: [%i]", context.interactionState), {10, 10}, Editor::TextSizeF(), 2, WHITE);
-        DrawTextEx(Editor::GetFont(), TextFormat("Connecting I: [%s]", context.connectionInput == nullptr ? "NULL" : context.connectionInput->name.c_str()), {10, 30}, Editor::TextSizeF(), 2, WHITE);
-        DrawTextEx(Editor::GetFont(), TextFormat("Connecting O: [%s]", context.connectionOutput == nullptr ? "NULL" : context.connectionOutput->name.c_str()), {10, 50}, Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(), TextFormat("Interaction State: [%i]", context.interactionState), {10, 10},
+                   Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(),
+                   TextFormat("Connecting I: [%s]",
+                              context.connectionInput == nullptr ? "NULL" : context.connectionInput->name.c_str()),
+                   {10, 30}, Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(),
+                   TextFormat("Connecting O: [%s]",
+                              context.connectionOutput == nullptr ? "NULL" : context.connectionOutput->name.c_str()),
+                   {10, 50}, Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), {10, 70},
+                   Editor::TextSizeF(), 2, WHITE);
 
         DrawFPS(windowWidth - 80, 0);
         EndDrawing();

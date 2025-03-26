@@ -14,8 +14,8 @@ class NodeOutput;
 enum class InteractionState {
     None = 0,
     Hovering, // for a node
-    Dragging, // for a node
     IOHovering, // for input/output circle
+    Dragging, // for a node
     Connecting, // for connecting input/output
 };
 

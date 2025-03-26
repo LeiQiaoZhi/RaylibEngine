@@ -20,6 +20,7 @@ public:
     Vector2 circleCenter;
     float radius;
     bool hovering;
+    bool dragging;
 
     Color GetColor() const;
 
@@ -28,6 +29,8 @@ public:
     float GetWidth() const;
 
     void Update(Context &context);
+
+    void Resolve(Context & context);
 };
 
 

@@ -26,6 +26,8 @@ public:
     void Draw(Rectangle &rect);
 
     void Update(Context &context);
+
+    void Resolve(Context & context);
 };
 
 

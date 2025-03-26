@@ -14,11 +14,16 @@ public:
         return previousIsDragging && !isDragging;
     }
 
+    bool JustStartedDragging() const {
+        return isDragging && !previousIsDragging;
+    }
+
 public:
     bool isDragging = false;
     Vector2 startDragPosition = {0, 0};
     Vector2 endDragPosition = {0, 0};
     Vector2 delta = {0, 0};
+    Vector2 previousDragPosition;
 
 private:
     bool previousIsDragging = false;

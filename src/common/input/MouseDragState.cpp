@@ -11,11 +11,16 @@ void MouseDragState::Update() {
             isDragging = false;
             endDragPosition = GetMousePosition();
         }
+        else {
+            delta = GetMousePosition() - previousDragPosition;
+            previousDragPosition = GetMousePosition();
+        }
     } else {
         // start drag
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             isDragging = true;
             startDragPosition = GetMousePosition();
+            previousDragPosition = startDragPosition;
         }
     }
 }
