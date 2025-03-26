@@ -6,6 +6,7 @@
 #include "NodeOutput.h"
 
 #include "../../common/editor/Editor.h"
+#include "../../common/utils/RaylibUtils.h"
 
 Color NodeInput::GetColor() const {
     const float alpha = hovering ? 1.0f : 0.7f;
@@ -33,7 +34,12 @@ void NodeInput::Draw(Rectangle &rect) {
 
     // line
     if (source != nullptr) {
-        DrawLineEx(circleCenter, source->circleCenter, 2, Fade(GREEN, 0.5f));
+        const float handleLength = abs(std::max((circleCenter - source->circleCenter).x,
+                                                (circleCenter - source->circleCenter).y)) / 2;
+        RaylibUtils::DrawLineBezier(
+            circleCenter, circleCenter + Vector2{-handleLength, 0},
+            source->circleCenter + Vector2{handleLength, 0}, source->circleCenter,
+            2, Fade(GREEN, 0.5f));
     }
 }
 

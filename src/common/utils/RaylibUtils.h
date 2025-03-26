@@ -720,6 +720,46 @@ public:
         // Update GPU buffer
         UpdateMeshBuffer(*mesh, 2, normals, mesh->vertexCount * 3 * sizeof(float), 0);
     }
+
+    static void DrawLineBezier(Vector2 A, Vector2 B, Vector2 C, Vector2 D, float thick, Color color)
+    {
+        Vector2 previous = A;
+        Vector2 current = { 0 };
+
+        Vector2 points[2*SPLINE_SEGMENT_DIVISIONS + 2] = { 0 };
+
+        for (int i = 1; i <= SPLINE_SEGMENT_DIVISIONS; i++)
+        {
+            float t = (float)i/(float)SPLINE_SEGMENT_DIVISIONS;
+            Vector2 AB = Vector2Lerp(A, B, t);
+            Vector2 BC = Vector2Lerp(B, C, t);
+            Vector2 CD = Vector2Lerp(C, D, t);
+            Vector2 ABC = Vector2Lerp(AB, BC, t);
+            Vector2 BCD = Vector2Lerp(BC, CD, t);
+            current = Vector2Lerp(ABC, BCD, t);
+
+            float dy = current.y - previous.y;
+            float dx = current.x - previous.x;
+            float size = 0.5f*thick/sqrtf(dx*dx+dy*dy);
+
+            if (i == 1)
+            {
+                points[0].x = previous.x + dy*size;
+                points[0].y = previous.y - dx*size;
+                points[1].x = previous.x - dy*size;
+                points[1].y = previous.y + dx*size;
+            }
+
+            points[2*i + 1].x = current.x - dy*size;
+            points[2*i + 1].y = current.y + dx*size;
+            points[2*i].x = current.x + dy*size;
+            points[2*i].y = current.y - dx*size;
+
+            previous = current;
+        }
+
+        DrawTriangleStrip(points, 2*SPLINE_SEGMENT_DIVISIONS + 2, color);
+    }
 };
 
 #endif //RAYLIBUTILS_H
