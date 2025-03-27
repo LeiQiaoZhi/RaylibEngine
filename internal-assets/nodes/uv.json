@@ -1,0 +1,10 @@
+{
+    "name": "UV",
+    "inputs": [
+    ],
+    "outputs": [
+        {
+            "name": "UV"
+        }
+    ]
+}

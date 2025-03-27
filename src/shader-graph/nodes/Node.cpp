@@ -9,32 +9,48 @@
 #include "raymath.h"
 #include "../../common/editor/Editor.h"
 
-void Node::OnDraw() {
-    // background
-    if (hovering) {
-        static float edge = 4;
-        DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge, GRAY);
+Node::Node(nlohmann::json j) {
+    name = j.value("name", name);
+    if (j.contains("inputs")) {
+        for (auto &input: j["inputs"]) {
+            inputs.push_back({input["name"]}); // TODO: pass entire json
+        }
     }
-    DrawRectangle(position.x, position.y, size.x, size.y, Fade(BLACK, hovering ? 1.0f : 0.7f));
+    if (j.contains("outputs")) {
+        for (auto &output: j["outputs"]) {
+            outputs.push_back({output["name"]});
+        }
+    }
+    uid = Utils::GenerateUID(name);
+}
+
+void Node::OnDraw(Context &context) {
+    // background
+    if (hovering || context.selectedNodeUID == uid) {
+        static float edge = 4;
+        DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
+                      context.selectedNodeUID == uid ? Fade(GREEN, .2) : GRAY);
+    }
+    DrawRectangle(position.x, position.y, size.x, size.y, hovering ? BLACK : Color{10, 10, 10, 255});
 
     // title
-    const std::string title = "Node";
-    const float textWidth = MeasureTextEx(Editor::GetFont(), title.c_str(), Editor::TextSizeF(), 1).x;
+    const float textWidth = MeasureTextEx(Editor::GetFont(), name.c_str(), Editor::TextSizeF(), 1).x;
     Rectangle titleRect = {
         position.x + size.x / 2 - textWidth / 2, position.y + Editor::SmallGap(), 0, Editor::TextSizeF()
     };
-    DrawTextEx(Editor::GetFont(), title.c_str(), {titleRect.x, titleRect.y}, Editor::TextSizeF(), 2, WHITE);
+    DrawTextEx(Editor::GetFont(), name.c_str(), {titleRect.x, titleRect.y}, Editor::TextSizeF(), 2, WHITE);
     titleRect.y += Editor::TextSizeF() + Editor::SmallGap();
     DrawLineEx({position.x + Editor::SmallGap(), titleRect.y},
                {position.x + size.x - Editor::SmallGap(), titleRect.y}, 1, Fade(WHITE, 0.3f));
     titleRect.y += Editor::MediumGap();
+    size.x = textWidth + Editor::SmallGap() * 2;
 
     // inputs
     Rectangle inputRect = {position.x, titleRect.y, 0, Editor::TextSizeF()};
     for (auto &input: inputs) {
         input.Draw(inputRect);
     }
-    size.x = inputRect.width;
+    size.x = std::max(inputRect.width, size.x);
 
     // outputs
     float maxWidth = 0;
@@ -48,9 +64,10 @@ void Node::OnDraw() {
         output.Draw(outputRect);
     }
 
+
     // preview
 
-    size.y = inputRect.y - position.y;
+    size.y = std::max(inputRect.y, outputRect.y) - position.y;
 }
 
 
@@ -77,6 +94,10 @@ void Node::Update(Context &context) {
         hovering = true;
     } else {
         hovering = false;
+    }
+
+    if (dragState.JustStartedDragging() && isHovering) {
+        context.selectedNodeUID = uid;
     }
 
     // handle dragging
@@ -107,8 +128,15 @@ void Node::Resolve(Context &context) {
     }
 }
 
-void Node::OnEditorGUI(Rectangle &rect) {
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("UID: %i", uid));
+void Node::OnEditorGUI(Rectangle &rect, Context &context) {
+    const float originalY = rect.y;
+
+    // highlight when selected
+    if (context.selectedNodeUID == uid) {
+        DrawRectangleRec({rect.x, rect.y, rect.width, height}, Fade(WHITE, 0.1f));
+    }
+
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, name.c_str());
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     // inputs
@@ -127,17 +155,27 @@ void Node::OnEditorGUI(Rectangle &rect) {
 
     // outputs
 
-    debugFoldout.OnEditorGUI(rect);
-    if (debugFoldout.IsFolded())
-        return;
+    // code
+    // if (GuiTextBox({rect.x, rect.y, rect.width, Editor::TextSize() * 5.0f}, const_cast<char *>(code.c_str()),
+    //                code.size(), codeEditMode)) {
+    //     codeEditMode = !codeEditMode;
+    // }
+    // rect.y += Editor::TextSize() * 5.0f + Editor::SmallGap();
 
-    // debug: position, size
-    Editor::BeginIndent(rect, Editor::LargeGap());
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-             TextFormat("Position: [%i, %i]", (int) position.x, (int) position.y));
-    rect.y += Editor::TextSize() + Editor::SmallGap();
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-             TextFormat("Size: [%i, %i]", (int) size.x, (int) size.y));
-    rect.y += Editor::TextSize() + Editor::SmallGap();
-    Editor::EndIndent(rect, Editor::LargeGap());
+    debugFoldout.OnEditorGUI(rect);
+    if (!debugFoldout.IsFolded()) {
+        // debug: uid, position, size
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("UID: %d", uid));
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                 TextFormat("Position: [%i, %i]", (int) position.x, (int) position.y));
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                 TextFormat("Size: [%i, %i]", (int) size.x, (int) size.y));
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
+
+    height = rect.y - originalY;
 }

@@ -20,20 +20,24 @@ public:
         uid = Utils::GenerateUID("Node"); // TODO: replace with actual type
     }
 
+    explicit Node(nlohmann::json j);
+
     ~Node() = default;
 
-    void OnDraw();
+    void OnDraw(Context &context);
 
     void Update(Context &context);
 
     void Resolve(Context &context);
 
-    void OnEditorGUI(Rectangle &rect);
+    void OnEditorGUI(Rectangle &rect, Context &context);
 
     // TODO: type
-    Vector2 position;
+    std::string name = "Node";
+    Vector2 position = {0, 0};
     Vector2 size = {100, 100};
     int uid;
+    std::string code;
 
     std::vector<NodeInput> inputs;
     std::vector<NodeOutput> outputs;
@@ -46,6 +50,8 @@ public:
     FoldoutProperty debugFoldout = FoldoutProperty("Debug", true);
     FoldoutProperty inputFoldout = FoldoutProperty("Inputs", true);
     FoldoutProperty outputFoldout = FoldoutProperty("Outputs", true);
+    bool codeEditMode;
+    float height;
 };
 
 

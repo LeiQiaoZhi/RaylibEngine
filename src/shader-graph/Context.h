@@ -28,6 +28,8 @@ struct Context {
     NodeInput *connectionInput;
     NodeOutput *connectionOutput;
 
+    int selectedNodeUID = -1;
+
     Context(MouseDragState &mouseDragState, Camera2D &camera)
         : mousePos(), mouseDragState(mouseDragState), camera(camera) {
     }

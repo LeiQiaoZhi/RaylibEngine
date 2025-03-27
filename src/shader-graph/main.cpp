@@ -26,7 +26,7 @@ int main() {
     // Load start scene
     const int windowWidth = (1600);
     const int windowHeight = (900);
-    const std::string windowName = (std::string("Engine"));
+    const std::string windowName = (std::string("Shader Editor"));
     const std::string style = (std::string("dark"));
     const int uiScale = (1);
     InitWindow(windowWidth, windowHeight, windowName.c_str());
@@ -135,7 +135,7 @@ int main() {
 
         BeginMode2D(camera);
         for (auto &node: nodes) {
-            node.OnDraw();
+            node.OnDraw(context);
         }
 
         // debug
@@ -163,7 +163,7 @@ int main() {
                    Editor::TextSizeF(), 2, WHITE);
 
         // subviews
-        nodePropertiesSubView.Render({windowWidth - nodePropertiesSubView.GetSize().x, 0});
+        nodePropertiesSubView.Render({windowWidth - nodePropertiesSubView.GetSize().x, 0}, context);
         previewSubView.Render({
             windowWidth - previewSubView.GetSize().x, windowHeight - previewSubView.GetSize().y
         });

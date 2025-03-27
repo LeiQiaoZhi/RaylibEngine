@@ -1,0 +1,16 @@
+{
+    "name": "Add",
+    "inputs": [
+        {
+            "name": "A"
+        },
+        {
+            "name": "B"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "Result"
+        }
+    ]
+}
