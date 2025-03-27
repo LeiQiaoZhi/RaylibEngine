@@ -76,3 +76,13 @@ void NodeInput::Resolve(Context &context) {
         }
     }
 }
+
+void NodeInput::OnEditorGUI(Rectangle &rect) {
+    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+               const_cast<char *>(name.c_str()), 256, nameEditMode)) {
+        nameEditMode = !nameEditMode;
+    }
+
+    rect.y += Editor::TextSize() + Editor::SmallGap();
+
+}

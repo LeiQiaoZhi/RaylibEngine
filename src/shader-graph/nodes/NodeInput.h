@@ -20,6 +20,7 @@ public:
     Vector2 circleCenter;
     float radius = 0;
     bool hovering;
+    bool nameEditMode;
 
     Color GetColor() const;
 
@@ -27,7 +28,9 @@ public:
 
     void Update(Context &context);
 
-    void Resolve(Context & context);
+    void Resolve(Context &context);
+
+    void OnEditorGUI(Rectangle &rect);
 };
 
 

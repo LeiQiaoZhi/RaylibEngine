@@ -12,6 +12,7 @@
 #include "../common/input/MouseDragState.h"
 #include "nodes/Node.h"
 #include "Context.h"
+#include "NodePropertiesSubView.h"
 #include "../common/editor/Editor.h"
 
 //------------------------------------------------------------------------------------
@@ -65,6 +66,8 @@ int main() {
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/bg.frag").c_str()
     );
+
+    NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight, nodes);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -114,6 +117,7 @@ int main() {
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
+
         // background
         SetShaderValue(bgShader, GetShaderLocation(bgShader, "resolution"), (float[2]){windowWidth, windowHeight},
                        SHADER_UNIFORM_VEC2);
@@ -153,7 +157,11 @@ int main() {
         DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), {10, 70},
                    Editor::TextSizeF(), 2, WHITE);
 
+        // subviews
+        nodePropertiesSubView.Render({windowWidth - nodePropertiesSubView.GetSize().x, 0});
+
         DrawFPS(windowWidth - 80, 0);
+
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

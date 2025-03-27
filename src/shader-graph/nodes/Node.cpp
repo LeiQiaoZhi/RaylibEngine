@@ -106,3 +106,38 @@ void Node::Resolve(Context &context) {
         position += context.mouseDragState.delta;
     }
 }
+
+void Node::OnEditorGUI(Rectangle &rect) {
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("UID: %i", uid));
+    rect.y += Editor::TextSize() + Editor::SmallGap();
+
+    // inputs
+    inputFoldout.OnEditorGUI(rect);
+    if (!inputFoldout.IsFolded()) {
+        Editor::BeginIndent(rect, Editor::LargeGap());
+        for (auto &input: inputs) {
+            input.OnEditorGUI(rect);
+        }
+        if (GuiButton({rect.x, rect.y, rect.width, Editor::TextSize() * 1.2f}, "Add input")) {
+            inputs.push_back({"New input", nullptr});
+        }
+        rect.y += Editor::TextSize() * 1.2f + Editor::SmallGap();
+        Editor::EndIndent(rect, Editor::LargeGap());
+    }
+
+    // outputs
+
+    debugFoldout.OnEditorGUI(rect);
+    if (debugFoldout.IsFolded())
+        return;
+
+    // debug: position, size
+    Editor::BeginIndent(rect, Editor::LargeGap());
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+             TextFormat("Position: [%i, %i]", (int) position.x, (int) position.y));
+    rect.y += Editor::TextSize() + Editor::SmallGap();
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+             TextFormat("Size: [%i, %i]", (int) size.x, (int) size.y));
+    rect.y += Editor::TextSize() + Editor::SmallGap();
+    Editor::EndIndent(rect, Editor::LargeGap());
+}
