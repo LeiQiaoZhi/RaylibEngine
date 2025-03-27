@@ -13,6 +13,7 @@
 #include "nodes/Node.h"
 #include "Context.h"
 #include "NodePropertiesSubView.h"
+#include "PreviewSubView.h"
 #include "../common/editor/Editor.h"
 
 //------------------------------------------------------------------------------------
@@ -67,7 +68,8 @@ int main() {
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/bg.frag").c_str()
     );
 
-    NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight, nodes);
+    PreviewSubView previewSubView(windowWidth / 5, windowWidth / 5);
+    NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight - previewSubView.GetSize().y, nodes);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -111,6 +113,9 @@ int main() {
         } else {
             SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         }
+
+        // update subview
+        previewSubView.Update();
 
         // Draw
         //----------------------------------------------------------------------------------
@@ -159,6 +164,9 @@ int main() {
 
         // subviews
         nodePropertiesSubView.Render({windowWidth - nodePropertiesSubView.GetSize().x, 0});
+        previewSubView.Render({
+            windowWidth - previewSubView.GetSize().x, windowHeight - previewSubView.GetSize().y
+        });
 
         DrawFPS(windowWidth - 80, 0);
 
