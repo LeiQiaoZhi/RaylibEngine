@@ -4,33 +4,33 @@
 
 #ifndef NODEINPUT_H
 #define NODEINPUT_H
+#include <set>
 #include <string>
 
 #include "raylib.h"
 
+#include "NodeIO.h"
 #include "../Context.h"
 #include "../../common/editor/DropdownProperty.h"
-#include "../ShaderTypes.h"
 
 class NodeOutput;
 class Node;
 
-class NodeInput {
+class NodeInput : public NodeIO {
 public:
-    std::string name;
+    using NodeIO::NodeIO;
+
     NodeOutput *source = nullptr;
-    Vector2 circleCenter;
-    float radius = 0;
-    bool hovering;
+
     bool nameEditMode;
     DropdownProperty typeDropdown = DropdownProperty(GetShaderTypeNames(), 0);
-    ShaderType type;
 
-    Color GetColor() const;
 
-    void Draw(Rectangle &rect);
+    Color GetColor() const override;
 
-    void Update(Context &context);
+    void Draw(Rectangle &rect) override;
+
+    void Update(Context &context) override;
 
     void Resolve(Context &context);
 

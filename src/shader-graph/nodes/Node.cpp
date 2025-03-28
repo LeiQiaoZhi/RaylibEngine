@@ -13,12 +13,12 @@ Node::Node(nlohmann::json j) {
     name = j.value("name", name);
     if (j.contains("inputs")) {
         for (auto &input: j["inputs"]) {
-            inputs.push_back({input["name"]}); // TODO: pass entire json
+            AddInput(input["name"], input.value("type", ShaderType::Float));
         }
     }
     if (j.contains("outputs")) {
         for (auto &output: j["outputs"]) {
-            outputs.push_back({output["name"]});
+            AddOutput(output["name"], output.value("type", ShaderType::Float));
         }
     }
     uid = Utils::GenerateUID(name);
@@ -147,7 +147,7 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
             input.OnEditorGUI(rect);
         }
         if (GuiButton({rect.x, rect.y, rect.width, Editor::TextSize() * 1.2f}, "Add input")) {
-            inputs.push_back({"New input", nullptr});
+            AddInput("New Input", ShaderType::Float);
         }
         rect.y += Editor::TextSize() * 1.2f + Editor::SmallGap();
         Editor::EndIndent(rect, Editor::LargeGap());
@@ -178,4 +178,24 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
     }
 
     height = rect.y - originalY;
+}
+
+std::set<Node *> Node::GetNeighboursFromInputs() const {
+    std::set<Node *> neighbours;
+    for (auto &input: inputs) {
+        if (input.source != nullptr && input.source->parentNode != nullptr) {
+            neighbours.insert(input.source->parentNode);
+        }
+    }
+    return neighbours;
+}
+
+std::set<Node *> Node::GetNeighboursFromOuputs() const {
+    std::set<Node *> neighbours;
+    for (auto &output: outputs) {
+        if (output.target != nullptr && output.target->parentNode != nullptr) {
+            neighbours.insert(output.target->parentNode);
+        }
+    }
+    return neighbours;
 }

@@ -34,9 +34,10 @@ struct Context {
     int selectedNodeUID = -1;
 
     std::list<Node> &nodes;
+    Node *finalNode;
 
-    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
-        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {
+    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes, Node *finalNode)
+        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes), finalNode(finalNode) {
     }
 
     bool interactionStateLowerThan(InteractionState state) {

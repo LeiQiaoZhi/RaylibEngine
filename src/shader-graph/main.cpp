@@ -15,6 +15,7 @@
 #include "Context.h"
 #include "NodePropertiesSubView.h"
 #include "PreviewSubView.h"
+#include "ShaderCompilationSubView.h"
 #include "../common/editor/Editor.h"
 
 //------------------------------------------------------------------------------------
@@ -25,8 +26,8 @@ int main() {
     //--------------------------------------------------------------------------------------
 
     // Load start scene
-    const int windowWidth = (1600);
-    const int windowHeight = (900);
+    const int windowWidth = (1800);
+    const int windowHeight = (1000);
     const std::string windowName = (std::string("Shader Editor"));
     const std::string style = (std::string("dark"));
     const int uiScale = (1);
@@ -46,15 +47,9 @@ int main() {
     MouseDragState dragState;
     Node node1;
     Node node2;
-    node1.inputs.push_back({"input1", nullptr});
-    node1.inputs.push_back({"2", nullptr});
-    node1.outputs.push_back({"output1", nullptr});
-    node1.outputs.push_back({"R", nullptr});
-    node2.inputs.push_back({"A", nullptr});
-    node2.inputs.push_back({"input B", nullptr});
-    node2.outputs.push_back({"O", nullptr});
-    node2.outputs.push_back({"output 2", nullptr});
-    std::list<Node> nodes = {node1, node2};
+    node1.AddInput("color", ShaderType::Vec3);
+    node1.AddInput("alpha", ShaderType::Float);
+    std::list<Node> nodes = {node1};
 
     Camera2D camera = {0};
     camera.target = (Vector2){0, 0};
@@ -62,7 +57,7 @@ int main() {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Context context(dragState, camera, nodes);
+    Context context(dragState, camera, nodes, &nodes.front());
 
     Shader bgShader = LoadShader(
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
@@ -71,6 +66,7 @@ int main() {
 
     PreviewSubView previewSubView(windowWidth / 5, windowWidth / 5);
     NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight - previewSubView.GetSize().y);
+    ShaderCompilationSubView shaderCompilationSubView(windowWidth / 5, windowHeight / 2);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -164,6 +160,7 @@ int main() {
                    Editor::TextSizeF(), 2, WHITE);
 
         // subviews
+        shaderCompilationSubView.Render({0, windowHeight - shaderCompilationSubView.GetSize().y}, context);
         nodePropertiesSubView.Render({windowWidth - nodePropertiesSubView.GetSize().x, 0}, context);
         previewSubView.Render({
             windowWidth - previewSubView.GetSize().x, windowHeight - previewSubView.GetSize().y

@@ -8,13 +8,46 @@
 #include "../common/editor/Editor.h"
 
 
+std::list<Node *> ShaderCompilationSubView::FilterNodes(const Context &context) {
+    std::list<Node *> nodes;
+    if (context.finalNode == nullptr) return nodes;
+
+    // 1. DFS to find all nodes reachable from final node
+    std::list<Node *> toExplore = {context.finalNode};
+    while (!toExplore.empty()) {
+        Node *node = toExplore.front();
+        toExplore.pop_front();
+        nodes.push_back(node);
+
+        std::set<Node *> neighbours = node->GetNeighboursFromInputs();
+        toExplore.insert(toExplore.end(), neighbours.begin(), neighbours.end());
+    }
+
+    return nodes;
+}
+
+void ShaderCompilationSubView::TopologicalSortVisit(Node *node) {
+    visited.insert(node);
+    std::set<Node *> neighbours = node->GetNeighbours();
+}
+
+void ShaderCompilationSubView::TopologicalSort(const std::list<Node *> &list) {
+    for (auto &node: list) {
+        if (visited.find(node) == visited.end()) {
+            visited.insert(node);
+            TopologicalSortVisit(node);
+            orderedNodes.push_front(node);
+        }
+    }
+}
+
 void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
     const auto topLeft = renderer_->GetContentTopLeft();
 
     GuiStatusBar({
                      position.x, position.y,
                      renderer_->GetSize().x,RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT
-                 }, "Node Properties");
+                 }, "Compilation");
 
     Rectangle rect = {
         topLeft.x + Editor::SmallGap(), topLeft.y + Editor::SmallGap(),
@@ -25,11 +58,32 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
     renderer_->Begin();
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Compile")) {
+        // filter nodes
+        nodes = FilterNodes(context);
+
         // find order of nodes
+        TopologicalSort(nodes);
 
         // generate code
+        // 1. function definitions
+        // 2. main function
 
-        // compile
+        // compile (let preview handle this)
+    }
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
+    // nodes
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("Nodes: %d", nodes.size()));
+    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    for (auto &node: nodes) {
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
+        rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    }
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("Ordered Nodes: %d", orderedNodes.size()));
+    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    for (auto &node: orderedNodes) {
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
+        rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
     }
 
     renderer_->End();

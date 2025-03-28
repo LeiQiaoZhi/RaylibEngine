@@ -6,31 +6,30 @@
 #define NodeOutput_H
 #include <string>
 
+#include "NodeIO.h"
 #include "raylib.h"
 
 #include "../Context.h"
 
+enum class ShaderType;
 class NodeInput;
 class Node;
 
-class NodeOutput {
+class NodeOutput : public NodeIO {
 public:
-    std::string name;
+    using NodeIO::NodeIO;
+
     NodeInput *target = nullptr;
-    Vector2 circleCenter;
-    float radius;
-    bool hovering;
-    bool dragging;
 
-    Color GetColor() const;
+    Color GetColor() const override;
 
-    void Draw(Rectangle &rect);
+    void Draw(Rectangle &rect) override;
+
+    void Update(Context &context) override;
 
     float GetWidth() const;
 
-    void Update(Context &context);
-
-    void Resolve(Context & context);
+    void Resolve(Context &context);
 };
 
 

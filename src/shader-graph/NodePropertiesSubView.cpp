@@ -47,7 +47,7 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
         const std::string path = INTERNAL_ASSET_DIR "/nodes/" + nodesDropdown.GetSelectedOption();
         nlohmann::json j = JsonUtils::JsonFromFile(path);
 
-        context.nodes.push_back(Node(j));
+        context.nodes.emplace_back(j);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 

@@ -3,6 +3,8 @@
 //
 
 #include "NodeInput.h"
+
+#include "Node.h"
 #include "NodeOutput.h"
 
 #include "../../common/editor/Editor.h"
@@ -95,7 +97,7 @@ void NodeInput::OnEditorGUI(Rectangle &rect) {
 
     if (source != nullptr) {
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-                 TextFormat("Connected to: %s", source->name.c_str()));
+                 TextFormat("Connected to: %s from %s", source->name.c_str(), source->parentNode->name.c_str()));
         rect.y += Editor::TextSize() * 1.0f;
     }
 }

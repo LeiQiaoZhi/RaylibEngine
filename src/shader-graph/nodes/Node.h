@@ -9,6 +9,7 @@
 #include "NodeInput.h"
 #include "NodeOutput.h"
 #include "raylib.h"
+#include <set>
 
 #include "../Context.h"
 #include "../../common/editor/FoldoutProperty.h"
@@ -19,6 +20,7 @@ public:
     Node() {
         uid = Utils::GenerateUID("Node"); // TODO: replace with actual type
     }
+
 
     explicit Node(nlohmann::json j);
 
@@ -32,7 +34,25 @@ public:
 
     void OnEditorGUI(Rectangle &rect, Context &context);
 
-    // TODO: type
+    void AddInput(const std::string &name, ShaderType type) {
+        inputs.emplace_back(name, type, this);
+    }
+
+    void AddOutput(const std::string &name, ShaderType type) {
+        outputs.emplace_back(name, type, this);
+    }
+
+    std::set<Node *> GetNeighboursFromInputs() const;
+
+    std::set<Node *> GetNeighboursFromOuputs() const;
+
+    std::set<Node *> GetNeighbours() const {
+        std::set<Node *> neighboursIn = GetNeighboursFromInputs();
+        std::set<Node *> neighboursOut = GetNeighboursFromOuputs();
+        neighboursIn.insert(neighboursOut.begin(), neighboursOut.end());
+        return neighboursIn;
+    }
+
     std::string name = "Node";
     Vector2 position = {0, 0};
     Vector2 size = {100, 100};
