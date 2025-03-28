@@ -35,6 +35,8 @@ public:
     void Resolve(Context &context);
 
     void OnEditorGUI(Rectangle &rect);
+
+    std::string GetVarName() const;
 };
 
 

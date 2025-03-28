@@ -4,7 +4,9 @@
     ],
     "outputs": [
         {
-            "name": "UV"
+            "type": "vec2",
+            "name": "uv"
         }
-    ]
+    ],
+    "glsl": " uv = fragTexCoord; "
 }

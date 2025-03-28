@@ -13,12 +13,12 @@ Node::Node(nlohmann::json j) {
     name = j.value("name", name);
     if (j.contains("inputs")) {
         for (auto &input: j["inputs"]) {
-            AddInput(input["name"], input.value("type", ShaderType::Float));
+            AddInput(input["name"], ShaderTypeMap[input["type"]]);
         }
     }
     if (j.contains("outputs")) {
         for (auto &output: j["outputs"]) {
-            AddOutput(output["name"], output.value("type", ShaderType::Float));
+            AddOutput(output["name"], ShaderTypeMap[output["type"]]);
         }
     }
     uid = Utils::GenerateUID(name);

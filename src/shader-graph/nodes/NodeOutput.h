@@ -30,6 +30,8 @@ public:
     float GetWidth() const;
 
     void Resolve(Context &context);
+
+    std::string GetVarName() const;
 };
 
 

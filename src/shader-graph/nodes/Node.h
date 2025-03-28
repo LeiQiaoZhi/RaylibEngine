@@ -56,8 +56,8 @@ public:
     std::string name = "Node";
     Vector2 position = {0, 0};
     Vector2 size = {100, 100};
-    int uid;
-    std::string code;
+    uint uid;
+    std::string glsl;
 
     std::vector<NodeInput> inputs;
     std::vector<NodeOutput> outputs;

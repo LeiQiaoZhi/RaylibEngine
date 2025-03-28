@@ -2,15 +2,19 @@
     "name": "Add",
     "inputs": [
         {
+            "type": "float",
             "name": "A"
         },
         {
+            "type": "float",
             "name": "B"
         }
     ],
     "outputs": [
         {
+            "type": "float",
             "name": "Result"
         }
-    ]
+    ],
+    "glsl": " Result = A + B; "
 }

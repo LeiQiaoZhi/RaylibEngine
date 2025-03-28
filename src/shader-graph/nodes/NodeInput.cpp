@@ -101,3 +101,7 @@ void NodeInput::OnEditorGUI(Rectangle &rect) {
         rect.y += Editor::TextSize() * 1.0f;
     }
 }
+
+std::string NodeInput::GetVarName() const {
+    return "input_" + std::to_string(parentNode->uid) + "_" + name;
+}

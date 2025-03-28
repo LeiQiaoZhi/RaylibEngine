@@ -31,13 +31,22 @@ struct Context {
     NodeInput *connectionInput;
     NodeOutput *connectionOutput;
 
-    int selectedNodeUID = -1;
+    uint selectedNodeUID = 0;
 
     std::list<Node> &nodes;
     Node *finalNode;
 
+    // code
+    std::string shaderCode;
+    bool compileFlag = false;
+
     Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes, Node *finalNode)
         : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes), finalNode(finalNode) {
+    }
+
+    void SendShaderCode(const std::string &code) {
+        shaderCode = code;
+        compileFlag = true;
     }
 
     bool interactionStateLowerThan(InteractionState state) {

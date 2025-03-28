@@ -46,7 +46,8 @@ int main() {
     // test set up
     MouseDragState dragState;
     Node node1;
-    Node node2;
+    node1.name = "Final";
+    node1.glsl = "alpha = 1.; finalColor = vec4(color, alpha);";
     node1.AddInput("color", ShaderType::Vec3);
     node1.AddInput("alpha", ShaderType::Float);
     std::list<Node> nodes = {node1};
@@ -112,7 +113,7 @@ int main() {
         }
 
         // update subview
-        previewSubView.Update();
+        previewSubView.Update(context);
 
         // Draw
         //----------------------------------------------------------------------------------

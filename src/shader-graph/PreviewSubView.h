@@ -18,11 +18,12 @@ public:
 
         // model = LoadModelFromMesh(GenMeshPlane(1.0f, 1.0f, 1, 1));
         // model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
+        shader = LoadShader(0, 0);
     }
 
     void Render(Vector2 position = {0, 0});
 
-    void Update();
+    void Update(Context &context);
 
     Vector2 GetSize() const {
         return renderer_->GetSize();
@@ -33,6 +34,8 @@ private:
     Camera camera;
     CameraMode cameraMode = CAMERA_THIRD_PERSON;
     Model model;
+
+    Shader shader;
 };
 
 

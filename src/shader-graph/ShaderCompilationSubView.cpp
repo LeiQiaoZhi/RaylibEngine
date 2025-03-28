@@ -6,6 +6,7 @@
 
 #include "../common/subviews/ScrollPanelRenderer.h"
 #include "../common/editor/Editor.h"
+#include "CodeGeneration.h"
 
 
 std::list<Node *> ShaderCompilationSubView::FilterNodes(const Context &context) {
@@ -65,10 +66,15 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
         TopologicalSort(nodes);
 
         // generate code
+        const std::string prefix = CodeGeneration::GetPrefix();
         // 1. function definitions
+        const std::string functions = CodeGeneration::GetFunctions(context.finalNode);
         // 2. main function
+        const std::string main = CodeGeneration::GetMain(orderedNodes);
+        std::cout << prefix << functions << main << std::endl;
 
         // compile (let preview handle this)
+        context.SendShaderCode(prefix + functions + main);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
@@ -79,7 +85,8 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
         rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
     }
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("Ordered Nodes: %d", orderedNodes.size()));
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+             TextFormat("Ordered Nodes: %d", orderedNodes.size()));
     rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
     for (auto &node: orderedNodes) {
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());

@@ -3,6 +3,8 @@
 //
 
 #include "NodeOutput.h"
+
+#include "Node.h"
 #include "../../common/editor/Editor.h"
 
 Color NodeOutput::GetColor() const {
@@ -64,4 +66,8 @@ void NodeOutput::Update(Context &context) {
 }
 
 void NodeOutput::Resolve(Context &context) {
+}
+
+std::string NodeOutput::GetVarName() const {
+    return "output_" + std::to_string(parentNode->uid) + "_" + name;
 }

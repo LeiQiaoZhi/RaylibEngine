@@ -20,8 +20,10 @@ void PreviewSubView::Render(Vector2 position) {
     BeginMode3D(camera);
 
     ClearBackground(Editor::BackgroundColor());
-    // DrawModel(model, {0, 0, 0}, 1.0f, WHITE);
+
+    BeginShaderMode(shader);
     DrawPlane({0, 0, 0}, {1, 1}, WHITE);
+    EndShaderMode();
 
     EndMode3D();
     renderer_->End();
@@ -30,6 +32,13 @@ void PreviewSubView::Render(Vector2 position) {
     renderer_->Show(contentPosition, WHITE);
 }
 
-void PreviewSubView::Update() {
-    // UpdateCamera(&camera, cameraMode);
+void PreviewSubView::Update(Context &context) {
+    if (context.compileFlag) {
+        context.compileFlag = false;
+
+        shader = LoadShaderFromMemory(
+            nullptr,
+            context.shaderCode.c_str()
+        );
+    }
 }
