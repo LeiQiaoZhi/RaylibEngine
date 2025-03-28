@@ -10,6 +10,7 @@ void DropdownProperty::OnEditorGUI(Rectangle &rect) {
     if (GuiDropdownBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, optionsStr.c_str(),
                        &selectedIndex, editMode)) {
         editMode = !editMode;
+        justSelected = true;
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
@@ -17,7 +18,10 @@ void DropdownProperty::OnEditorGUI(Rectangle &rect) {
 }
 
 float DropdownProperty::GetEditorHeight() const {
-    return editMode ? height + options.size() * Editor::TextSize() * 1.5f : height;
+    return editMode
+               ? height + options.size() * (Editor::TextSize() * 1.5f +
+                                            GuiGetStyle(DROPDOWNBOX, DROPDOWN_ITEMS_SPACING))
+               : height;
 }
 
 nlohmann::json DropdownProperty::ToJson() const {

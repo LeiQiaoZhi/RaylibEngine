@@ -24,9 +24,10 @@ void NodeInput::Draw(Rectangle &rect) {
                rect.height / 2, GetColor());
 
     // label
-    const float textWidth = MeasureTextEx(Editor::GetFont(), name.c_str(), Editor::TextSizeF(), 1).x;
+    const char *label = TextFormat("%s[%s]", name.c_str(), ShaderTypeToStringMap[type].c_str());
+    const float textWidth = MeasureTextEx(Editor::GetFont(), label, Editor::TextSizeF(), 1).x;
     rect.width = std::max(rect.width, textWidth + Editor::SmallGap() * 3 + rect.height);
-    DrawTextEx(Editor::GetFont(), name.c_str(),
+    DrawTextEx(Editor::GetFont(), label,
                {rect.x + rect.height + Editor::SmallGap() * 2, rect.y},
                Editor::TextSizeF(), 1, WHITE);
 
@@ -78,11 +79,17 @@ void NodeInput::Resolve(Context &context) {
 }
 
 void NodeInput::OnEditorGUI(Rectangle &rect) {
-    if (GuiTextBox(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-               const_cast<char *>(name.c_str()), 256, nameEditMode)) {
+    Rectangle dropdownRect = {rect.x, rect.y, rect.width / 2, Editor::TextSize() * 1.0f};
+    typeDropdown.OnEditorGUI(dropdownRect);
+    if (typeDropdown.justSelected && !typeDropdown.editMode) {
+        typeDropdown.justSelected = false;
+        type = ShaderTypeMap[typeDropdown.GetSelectedOption()];
+    }
+
+    if (GuiTextBox(Rectangle{rect.x + dropdownRect.width, rect.y, rect.width / 2, Editor::TextSize() * 1.5f},
+                   const_cast<char *>(name.c_str()), 256, nameEditMode)) {
         nameEditMode = !nameEditMode;
     }
 
-    rect.y += Editor::TextSize() + Editor::SmallGap();
-
+    rect.y += typeDropdown.GetEditorHeight();
 }

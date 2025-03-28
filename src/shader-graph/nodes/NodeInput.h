@@ -9,6 +9,8 @@
 #include "raylib.h"
 
 #include "../Context.h"
+#include "../../common/editor/DropdownProperty.h"
+#include "../ShaderTypes.h"
 
 class NodeOutput;
 class Node;
@@ -21,6 +23,8 @@ public:
     float radius = 0;
     bool hovering;
     bool nameEditMode;
+    DropdownProperty typeDropdown = DropdownProperty(GetShaderTypeNames(), 0);
+    ShaderType type;
 
     Color GetColor() const;
 

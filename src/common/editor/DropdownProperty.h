@@ -35,6 +35,8 @@ public:
         return selectedIndex;
     }
 
+    bool justSelected = false;
+    bool editMode = false;
 private:
     // States
     std::vector<std::string> options;
@@ -43,7 +45,6 @@ private:
     // UI
     std::string optionsStr;
     float height = 0;
-    bool editMode = false;
 };
 
 
