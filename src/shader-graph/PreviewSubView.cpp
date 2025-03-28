@@ -21,9 +21,7 @@ void PreviewSubView::Render(Vector2 position) {
 
     ClearBackground(Editor::BackgroundColor());
 
-    BeginShaderMode(shader);
-    DrawPlane({0, 0, 0}, {1, 1}, WHITE);
-    EndShaderMode();
+    DrawModel(model, {0, 0, 0}, 1.0f, WHITE);
 
     EndMode3D();
     renderer_->End();
@@ -36,9 +34,11 @@ void PreviewSubView::Update(Context &context) {
     if (context.compileFlag) {
         context.compileFlag = false;
 
-        shader = LoadShaderFromMemory(
+        Shader shader = LoadShaderFromMemory(
             nullptr,
             context.shaderCode.c_str()
         );
+
+        model.materials[0].shader = shader;
     }
 }

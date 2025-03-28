@@ -16,9 +16,8 @@ public:
         camera.projection = CAMERA_PERSPECTIVE;
         camera.up = (Vector3){0.0f, 0.0f, 1.0f};
 
-        // model = LoadModelFromMesh(GenMeshPlane(1.0f, 1.0f, 1, 1));
+        model = LoadModelFromMesh(GenMeshPlane(1.0f, 1.0f, 1, 1));
         // model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
-        shader = LoadShader(0, 0);
     }
 
     void Render(Vector2 position = {0, 0});
@@ -34,8 +33,6 @@ private:
     Camera camera;
     CameraMode cameraMode = CAMERA_THIRD_PERSON;
     Model model;
-
-    Shader shader;
 };
 
 

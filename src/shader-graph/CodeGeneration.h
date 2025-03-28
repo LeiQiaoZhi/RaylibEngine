@@ -42,6 +42,10 @@ namespace CodeGeneration {
     inline std::string GetFunctions(Node *finalNode) {
         std::ostringstream oss;
 
+        char *convert = LoadFileText(INTERNAL_ASSET_DIR "/shaders/convert.glsl");
+        oss << convert << "\n";
+        UnloadFileText(convert);
+
         const std::string path = INTERNAL_ASSET_DIR "/nodes";
         const FilePathList files = LoadDirectoryFilesEx(path.c_str(), NULL, false);
         for (int i = 0; i < files.count; i++) {
@@ -102,7 +106,14 @@ namespace CodeGeneration {
                 // give values to inputs
                 if (input.source != nullptr) {
                     std::string sourceVar = input.source->GetVarName();
-                    oss << "\t" << inputVar << " = " << sourceVar << ";\n";
+                    if (input.source->type != input.type) {
+                        std::string convertFunc = "convert_" + ShaderTypeToStringMap[input.source->type] + "_to_" +
+                                                  ShaderTypeToStringMap[input.type];
+                        oss << "\t" << convertFunc << "(" << sourceVar << "," << inputVar << ");\n";
+                    }
+                    else {
+                        oss << "\t" << inputVar << " = " << sourceVar << ";\n";
+                    }
                 }
             }
             for (auto &output: node->outputs) {
