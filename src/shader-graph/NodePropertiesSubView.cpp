@@ -23,13 +23,14 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
     };
     renderer_->Begin();
 
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("Selected Node: %d", context.selectedNodeUID));
+    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+             TextFormat("Selected Node: %d", context.selectedNodeUID));
     rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
 
     GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
     rect.y += Editor::SmallGap();
 
-    for (auto &node: nodes) {
+    for (auto &node: context.nodes) {
         node.OnEditorGUI(rect, context);
 
         GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
@@ -46,7 +47,7 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
         const std::string path = INTERNAL_ASSET_DIR "/nodes/" + nodesDropdown.GetSelectedOption();
         nlohmann::json j = JsonUtils::JsonFromFile(path);
 
-        nodes.push_back(Node(j));
+        context.nodes.push_back(Node(j));
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 

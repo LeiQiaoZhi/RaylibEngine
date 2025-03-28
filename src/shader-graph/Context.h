@@ -5,8 +5,11 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include <list>
+
 #include "../common/input/MouseDragState.h"
 
+class Node;
 class NodeInput;
 class NodeOutput;
 
@@ -30,8 +33,10 @@ struct Context {
 
     int selectedNodeUID = -1;
 
-    Context(MouseDragState &mouseDragState, Camera2D &camera)
-        : mousePos(), mouseDragState(mouseDragState), camera(camera) {
+    std::list<Node> &nodes;
+
+    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
+        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {
     }
 
     bool interactionStateLowerThan(InteractionState state) {

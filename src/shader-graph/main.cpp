@@ -8,6 +8,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <iostream>
+#include <list>
 
 #include "../common/input/MouseDragState.h"
 #include "nodes/Node.h"
@@ -53,7 +54,7 @@ int main() {
     node2.inputs.push_back({"input B", nullptr});
     node2.outputs.push_back({"O", nullptr});
     node2.outputs.push_back({"output 2", nullptr});
-    std::vector<Node> nodes = {node1, node2};
+    std::list<Node> nodes = {node1, node2};
 
     Camera2D camera = {0};
     camera.target = (Vector2){0, 0};
@@ -61,7 +62,7 @@ int main() {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Context context(dragState, camera);
+    Context context(dragState, camera, nodes);
 
     Shader bgShader = LoadShader(
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
@@ -69,7 +70,7 @@ int main() {
     );
 
     PreviewSubView previewSubView(windowWidth / 5, windowWidth / 5);
-    NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight - previewSubView.GetSize().y, nodes);
+    NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight - previewSubView.GetSize().y);
     //--------------------------------------------------------------------------------------
 
     // Main game loop

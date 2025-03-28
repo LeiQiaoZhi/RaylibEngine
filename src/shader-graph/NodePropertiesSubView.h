@@ -8,8 +8,8 @@
 
 class NodePropertiesSubView {
 public:
-    NodePropertiesSubView(int width, int height, std::vector<Node> &nodes)
-        : nodes(nodes), nodesDropdown(DropdownProperty(GetOptions(), 0)) {
+    NodePropertiesSubView(int width, int height)
+        : nodesDropdown(DropdownProperty(GetOptions(), 0)) {
         renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
     }
 
@@ -37,7 +37,6 @@ public:
 
 private:
     ISubviewRenderer *renderer_;
-    std::vector<Node> &nodes;
     DropdownProperty nodesDropdown;
 };
 

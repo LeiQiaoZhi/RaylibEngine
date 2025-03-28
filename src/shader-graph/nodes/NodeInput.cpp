@@ -92,4 +92,10 @@ void NodeInput::OnEditorGUI(Rectangle &rect) {
     }
 
     rect.y += typeDropdown.GetEditorHeight();
+
+    if (source != nullptr) {
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                 TextFormat("Connected to: %s", source->name.c_str()));
+        rect.y += Editor::TextSize() * 1.0f;
+    }
 }
