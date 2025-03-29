@@ -28,6 +28,12 @@ void NodeOutput::Draw(Rectangle &rect) {
                {endX - rect.height / 2 - Editor::SmallGap() - textWidth, rect.y},
                Editor::TextSizeF(), 1, WHITE);
 
+    // type
+    DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+               {endX + rect.height / 2 + Editor::SmallGap(), rect.y},
+               Editor::TextSizeF(), 1, GRAY);
+
+
     rect.y += rect.height + Editor::MediumGap();
 }
 

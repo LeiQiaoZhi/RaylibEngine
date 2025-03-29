@@ -26,12 +26,19 @@ void NodeInput::Draw(Rectangle &rect) {
                rect.height / 2, GetColor());
 
     // label
-    const char *label = TextFormat("%s[%s]", name.c_str(), ShaderTypeToStringMap[type].c_str());
+    // const char *label = TextFormat("%s[%s]", name.c_str(), ShaderTypeToStringMap[type].c_str());
+    const char *label = name.c_str();
     const float textWidth = MeasureTextEx(Editor::GetFont(), label, Editor::TextSizeF(), 1).x;
     rect.width = std::max(rect.width, textWidth + Editor::SmallGap() * 3 + rect.height);
     DrawTextEx(Editor::GetFont(), label,
                {rect.x + rect.height + Editor::SmallGap() * 2, rect.y},
                Editor::TextSizeF(), 1, WHITE);
+
+    // type
+    const float typeWidth = MeasureTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(), Editor::TextSizeF(), 1).x;
+    DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+               {rect.x - typeWidth - Editor::SmallGap(), rect.y},
+               Editor::TextSizeF(), 1, GRAY);
 
     rect.y += rect.height + Editor::MediumGap();
 
