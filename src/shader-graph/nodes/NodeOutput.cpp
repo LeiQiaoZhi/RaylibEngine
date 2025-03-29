@@ -15,7 +15,7 @@ Color NodeOutput::GetColor() const {
     return Fade(GREEN, alpha);
 }
 
-void NodeOutput::Draw(Rectangle &rect) {
+void NodeOutput::Draw(Rectangle &rect, Context &context) {
     const float endX = rect.x + rect.width - rect.height / 2 - Editor::SmallGap();
     circleCenter = (Vector2){endX, rect.y + rect.height / 2};
     radius = rect.height / 2;
@@ -32,7 +32,6 @@ void NodeOutput::Draw(Rectangle &rect) {
     DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
                {endX + rect.height / 2 + Editor::SmallGap(), rect.y},
                Editor::TextSizeF(), 1, GRAY);
-
 
     rect.y += rect.height + Editor::MediumGap();
 }

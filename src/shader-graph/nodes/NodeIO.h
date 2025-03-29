@@ -30,7 +30,7 @@ public:
 
     virtual Color GetColor() const = 0;
 
-    virtual void Draw(Rectangle &rect) = 0;
+    virtual void Draw(Rectangle &rect, Context &context) = 0;
 
     virtual void Update(Context &context) = 0;
 };

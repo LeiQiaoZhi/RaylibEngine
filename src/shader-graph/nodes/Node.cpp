@@ -48,7 +48,7 @@ void Node::OnDraw(Context &context) {
     // inputs
     Rectangle inputRect = {position.x, titleRect.y, 0, Editor::TextSizeF()};
     for (auto &input: inputs) {
-        input.Draw(inputRect);
+        input.Draw(inputRect, context);
     }
     size.x = std::max(inputRect.width, size.x);
 
@@ -61,7 +61,7 @@ void Node::OnDraw(Context &context) {
 
     Rectangle outputRect = {position.x + size.x, titleRect.y, 0, Editor::TextSizeF()};
     for (auto &output: outputs) {
-        output.Draw(outputRect);
+        output.Draw(outputRect, context);
     }
 
 

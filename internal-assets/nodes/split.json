@@ -1,0 +1,29 @@
+{
+    "name": "Vec3",
+    "inputs": [
+        {
+            "type": "vec4",
+            "name": "V"
+        }
+       
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "X"
+        },
+        {
+            "type": "float",
+            "name": "Y"
+        },
+        {
+            "type": "float",
+            "name": "Z"
+        },
+        {
+            "type": "float",
+            "name": "W"
+        }
+    ],
+    "glsl": " X = V.x; Y = V.y; Z = V.z; W = V.w; "
+}

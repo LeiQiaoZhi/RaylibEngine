@@ -33,6 +33,8 @@ private:
     Camera camera;
     CameraMode cameraMode = CAMERA_THIRD_PERSON;
     Model model;
+    std::string statusText;
+    bool statusWarning;
 };
 
 

@@ -47,7 +47,7 @@ int main() {
     MouseDragState dragState;
     Node node1;
     node1.name = "Final";
-    node1.glsl = "alpha = 1.; finalColor = vec4(color, alpha);";
+    node1.glsl = "finalColor = vec4(color, alpha);";
     node1.AddInput("color", ShaderType::Vec3);
     node1.AddInput("alpha", ShaderType::Float);
     std::list<Node> nodes = {node1};

@@ -44,7 +44,7 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
 
     if (GuiButton(Rectangle{rect.x + rect.width - buttonWidth, rect.y, buttonWidth, Editor::TextSize() * 1.5f},
                   "Add Node")) {
-        const std::string path = INTERNAL_ASSET_DIR "/nodes/" + nodesDropdown.GetSelectedOption();
+        const std::string path = INTERNAL_ASSET_DIR "/nodes/" + nodesDropdown.GetSelectedOption() + ".json";
         nlohmann::json j = JsonUtils::JsonFromFile(path);
 
         context.nodes.emplace_back(j);

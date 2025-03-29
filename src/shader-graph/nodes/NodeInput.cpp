@@ -18,7 +18,7 @@ Color NodeInput::GetColor() const {
     return Fade(GREEN, alpha);
 }
 
-void NodeInput::Draw(Rectangle &rect) {
+void NodeInput::Draw(Rectangle &rect, Context &context) {
     // circle
     circleCenter = (Vector2){rect.x + rect.height / 2, rect.y + rect.height / 2};
     radius = rect.height / 2;
@@ -34,12 +34,33 @@ void NodeInput::Draw(Rectangle &rect) {
                {rect.x + rect.height + Editor::SmallGap() * 2, rect.y},
                Editor::TextSizeF(), 1, WHITE);
 
-    // type
-    const float typeWidth = MeasureTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(), Editor::TextSizeF(), 1).x;
-    DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
-               {rect.x - typeWidth - Editor::SmallGap(), rect.y},
-               Editor::TextSizeF(), 1, GRAY);
-
+    if (source == nullptr) {
+        // type info
+        if (type != ShaderType::Float) {
+            const float typeWidth = MeasureTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+                                                  Editor::TextSizeF(),
+                                                  1).x;
+            DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+                       {rect.x - typeWidth - Editor::SmallGap(), rect.y},
+                       Editor::TextSizeF(), 1, GRAY);
+        }
+        // value box
+        else if (context.camera.zoom > 0.5f) {
+            EndMode2D();
+            const float propWidth = 50;
+            const Vector2 pos = GetWorldToScreen2D({rect.x, rect.y}, context.camera);
+            Vector2 size = Vector2({propWidth, Editor::TextSizeF()}) * context.camera.zoom;
+            size.y = std::max(size.y, Editor::TextSizeF());
+            const Rectangle propRect = {
+                pos.x - size.x - Editor::SmallGap(), pos.y, size.x, size.y
+            };
+            if (GuiValueBoxFloat(propRect, nullptr, floatBuffer, &floatValue, floatEditMode)) {
+                floatEditMode = !floatEditMode;
+                std::cout << "float value changed" << std::endl;
+            }
+            BeginMode2D(context.camera);
+        }
+    }
     rect.y += rect.height + Editor::MediumGap();
 
     // line

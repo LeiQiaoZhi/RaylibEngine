@@ -1,0 +1,24 @@
+{
+    "name": "Vec3",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "X"
+        },
+        {
+            "type": "float",
+            "name": "Y"
+        },
+        {
+            "type": "float",
+            "name": "Z"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "vec3",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = vec3(X, Y, Z); "
+}

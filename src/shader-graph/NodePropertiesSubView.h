@@ -19,10 +19,11 @@ public:
         const FilePathList files = LoadDirectoryFilesEx(path.c_str(), NULL, false);
         for (int i = 0; i < files.count; i++) {
             const char *completeFilePath = files.paths[i];
-            const char *file = GetFileName(completeFilePath);
+            std::string file = GetFileName(completeFilePath);
             if (file[0] == '.' || !Utils::EndsWith(file, ".json"))
                 continue;
 
+            std::string name = file.erase(file.find(".json"));
             options.push_back(file);
         }
         UnloadDirectoryFiles(files);

@@ -23,7 +23,7 @@ public:
 
     Color GetColor() const override;
 
-    void Draw(Rectangle &rect) override;
+    void Draw(Rectangle &rect, Context &context) override;
 
     void Update(Context &context) override;
 

@@ -114,6 +114,9 @@ namespace CodeGeneration {
                     else {
                         oss << "\t" << inputVar << " = " << sourceVar << ";\n";
                     }
+                } else if (input.type == ShaderType::Float) {
+                    oss.precision(10);
+                    oss << "\t" << inputVar << " = " << input.floatValue << ";\n";
                 }
             }
             for (auto &output: node->outputs) {
