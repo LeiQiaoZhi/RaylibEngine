@@ -42,6 +42,10 @@ public:
         outputs.emplace_back(name, type, this);
     }
 
+    bool operator==(const Node &rhs) const {
+        return uid == rhs.uid;
+    }
+
     std::set<Node *> GetNeighboursFromInputs() const;
 
     std::set<Node *> GetNeighboursFromOutputs() const;

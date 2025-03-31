@@ -39,6 +39,10 @@ struct Context {
     // code
     std::string shaderCode;
     bool compileFlag = false;
+    Node * nodeToDelete= nullptr;
+
+    // settings
+    bool showTypeInfo;
 
     Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes, Node *finalNode)
         : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes), finalNode(finalNode) {
@@ -52,6 +56,8 @@ struct Context {
     bool interactionStateLowerThan(InteractionState state) {
         return static_cast<int>(interactionState) < static_cast<int>(state);
     }
+
+    void RemoveNode();
 };
 
 #endif //CONTEXT_H

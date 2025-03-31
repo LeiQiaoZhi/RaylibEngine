@@ -85,8 +85,10 @@ int main() {
         context.connectionInput = nullptr;
 
         // update camera
-        camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
-        camera.zoom = std::clamp(camera.zoom, 0.1f, 3.0f);
+        if (IsKeyDown(KEY_LEFT_ALT)) {
+            camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
+            camera.zoom = std::clamp(camera.zoom, 0.2f, 3.0f);
+        }
         if (context.mouseDragState.isDragging && IsKeyDown(KEY_LEFT_ALT)) {
             camera.target -= context.mouseDragState.delta;
         }
@@ -154,6 +156,12 @@ int main() {
                    {10, 50}, Editor::TextSizeF(), 2, WHITE);
         DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), {10, 70},
                    Editor::TextSizeF(), 2, WHITE);
+
+        std::string typeInfoLabel = context.showTypeInfo ? "Hide Type Info" : "Show Type Info";
+        if (GuiButton({10, 90, Editor::TextWidth(typeInfoLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
+                      typeInfoLabel.c_str())) {
+            context.showTypeInfo = !context.showTypeInfo;
+        }
 
         // subviews
         shaderCompilationSubView.Render({0, windowHeight - shaderCompilationSubView.GetSize().y}, context);

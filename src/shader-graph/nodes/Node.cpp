@@ -136,7 +136,19 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
         DrawRectangleRec({rect.x, rect.y, rect.width, height}, Fade(WHITE, 0.1f));
     }
 
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, name.c_str());
+    const char *deleteLabel = "X";
+    const float deleteWidth = Editor::TextWidth(deleteLabel) + Editor::SmallGap() * 2.;
+    GuiLabel({rect.x, rect.y, rect.width - deleteWidth, Editor::TextSize() * 1.0f}, name.c_str());
+
+    if (context.finalNode->uid != uid) {
+        if (GuiLabelButton({
+                               rect.x + rect.width - deleteWidth + Editor::SmallGap(), rect.y,
+                               deleteWidth, Editor::TextSizeF()
+                           },
+                           deleteLabel)) {
+            context.nodeToDelete = this;
+        }
+    }
     rect.y += Editor::TextSize() + Editor::SmallGap();
 
     // inputs

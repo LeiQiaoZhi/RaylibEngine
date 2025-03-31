@@ -36,6 +36,9 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
         GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
         rect.y += Editor::SmallGap();
     }
+    if (context.nodeToDelete != nullptr) {
+        context.RemoveNode();
+    }
 
     // add node
     const float buttonWidth = Editor::TextWidth("Add Node") + Editor::LargeGap();

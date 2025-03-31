@@ -29,9 +29,16 @@ void NodeOutput::Draw(Rectangle &rect, Context &context) {
                Editor::TextSizeF(), 1, WHITE);
 
     // type
-    DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
-               {endX + rect.height / 2 + Editor::SmallGap(), rect.y},
-               Editor::TextSizeF(), 1, GRAY);
+    if (context.showTypeInfo) {
+        const float typeWidth = MeasureTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+                                              Editor::TextSizeF(),
+                                              1).x;
+        DrawRectangle(endX + rect.height / 2 + Editor::SmallGap(), rect.y, typeWidth, Editor::TextSizeF(),
+                      Fade(BLACK, 0.5f));
+        DrawTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
+                   {endX + rect.height / 2 + Editor::SmallGap(), rect.y},
+                   Editor::TextSizeF(), 1, GRAY);
+    }
 
     rect.y += rect.height + Editor::MediumGap();
 }
