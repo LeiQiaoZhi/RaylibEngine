@@ -40,6 +40,8 @@ public:
 
     void OnEditorGUI(Rectangle &rect);
 
+    nlohmann::json ToJson() const override;
+
     std::string GetVarName() const;
 };
 

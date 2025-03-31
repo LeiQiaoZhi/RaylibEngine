@@ -24,6 +24,13 @@ public:
 
     explicit Node(nlohmann::json j);
 
+    explicit Node(nlohmann::json j, bool dummyFromSave);
+
+
+    void LoadConnections(const nlohmann::json &j, Context *context);
+
+    nlohmann::json ToJson() const;
+
     ~Node() = default;
 
     void OnDraw(Context &context);
@@ -42,8 +49,34 @@ public:
         outputs.emplace_back(name, type, this);
     }
 
+    void AddInput(const std::string &name, ShaderType type, uint uid) {
+        inputs.emplace_back(name, type, this, uid);
+    }
+
+    void AddOutput(const std::string &name, ShaderType type, uint uid) {
+        outputs.emplace_back(name, type, this, uid);
+    }
+
     bool operator==(const Node &rhs) const {
         return uid == rhs.uid;
+    }
+
+    NodeOutput *FindOutputByUID(uint uid) {
+        for (auto &output: outputs) {
+            if (output.uid == uid) {
+                return &output;
+            }
+        }
+        return nullptr;
+    }
+
+    NodeInput *FindInputByUID(uint uid) {
+        for (auto &input: inputs) {
+            if (input.uid == uid) {
+                return &input;
+            }
+        }
+        return nullptr;
     }
 
     std::set<Node *> GetNeighboursFromInputs() const;
@@ -56,6 +89,7 @@ public:
         neighboursIn.insert(neighboursOut.begin(), neighboursOut.end());
         return neighboursIn;
     }
+
 
     std::string name = "Node";
     Vector2 position = {0, 0};

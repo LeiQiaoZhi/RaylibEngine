@@ -32,6 +32,8 @@ public:
     void Resolve(Context &context);
 
     std::string GetVarName() const;
+
+    nlohmann::json ToJson() const override;
 };
 
 

@@ -12,7 +12,7 @@
 void ShaderCompilationSubView::FilterNodes(const Context &context) {
     nodes.clear();
     // 1. DFS to find all nodes reachable from final node
-    std::list<Node *> toExplore = {context.finalNode};
+    std::list<Node *> toExplore = {context.FinalNode()};
     while (!toExplore.empty()) {
         Node *node = toExplore.front();
         toExplore.pop_front();
@@ -70,7 +70,7 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
         // generate code
         const std::string prefix = CodeGeneration::GetPrefix();
         // 1. function definitions
-        const std::string functions = CodeGeneration::GetFunctions(context.finalNode);
+        const std::string functions = CodeGeneration::GetFunctions(context.FinalNode());
         // 2. main function
         const std::string main = CodeGeneration::GetMain(orderedNodes);
         std::cout << prefix << functions << main << std::endl;

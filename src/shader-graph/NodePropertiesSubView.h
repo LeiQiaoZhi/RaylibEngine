@@ -42,6 +42,11 @@ public:
 private:
     ISubviewRenderer *renderer_;
     DropdownProperty nodesDropdown;
+
+    char graphFilename[32] = "test.graph.json";
+    bool editMode;
+    std::string statusText;
+    bool statusWarning;
 };
 
 

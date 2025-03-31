@@ -24,6 +24,54 @@ Node::Node(nlohmann::json j) {
     uid = Utils::GenerateUID(name);
 }
 
+Node::Node(nlohmann::json j, bool dummyFromSave) {
+    name = j.value("name", name);
+    uid = j["uid"];
+    position = {j["position"][0], j["position"][1]};
+    glsl = j.value("glsl", glsl);
+    if (j.contains("inputs")) {
+        for (auto &input: j["inputs"]) {
+            AddInput(input["name"], ShaderTypeMap[input["type"]], input["uid"]);
+        }
+    }
+    if (j.contains("outputs")) {
+        for (auto &output: j["outputs"]) {
+            AddOutput(output["name"], ShaderTypeMap[output["type"]],
+                      output["uid"]);
+        }
+    }
+}
+
+void Node::LoadConnections(const nlohmann::json &j, Context *context) {
+    if (j.contains("inputs")) {
+        int i = 0;
+        for (auto &input: inputs) {
+            nlohmann::json inputJson = j["inputs"][i++];
+            if (inputJson.contains("source")) {
+                const uint sourceUID = inputJson["source"]["parent"];
+                Node *sourceParent = context->FindNodeByUID(sourceUID);
+                input.source = sourceParent->FindOutputByUID(inputJson["source"]["uid"].get<uint>());
+            } else if (inputJson.contains("floatValue")) {
+                input.floatValue = inputJson["floatValue"];
+                std::strncpy(input.floatBuffer, Utils::FormatFloat(input.floatValue).c_str(), 256);
+            }
+        }
+    }
+    if (j.contains("outputs")) {
+        int i = 0;
+        for (auto &output: outputs) {
+            nlohmann::json outputJson = j["outputs"][i++];
+            if (outputJson.contains("targets")) {
+                for (auto &target: outputJson["targets"]) {
+                    const uint targetUID = target["parent"];
+                    Node *targetParent = context->FindNodeByUID(targetUID);
+                    output.targets.push_back(targetParent->FindInputByUID(target["uid"].get<uint>()));
+                }
+            }
+        }
+    }
+}
+
 void Node::OnDraw(Context &context) {
     // background
     if (hovering || context.selectedNodeUID == uid) {
@@ -140,7 +188,7 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
     const float deleteWidth = Editor::TextWidth(deleteLabel) + Editor::SmallGap() * 2.;
     GuiLabel({rect.x, rect.y, rect.width - deleteWidth, Editor::TextSize() * 1.0f}, name.c_str());
 
-    if (context.finalNode->uid != uid) {
+    if (context.FinalNode()->uid != uid) {
         if (GuiLabelButton({
                                rect.x + rect.width - deleteWidth + Editor::SmallGap(), rect.y,
                                deleteWidth, Editor::TextSizeF()
@@ -212,4 +260,26 @@ std::set<Node *> Node::GetNeighboursFromOutputs() const {
         }
     }
     return neighbours;
+}
+
+nlohmann::json Node::ToJson() const {
+    nlohmann::json j;
+    j["name"] = name;
+    j["uid"] = uid;
+    j["position"] = {position.x, position.y};
+    j["glsl"] = glsl;
+
+    std::vector<nlohmann::json> inputsJson;
+    for (auto &input: inputs) {
+        inputsJson.emplace_back(input.ToJson());
+    }
+    j["inputs"] = inputsJson;
+
+    std::vector<nlohmann::json> outputsJson;
+    for (auto &output: outputs) {
+        outputsJson.emplace_back(output.ToJson());
+    }
+    j["outputs"] = outputsJson;
+
+    return j;
 }

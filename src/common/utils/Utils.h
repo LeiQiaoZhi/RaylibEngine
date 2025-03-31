@@ -6,6 +6,8 @@
 #include <random>
 #include <cstdint>
 #include <fstream>
+#include <sstream>
+
 #ifdef _WIN32
     #include <windows.h>  // Windows-specific
 #endif
@@ -61,6 +63,12 @@ public:
         static std::uniform_int_distribution<uint16_t> dist(0, 0xFFFF);
 
         return (hash & 0xFFFF0000) | dist(rng); // Upper 16 bits from hash, lower 16 random
+    }
+
+    static std::string FormatFloat(float float_value) {
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(2) << float_value;
+        return oss.str();
     }
 };
 

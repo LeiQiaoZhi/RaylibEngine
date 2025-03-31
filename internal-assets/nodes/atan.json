@@ -1,0 +1,20 @@
+{
+    "name": "ArcTan",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "Y"
+        },
+        {
+            "type": "float",
+            "name": "X"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = atan(Y, X); "
+}

@@ -23,6 +23,7 @@ enum class InteractionState {
 };
 
 struct Context {
+    // states
     Vector2 mousePos;
     MouseDragState &mouseDragState;
     Camera2D &camera;
@@ -34,18 +35,23 @@ struct Context {
     uint selectedNodeUID = 0;
 
     std::list<Node> &nodes;
-    Node *finalNode;
+
+    Node *FinalNode() const {
+        return &nodes.front();
+    }
+
+    Node *FindNodeByUID(uint uid) const;
 
     // code
     std::string shaderCode;
     bool compileFlag = false;
-    Node * nodeToDelete= nullptr;
+    Node *nodeToDelete = nullptr;
 
     // settings
     bool showTypeInfo;
 
-    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes, Node *finalNode)
-        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes), finalNode(finalNode) {
+    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
+        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {
     }
 
     void SendShaderCode(const std::string &code) {
@@ -58,6 +64,10 @@ struct Context {
     }
 
     void RemoveNode();
+
+    void SaveGraph(const std::string &path);
+
+    void LoadGraph(const std::string &path);
 };
 
 #endif //CONTEXT_H

@@ -1,0 +1,624 @@
+{
+    "cameraPos": [
+        791.54296875,
+        -89.9140625
+    ],
+    "cameraZoom": 1.0,
+    "nodes": [
+        {
+            "glsl": "finalColor = vec4(color, alpha);",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "color",
+                    "source": {
+                        "parent": 3224017289,
+                        "uid": 1347037112
+                    },
+                    "type": "vec3",
+                    "uid": 1031683823
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "alpha",
+                    "type": "float",
+                    "uid": 1569394803
+                }
+            ],
+            "name": "Final",
+            "outputs": [],
+            "position": [
+                1036.39453125,
+                -197.31640625
+            ],
+            "uid": 879279141
+        },
+        {
+            "glsl": "",
+            "inputs": [],
+            "name": "UV",
+            "outputs": [
+                {
+                    "name": "uv",
+                    "targets": [
+                        {
+                            "parent": 2633002973,
+                            "uid": 3289084725
+                        }
+                    ],
+                    "type": "vec2",
+                    "uid": 1229173517
+                }
+            ],
+            "position": [
+                -573.53515625,
+                -136.734375
+            ],
+            "uid": 1760778010
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 1760778010,
+                        "uid": 1229173517
+                    },
+                    "type": "vec2",
+                    "uid": 3289084725
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 742186553,
+                        "uid": 1347065271
+                    },
+                    "type": "vec2",
+                    "uid": 3339443204
+                }
+            ],
+            "name": "SubtractV2",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3428714217,
+                            "uid": 3540792668
+                        },
+                        {
+                            "parent": 379690931,
+                            "uid": 3540825894
+                        }
+                    ],
+                    "type": "vec2",
+                    "uid": 1347028649
+                }
+            ],
+            "position": [
+                -399.7890625,
+                -104.35546875
+            ],
+            "uid": 2633002973
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.5,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708574080
+                },
+                {
+                    "floatValue": 0.5,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691816083
+                }
+            ],
+            "name": "Vec2",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2633002973,
+                            "uid": 3339443204
+                        }
+                    ],
+                    "type": "vec2",
+                    "uid": 1347065271
+                }
+            ],
+            "position": [
+                -593.2734375,
+                -49.4921875
+            ],
+            "uid": 742186553
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "V",
+                    "source": {
+                        "parent": 2633002973,
+                        "uid": 1347028649
+                    },
+                    "type": "vec3",
+                    "uid": 3540792668
+                }
+            ],
+            "name": "Length",
+            "outputs": [
+                {
+                    "name": "Length",
+                    "targets": [
+                        {
+                            "parent": 2646859247,
+                            "uid": 3289065743
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 3428773164
+                }
+            ],
+            "position": [
+                185.84375,
+                -49.3828125
+            ],
+            "uid": 3428714217
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.4000000059604645,
+                    "name": "Edge0",
+                    "type": "float",
+                    "uid": 1150389933
+                },
+                {
+                    "floatValue": 0.20000000298023224,
+                    "name": "Edge1",
+                    "type": "float",
+                    "uid": 1167173152
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "In",
+                    "source": {
+                        "parent": 2646859247,
+                        "uid": 1347049480
+                    },
+                    "type": "float",
+                    "uid": 1088975067
+                }
+            ],
+            "name": "Smoothstep",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224017289,
+                            "uid": 1088996678
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347078975
+                }
+            ],
+            "position": [
+                582.203125,
+                -163.15625
+            ],
+            "uid": 3632677935
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 725416546,
+                        "uid": 1347091594
+                    },
+                    "type": "vec3",
+                    "uid": 3289063497
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 725356669,
+                        "uid": 1347083812
+                    },
+                    "type": "vec3",
+                    "uid": 3339397618
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "In",
+                    "source": {
+                        "parent": 3632677935,
+                        "uid": 1347078975
+                    },
+                    "type": "float",
+                    "uid": 1088996678
+                }
+            ],
+            "name": "LerpV3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 879279141,
+                            "uid": 1031683823
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347037112
+                }
+            ],
+            "position": [
+                796.28515625,
+                -227.23046875
+            ],
+            "uid": 3224017289
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.5,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708584794
+                },
+                {
+                    "floatValue": 0.699999988079071,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691804820
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742161498
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224017289,
+                            "uid": 3339397618
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347083812
+                }
+            ],
+            "position": [
+                575.08984375,
+                -299.67578125
+            ],
+            "uid": 725356669
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.6000000238418579,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708595589
+                },
+                {
+                    "floatValue": 0.30000001192092896,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691790954
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742149060
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224017289,
+                            "uid": 3289063497
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347091594
+                }
+            ],
+            "position": [
+                594.60546875,
+                -444.9375
+            ],
+            "uid": 725416546
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "Y",
+                    "source": {
+                        "parent": 379690931,
+                        "uid": 3691829177
+                    },
+                    "type": "float",
+                    "uid": 3691790015
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "X",
+                    "source": {
+                        "parent": 379690931,
+                        "uid": 3708558435
+                    },
+                    "type": "float",
+                    "uid": 3708571699
+                }
+            ],
+            "name": "ArcTan",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2805251754,
+                            "uid": 3289076529
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347053624
+                }
+            ],
+            "position": [
+                -77.203125,
+                42.9375
+            ],
+            "uid": 2742869785
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "V",
+                    "source": {
+                        "parent": 2633002973,
+                        "uid": 1347028649
+                    },
+                    "type": "vec4",
+                    "uid": 3540825894
+                }
+            ],
+            "name": "Split",
+            "outputs": [
+                {
+                    "name": "X",
+                    "targets": [
+                        {
+                            "parent": 2742869785,
+                            "uid": 3708571699
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 3708558435
+                },
+                {
+                    "name": "Y",
+                    "targets": [
+                        {
+                            "parent": 2742869785,
+                            "uid": 3691790015
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 3691829177
+                },
+                {
+                    "name": "Z",
+                    "targets": [],
+                    "type": "float",
+                    "uid": 3742140874
+                },
+                {
+                    "name": "W",
+                    "targets": [],
+                    "type": "float",
+                    "uid": 3524015483
+                }
+            ],
+            "position": [
+                -220.61328125,
+                34.02734375
+            ],
+            "uid": 379690931
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 2805251754,
+                        "uid": 1347034785
+                    },
+                    "type": "float",
+                    "uid": 3289078849
+                }
+            ],
+            "name": "Cos",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2805256430,
+                            "uid": 3289089554
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347030529
+                }
+            ],
+            "position": [
+                211.40625,
+                117.9765625
+            ],
+            "uid": 1578696448
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 3428714217,
+                        "uid": 3428773164
+                    },
+                    "type": "float",
+                    "uid": 3289065743
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 2805256430,
+                        "uid": 1347041496
+                    },
+                    "type": "float",
+                    "uid": 3339448905
+                }
+            ],
+            "name": "Add",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3632677935,
+                            "uid": 1088975067
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347049480
+                }
+            ],
+            "position": [
+                566.046875,
+                1.75
+            ],
+            "uid": 2646859247
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 1578696448,
+                        "uid": 1347030529
+                    },
+                    "type": "float",
+                    "uid": 3289089554
+                },
+                {
+                    "floatValue": 0.05999999865889549,
+                    "name": "B",
+                    "type": "float",
+                    "uid": 3339402858
+                }
+            ],
+            "name": "Multiply",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2646859247,
+                            "uid": 3339448905
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347041496
+                }
+            ],
+            "position": [
+                395.8671875,
+                122.4765625
+            ],
+            "uid": 2805256430
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 2742869785,
+                        "uid": 1347053624
+                    },
+                    "type": "float",
+                    "uid": 3289076529
+                },
+                {
+                    "floatValue": 8.0,
+                    "name": "B",
+                    "type": "float",
+                    "uid": 3339401328
+                }
+            ],
+            "name": "Multiply",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 1578696448,
+                            "uid": 3289078849
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347034785
+                }
+            ],
+            "position": [
+                23.51171875,
+                183.0390625
+            ],
+            "uid": 2805251754
+        }
+    ],
+    "selectedNodeUID": 1578696448,
+    "showTypeInfo": false,
+    "time": 1743415241
+}

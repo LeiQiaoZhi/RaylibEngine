@@ -23,6 +23,51 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
     };
     renderer_->Begin();
 
+    // Scene save and load
+    const float labelWidth = Editor::TextWidth("Graph file") + Editor::SmallGap();
+    GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Graph file");
+    rect.x += labelWidth;
+    const float buttonWidth = Editor::TextWidth("Save") + Editor::LargeGap();
+    const float textBoxWidth = rect.width - labelWidth - buttonWidth * 2;
+    if (GuiTextBox(Rectangle{rect.x, rect.y, textBoxWidth, Editor::TextSize() * 1.0f},
+                   graphFilename, 256, editMode)) {
+        editMode = !editMode;
+    }
+    rect.x += textBoxWidth;
+    const std::string path = std::string(ASSET_DIR) + "/graphs/" + graphFilename;
+    if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, "Load")) {
+        if (!Utils::EndsWith(graphFilename, ".graph.json")) {
+            statusText = "File does not have .graph.json extension";
+            statusWarning = true;
+        } else if (!FileExists(path.c_str())) {
+            statusText = "File does not exist";
+            statusWarning = true;
+        } else {
+            context.LoadGraph(path);
+            statusText = "Graph loaded";
+            statusWarning = false;
+        }
+    }
+    rect.x += buttonWidth;
+    if (GuiButton(Rectangle{rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, "Save")) {
+        if (!Utils::EndsWith(graphFilename, ".graph.json")) {
+            statusText = "File does not have .graph.json extension";
+            statusWarning = true;
+        } else if (!FileExists(path.c_str())) {
+            Utils::CreateEmptyFile(path);
+            statusText = "File does not exist, created, save again";
+        } else {
+            context.SaveGraph(path);
+            statusText = "Graph saved";
+            statusWarning = false;
+        }
+    }
+    rect.x -= labelWidth + textBoxWidth + buttonWidth;
+    rect.y += Editor::TextSize() + Editor::SmallGap();
+
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
+
     GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
              TextFormat("Selected Node: %d", context.selectedNodeUID));
     rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
@@ -41,11 +86,11 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
     }
 
     // add node
-    const float buttonWidth = Editor::TextWidth("Add Node") + Editor::LargeGap();
-    Rectangle dropRect = {rect.x, rect.y, rect.width - buttonWidth - Editor::SmallGap(), Editor::TextSize() * 1.5f};
+    const float addWidth = Editor::TextWidth("Add Node") + Editor::LargeGap();
+    Rectangle dropRect = {rect.x, rect.y, rect.width - addWidth - Editor::SmallGap(), Editor::TextSize() * 1.5f};
     nodesDropdown.OnEditorGUI(dropRect);
 
-    if (GuiButton(Rectangle{rect.x + rect.width - buttonWidth, rect.y, buttonWidth, Editor::TextSize() * 1.5f},
+    if (GuiButton(Rectangle{rect.x + rect.width - addWidth, rect.y, addWidth, Editor::TextSize() * 1.5f},
                   "Add Node")) {
         const std::string path = INTERNAL_ASSET_DIR "/nodes/" + nodesDropdown.GetSelectedOption() + ".json";
         nlohmann::json j = JsonUtils::JsonFromFile(path);

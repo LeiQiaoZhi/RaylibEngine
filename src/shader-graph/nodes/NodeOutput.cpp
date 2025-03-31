@@ -83,3 +83,18 @@ void NodeOutput::Resolve(Context &context) {
 std::string NodeOutput::GetVarName() const {
     return "output_" + std::to_string(parentNode->uid) + "_" + name;
 }
+
+nlohmann::json NodeOutput::ToJson() const {
+    nlohmann::json j = NodeIO::ToJson();
+
+    std::vector<nlohmann::json> targetsJson;
+    for (auto *target: targets) {
+        nlohmann::json targetJson;
+        targetJson["uid"] = target->uid;
+        targetJson["parent"] = target->parentNode->uid;
+        targetsJson.emplace_back(targetJson);
+    }
+    j["targets"] = targetsJson;
+
+    return j;
+}

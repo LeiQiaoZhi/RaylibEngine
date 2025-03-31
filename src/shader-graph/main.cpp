@@ -60,7 +60,7 @@ int main() {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Context context(dragState, camera, nodes, &nodes.front());
+    Context context(dragState, camera, nodes);
 
     Shader bgShader = LoadShader(
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
@@ -159,8 +159,9 @@ int main() {
                    Editor::TextSizeF(), 2, WHITE);
 
         std::string typeInfoLabel = context.showTypeInfo ? "Hide Type Info" : "Show Type Info";
-        if (GuiButton({10, 90, Editor::TextWidth(typeInfoLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
-                      typeInfoLabel.c_str())) {
+        if (GuiButton(
+            {10, 90, Editor::TextWidth(typeInfoLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
+            typeInfoLabel.c_str())) {
             context.showTypeInfo = !context.showTypeInfo;
         }
 

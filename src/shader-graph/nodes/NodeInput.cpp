@@ -134,6 +134,21 @@ void NodeInput::OnEditorGUI(Rectangle &rect) {
     }
 }
 
+nlohmann::json NodeInput::ToJson() const {
+    nlohmann::json j = NodeIO::ToJson();
+
+    if (source != nullptr) {
+        nlohmann::json sourceJson;
+        sourceJson["uid"] = source->uid;
+        sourceJson["parent"] = source->parentNode->uid;
+        j["source"] = sourceJson;
+    }
+
+    j["floatValue"] = floatValue;
+
+    return j;
+}
+
 std::string NodeInput::GetVarName() const {
     return "input_" + std::to_string(parentNode->uid) + "_" + name;
 }
