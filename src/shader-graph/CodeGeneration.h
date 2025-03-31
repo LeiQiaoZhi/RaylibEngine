@@ -110,8 +110,7 @@ namespace CodeGeneration {
                         std::string convertFunc = "convert_" + ShaderTypeToStringMap[input.source->type] + "_to_" +
                                                   ShaderTypeToStringMap[input.type];
                         oss << "\t" << convertFunc << "(" << sourceVar << "," << inputVar << ");\n";
-                    }
-                    else {
+                    } else {
                         oss << "\t" << inputVar << " = " << sourceVar << ";\n";
                     }
                 } else if (input.type == ShaderType::Float) {

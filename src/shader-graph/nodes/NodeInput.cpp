@@ -102,7 +102,7 @@ void NodeInput::Resolve(Context &context) {
     if (context.mouseDragState.JustFinishedDragging() && context.interactionState == InteractionState::Connecting &&
         isHovering) {
         if (context.connectionOutput != nullptr) {
-            context.connectionOutput->target = this;
+            context.connectionOutput->targets.push_back(this);
             source = context.connectionOutput;
         }
     }

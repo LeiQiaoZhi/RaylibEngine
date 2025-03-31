@@ -44,11 +44,11 @@ public:
 
     std::set<Node *> GetNeighboursFromInputs() const;
 
-    std::set<Node *> GetNeighboursFromOuputs() const;
+    std::set<Node *> GetNeighboursFromOutputs() const;
 
     std::set<Node *> GetNeighbours() const {
         std::set<Node *> neighboursIn = GetNeighboursFromInputs();
-        std::set<Node *> neighboursOut = GetNeighboursFromOuputs();
+        std::set<Node *> neighboursOut = GetNeighboursFromOutputs();
         neighboursIn.insert(neighboursOut.begin(), neighboursOut.end());
         return neighboursIn;
     }

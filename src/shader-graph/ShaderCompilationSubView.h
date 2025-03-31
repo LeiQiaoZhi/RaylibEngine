@@ -12,11 +12,11 @@ public:
         renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
     }
 
-    std::list<Node *> FilterNodes(const Context &context);
+    void FilterNodes(const Context &context);
 
     void TopologicalSortVisit(Node * node);
 
-    void TopologicalSort(const std::list<Node *> &list);
+    void TopologicalSort(const std::set<Node *> &list);
 
     void Render(Vector2 position, Context &context);
 
@@ -26,7 +26,7 @@ public:
 
 private:
     ISubviewRenderer *renderer_;
-    std::list<Node *> nodes;
+    std::set<Node *> nodes;
 
     // topologically sort
     std::list<Node *> orderedNodes;

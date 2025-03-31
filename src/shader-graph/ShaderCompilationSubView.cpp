@@ -9,35 +9,37 @@
 #include "CodeGeneration.h"
 
 
-std::list<Node *> ShaderCompilationSubView::FilterNodes(const Context &context) {
-    std::list<Node *> nodes;
-    if (context.finalNode == nullptr) return nodes;
-
+void ShaderCompilationSubView::FilterNodes(const Context &context) {
+    nodes.clear();
     // 1. DFS to find all nodes reachable from final node
     std::list<Node *> toExplore = {context.finalNode};
     while (!toExplore.empty()) {
         Node *node = toExplore.front();
         toExplore.pop_front();
-        nodes.push_back(node);
+        nodes.insert(node);
 
         std::set<Node *> neighbours = node->GetNeighboursFromInputs();
         toExplore.insert(toExplore.end(), neighbours.begin(), neighbours.end());
     }
-
-    return nodes;
 }
 
 void ShaderCompilationSubView::TopologicalSortVisit(Node *node) {
     visited.insert(node);
-    std::set<Node *> neighbours = node->GetNeighbours();
+    std::set<Node *> neighbours = node->GetNeighboursFromOutputs();
+    for (auto &neighbour: neighbours) {
+        if (visited.find(neighbour) == visited.end() && nodes.find(neighbour) != nodes.end()) {
+            TopologicalSortVisit(neighbour);
+        }
+    }
+    orderedNodes.push_front(node);
 }
 
-void ShaderCompilationSubView::TopologicalSort(const std::list<Node *> &list) {
+void ShaderCompilationSubView::TopologicalSort(const std::set<Node *> &list) {
+    visited.clear();
+    orderedNodes.clear();
     for (auto &node: list) {
         if (visited.find(node) == visited.end()) {
-            visited.insert(node);
             TopologicalSortVisit(node);
-            orderedNodes.push_front(node);
         }
     }
 }
@@ -60,7 +62,7 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Compile")) {
         // filter nodes
-        nodes = FilterNodes(context);
+        FilterNodes(context);
 
         // find order of nodes
         TopologicalSort(nodes);

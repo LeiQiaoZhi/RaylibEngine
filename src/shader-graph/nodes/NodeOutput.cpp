@@ -9,7 +9,7 @@
 
 Color NodeOutput::GetColor() const {
     const float alpha = hovering ? 1.0f : 0.7f;
-    if (target == nullptr) {
+    if (targets.empty()) {
         return Fade(GRAY, alpha);
     }
     return Fade(GREEN, alpha);

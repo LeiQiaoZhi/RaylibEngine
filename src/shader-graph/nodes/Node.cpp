@@ -190,11 +190,13 @@ std::set<Node *> Node::GetNeighboursFromInputs() const {
     return neighbours;
 }
 
-std::set<Node *> Node::GetNeighboursFromOuputs() const {
+std::set<Node *> Node::GetNeighboursFromOutputs() const {
     std::set<Node *> neighbours;
     for (auto &output: outputs) {
-        if (output.target != nullptr && output.target->parentNode != nullptr) {
-            neighbours.insert(output.target->parentNode);
+        for (auto &target: output.targets) {
+            if (target != nullptr) {
+                neighbours.insert(target->parentNode);
+            }
         }
     }
     return neighbours;

@@ -46,11 +46,12 @@ int main() {
     // test set up
     MouseDragState dragState;
     Node node1;
-    node1.name = "Final";
-    node1.glsl = "finalColor = vec4(color, alpha);";
-    node1.AddInput("color", ShaderType::Vec3);
-    node1.AddInput("alpha", ShaderType::Float);
-    std::list<Node> nodes = {node1};
+    std::list<Node> nodes;
+    nodes.emplace_back(node1);
+    nodes.front().name = "Final";
+    nodes.front().glsl = "finalColor = vec4(color, alpha);";
+    nodes.front().AddInput("color", ShaderType::Vec3);
+    nodes.front().AddInput("alpha", ShaderType::Float);
 
     Camera2D camera = {0};
     camera.target = (Vector2){0, 0};

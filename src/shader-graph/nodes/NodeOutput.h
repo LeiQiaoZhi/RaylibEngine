@@ -19,7 +19,7 @@ class NodeOutput : public NodeIO {
 public:
     using NodeIO::NodeIO;
 
-    NodeInput *target = nullptr;
+    std::list<NodeInput *> targets = {};
 
     Color GetColor() const override;
 
