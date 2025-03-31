@@ -1,0 +1,20 @@
+{
+    "name": "Vec2",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "X"
+        },
+        {
+            "type": "float",
+            "name": "Y"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "vec2",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = vec2(X, Y); "
+}

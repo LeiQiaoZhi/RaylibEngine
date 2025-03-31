@@ -1,0 +1,24 @@
+{
+    "name": "Smoothstep",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "Edge0"
+        },
+        {
+            "type": "float",
+            "name": "Edge1"
+        },
+        {
+            "type": "float",
+            "name": "In"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = smoothstep(Edge0, Edge1, In); "
+}

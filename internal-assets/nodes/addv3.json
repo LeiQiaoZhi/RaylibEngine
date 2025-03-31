@@ -1,0 +1,20 @@
+{
+    "name": "Add",
+    "inputs": [
+        {
+            "type": "vec3",
+            "name": "A"
+        },
+        {
+            "type": "vec3",
+            "name": "B"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "vec3",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = A + B; "
+}

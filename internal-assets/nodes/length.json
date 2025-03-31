@@ -1,0 +1,16 @@
+{
+    "name": "Length",
+    "inputs": [
+        {
+            "type": "vec3",
+            "name": "V"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Length"
+        }
+    ],
+    "glsl": " Length = length(V); "
+}
