@@ -81,14 +81,8 @@ int main() {
         dragState.Update();
         // reset immediate states
         context.interactionState = InteractionState::None;
-        if (context.connectionOutput != nullptr) {
-            // context.connectionOutput->target = nullptr;
-            context.connectionOutput = nullptr;
-        }
-        if (context.connectionInput != nullptr) {
-            // context.connectionInput->source = nullptr;
-            context.connectionInput = nullptr;
-        }
+        context.connectionOutput = nullptr;
+        context.connectionInput = nullptr;
 
         // update camera
         camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
