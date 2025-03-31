@@ -10,6 +10,7 @@ public:
     static Color PressedColor() { return GetColor(GuiGetStyle(DEFAULT, BASE_COLOR_PRESSED)); }
     static Color FocusedColor() { return GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_FOCUSED)); }
     static Color DisabledColor() { return GetColor(GuiGetStyle(DEFAULT, BORDER_COLOR_DISABLED)); }
+    static Color ThemeColor() { return {100, 150, 255, 255}; }
     static int TextSize() { return GuiGetStyle(DEFAULT, TEXT_SIZE); }
     static float TextSizeF() { return GuiGetStyle(DEFAULT, TEXT_SIZE) * 1.0f; }
     static int SmallGap() { return 5; }

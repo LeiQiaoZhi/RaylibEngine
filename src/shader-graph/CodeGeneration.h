@@ -171,7 +171,7 @@ namespace CodeGeneration {
 
         // preview
         if (previewFinalNode != nullptr && previewFinalNode->outputs.size() > 0) {
-            NodeOutput *output = &previewFinalNode->outputs.front();
+            NodeOutput *output = &previewFinalNode->outputs[previewFinalNode->previewOutputIndex];
             std::string outputVar = output->GetVarName();
             if (output->type != ShaderType::Vec4) {
                 std::string convertFunc = "convert_" + ShaderTypeToStringMap[output->type] + "_to_vec4";

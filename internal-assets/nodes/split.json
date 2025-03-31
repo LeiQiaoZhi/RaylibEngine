@@ -1,5 +1,6 @@
 {
     "name": "Split",
+    "previewOutputIndex": -1,
     "inputs": [
         {
             "type": "vec4",

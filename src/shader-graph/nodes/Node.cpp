@@ -23,6 +23,7 @@ Node::Node(nlohmann::json j) {
         }
     }
     uid = Utils::GenerateUID(name);
+    previewOutputIndex = j.value("previewOutputIndex", previewOutputIndex);
 }
 
 Node::Node(nlohmann::json j, bool dummyFromSave) {
@@ -30,6 +31,7 @@ Node::Node(nlohmann::json j, bool dummyFromSave) {
     uid = j["uid"];
     position = {j["position"][0], j["position"][1]};
     glsl = j.value("glsl", glsl);
+    previewOutputIndex = j.value("previewOutputIndex", previewOutputIndex);
     if (j.contains("inputs")) {
         for (auto &input: j["inputs"]) {
             AddInput(input["name"], ShaderTypeMap[input["type"]], input["uid"]);
@@ -78,7 +80,7 @@ void Node::OnDraw(Context &context) {
     if (hovering || context.selectedNodeUID == uid) {
         static float edge = 4;
         DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
-                      context.selectedNodeUID == uid ? Fade(GREEN, .2) : GRAY);
+                      context.selectedNodeUID == uid ? Fade(Editor::ThemeColor(), .2) : GRAY);
     }
     DrawRectangle(position.x, position.y, size.x, size.y, hovering ? BLACK : Color{10, 10, 10, 255});
 
@@ -87,7 +89,7 @@ void Node::OnDraw(Context &context) {
     Rectangle titleRect = {
         position.x + size.x / 2 - textWidth / 2, position.y + Editor::SmallGap(), 0, Editor::TextSizeF()
     };
-    DrawTextEx(Editor::GetFont(), name.c_str(), {titleRect.x, titleRect.y}, Editor::TextSizeF(), 2, WHITE);
+    DrawTextEx(Editor::GetFont(), name.c_str(), {titleRect.x, titleRect.y}, Editor::TextSizeF(), 1, WHITE);
     titleRect.y += Editor::TextSizeF() + Editor::SmallGap();
     DrawLineEx({position.x + Editor::SmallGap(), titleRect.y},
                {position.x + size.x - Editor::SmallGap(), titleRect.y}, 1, Fade(WHITE, 0.3f));
@@ -99,14 +101,13 @@ void Node::OnDraw(Context &context) {
     for (auto &input: inputs) {
         input.Draw(inputRect, context);
     }
-    size.x = std::max(inputRect.width, size.x);
 
     // outputs
     float maxWidth = 0;
     for (auto &output: outputs) {
         maxWidth = std::max(maxWidth, output.GetWidth());
     }
-    size.x += maxWidth + Editor::LargeGap();
+    size.x = std::max(inputRect.width + maxWidth + Editor::MediumGap(), size.x);
 
     Rectangle outputRect = {position.x + size.x, titleRect.y, 0, Editor::TextSizeF()};
     for (auto &output: outputs) {
@@ -115,23 +116,27 @@ void Node::OnDraw(Context &context) {
     size.y = std::max(inputRect.y, outputRect.y) - position.y;
 
     // preview
-    Rectangle previewRect = {position.x, position.y + size.y + Editor::SmallGap(), size.x, 0};
-    const char *previewLabel = showPreview ? "Hide Preview" : "Show Preview";
-    DrawTextEx(Editor::GetFont(), previewLabel, {previewRect.x, previewRect.y},
-               Editor::TextSizeF(), 1, WHITE);
+    if (context.FinalNode() == this || previewOutputIndex < 0) return;
+
+    Rectangle previewRect = {position.x, position.y + size.y, size.x, Editor::TextSizeF()};
+    const char *previewLabel = showPreview ? "Hide" : "Show";
+    DrawTextEx(Editor::GetFont(), previewLabel, {previewRect.x + Editor::SmallGap(), previewRect.y},
+               previewRect.height, 1, GRAY);
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(context.mousePos, previewRect)) {
         showPreview = !showPreview;
     }
     size.y += Editor::TextSizeF() + Editor::SmallGap();
     if (showPreview || context.showPreviews) {
         BeginShaderMode(shader);
-        RaylibUtils::DrawRectangleUV({previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(), size.x, size.x},
+        RaylibUtils::DrawRectangleUV({
+                                         previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(),
+                                         size.x, size.x
+                                     },
                                      {0, 0}, 0, Fade(WHITE, 1.f));
         EndShaderMode();
-        size.y += size.x + Editor::SmallGap();
+        size.y += size.x;
     }
 }
-
 
 void Node::Update(Context &context) {
     const MouseDragState dragState = context.mouseDragState;
@@ -190,7 +195,7 @@ void Node::Resolve(Context &context) {
     }
 
     // resolve compiling
-    if (context.compileFlag) {
+    if (context.compileFlag && previewOutputIndex >= 0) {
         std::cout << "Compiling node: " << name << std::endl;
         previewCode = CodeGeneration::GeneratePreviewCode(this);
         std::cout << previewCode << std::endl;

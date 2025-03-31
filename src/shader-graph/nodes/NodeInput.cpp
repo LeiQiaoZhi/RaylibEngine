@@ -15,7 +15,7 @@ Color NodeInput::GetColor() const {
     if (source == nullptr) {
         return Fade(GRAY, alpha);
     }
-    return Fade(GREEN, alpha);
+    return Fade(Editor::ThemeColor(), alpha);
 }
 
 void NodeInput::Draw(Rectangle &rect, Context &context) {
@@ -40,7 +40,7 @@ void NodeInput::Draw(Rectangle &rect, Context &context) {
         RaylibUtils::DrawLineBezier(
             circleCenter, circleCenter + Vector2{-handleLength, 0},
             source->circleCenter + Vector2{handleLength, 0}, source->circleCenter,
-            2, Fade(GREEN, 0.5f));
+            2, Fade(Editor::ThemeColor(), 0.5f));
     }
 
     // type info
