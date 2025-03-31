@@ -1,0 +1,16 @@
+{
+    "name": "Abs",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = abs(A); "
+}
