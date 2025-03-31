@@ -8,42 +8,6 @@
 #include "../common/editor/Editor.h"
 #include "CodeGeneration.h"
 
-
-void ShaderCompilationSubView::FilterNodes(const Context &context) {
-    nodes.clear();
-    // 1. DFS to find all nodes reachable from final node
-    std::list<Node *> toExplore = {context.FinalNode()};
-    while (!toExplore.empty()) {
-        Node *node = toExplore.front();
-        toExplore.pop_front();
-        nodes.insert(node);
-
-        std::set<Node *> neighbours = node->GetNeighboursFromInputs();
-        toExplore.insert(toExplore.end(), neighbours.begin(), neighbours.end());
-    }
-}
-
-void ShaderCompilationSubView::TopologicalSortVisit(Node *node) {
-    visited.insert(node);
-    std::set<Node *> neighbours = node->GetNeighboursFromOutputs();
-    for (auto &neighbour: neighbours) {
-        if (visited.find(neighbour) == visited.end() && nodes.find(neighbour) != nodes.end()) {
-            TopologicalSortVisit(neighbour);
-        }
-    }
-    orderedNodes.push_front(node);
-}
-
-void ShaderCompilationSubView::TopologicalSort(const std::set<Node *> &list) {
-    visited.clear();
-    orderedNodes.clear();
-    for (auto &node: list) {
-        if (visited.find(node) == visited.end()) {
-            TopologicalSortVisit(node);
-        }
-    }
-}
-
 void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
     const auto topLeft = renderer_->GetContentTopLeft();
 
@@ -61,21 +25,11 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
     renderer_->Begin();
 
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Compile")) {
-        // filter nodes
-        FilterNodes(context);
-
-        // find order of nodes
-        TopologicalSort(nodes);
-
-        // generate code
+        nodes = CodeGeneration::FilterNodes(context.FinalNode());
+        orderedNodes = CodeGeneration::TopologicalSort(nodes);
         const std::string prefix = CodeGeneration::GetPrefix();
-        // 1. function definitions
         const std::string functions = CodeGeneration::GetFunctions(context.FinalNode());
-        // 2. main function
         const std::string main = CodeGeneration::GetMain(orderedNodes);
-        std::cout << prefix << functions << main << std::endl;
-
-        // compile (let preview handle this)
         context.SendShaderCode(prefix + functions + main);
     }
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();

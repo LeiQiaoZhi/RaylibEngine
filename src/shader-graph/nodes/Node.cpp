@@ -7,6 +7,7 @@
 #include "Node.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "../CodeGeneration.h"
 #include "../../common/editor/Editor.h"
 
 Node::Node(nlohmann::json j) {
@@ -111,11 +112,24 @@ void Node::OnDraw(Context &context) {
     for (auto &output: outputs) {
         output.Draw(outputRect, context);
     }
-
+    size.y = std::max(inputRect.y, outputRect.y) - position.y;
 
     // preview
-
-    size.y = std::max(inputRect.y, outputRect.y) - position.y;
+    Rectangle previewRect = {position.x, position.y + size.y + Editor::SmallGap(), size.x, 0};
+    const char *previewLabel = showPreview ? "Hide Preview" : "Show Preview";
+    DrawTextEx(Editor::GetFont(), previewLabel, {previewRect.x, previewRect.y},
+               Editor::TextSizeF(), 1, WHITE);
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(context.mousePos, previewRect)) {
+        showPreview = !showPreview;
+    }
+    size.y += Editor::TextSizeF() + Editor::SmallGap();
+    if (showPreview || context.showPreviews) {
+        BeginShaderMode(shader);
+        RaylibUtils::DrawRectangleUV({previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(), size.x, size.x},
+                                     {0, 0}, 0, Fade(WHITE, 1.f));
+        EndShaderMode();
+        size.y += size.x + Editor::SmallGap();
+    }
 }
 
 
@@ -173,6 +187,21 @@ void Node::Resolve(Context &context) {
     // resolve dragging
     if (dragging && context.interactionState == InteractionState::Dragging) {
         position += context.mouseDragState.delta;
+    }
+
+    // resolve compiling
+    if (context.compileFlag) {
+        std::cout << "Compiling node: " << name << std::endl;
+        previewCode = CodeGeneration::GeneratePreviewCode(this);
+        std::cout << previewCode << std::endl;
+        Shader newShader = LoadShaderFromMemory(0, previewCode.c_str());
+        if (IsShaderValid(newShader)) {
+            std::cout << "Compiled preview shader for node: " << name << std::endl;
+            UnloadShader(shader);
+            shader = newShader;
+        } else {
+            std::cerr << "Failed to compile preview shader for node: " << name << std::endl;
+        }
     }
 }
 

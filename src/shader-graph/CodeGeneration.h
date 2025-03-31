@@ -14,6 +14,45 @@
 #include "nodes/NodeOutput.h"
 
 namespace CodeGeneration {
+    inline std::set<Node *> FilterNodes(Node *finalNode) {
+        std::set<Node *> filteredNodes;
+        // DFS to find all nodes reachable from final node
+        std::list<Node *> toExplore = {finalNode};
+        while (!toExplore.empty()) {
+            Node *node = toExplore.front();
+            toExplore.pop_front();
+            filteredNodes.insert(node);
+
+            std::set<Node *> neighbours = node->GetNeighboursFromInputs();
+            toExplore.insert(toExplore.end(), neighbours.begin(), neighbours.end());
+        }
+        return filteredNodes;
+    }
+
+    inline void TopologicalSortVisit(Node *node, std::set<Node *> &visited, std::list<Node *> &orderedNodes,
+                                     const std::set<Node *> &nodes) {
+        visited.insert(node);
+        const std::set<Node *> neighbours = node->GetNeighboursFromOutputs();
+        for (auto &neighbour: neighbours) {
+            if (visited.find(neighbour) == visited.end() && nodes.find(neighbour) != nodes.end()) {
+                TopologicalSortVisit(neighbour, visited, orderedNodes, nodes);
+            }
+        }
+        orderedNodes.push_front(node);
+    }
+
+    inline std::list<Node *> TopologicalSort(const std::set<Node *> &nodes) {
+        std::set<Node *> visited;
+        std::list<Node *> orderedNodes;
+        for (auto &node: nodes) {
+            if (visited.find(node) == visited.end()) {
+                TopologicalSortVisit(node, visited, orderedNodes, nodes);
+            }
+        }
+        return orderedNodes;
+    }
+
+
     inline std::string GetPrefix() {
         std::ostringstream oss;
         oss << "#version 330\n";
@@ -61,28 +100,30 @@ namespace CodeGeneration {
             oss << j["glsl"].get<std::string>() << "\n}\n\n";
         }
 
-        // final node
-        std::vector<std::string> ioVars;
-        ioVars.reserve(finalNode->inputs.size() + finalNode->outputs.size());
-        oss << "void " << finalNode->name << "(";
-        for (auto &input: finalNode->inputs) {
-            ioVars.emplace_back("in " + ShaderTypeToStringMap[input.type] + " " + input.name);
+        // final node function -- don't need for preview
+        if (finalNode != nullptr) {
+            std::vector<std::string> ioVars;
+            ioVars.reserve(finalNode->inputs.size() + finalNode->outputs.size());
+            oss << "void " << finalNode->name << "(";
+            for (auto &input: finalNode->inputs) {
+                ioVars.emplace_back("in " + ShaderTypeToStringMap[input.type] + " " + input.name);
+            }
+            for (auto &output: finalNode->outputs) {
+                ioVars.emplace_back("out " + ShaderTypeToStringMap[output.type] + " " + output.name);
+            }
+            for (int i = 0; i < ioVars.size(); i++) {
+                oss << ioVars[i];
+                if (i < ioVars.size() - 1)
+                    oss << ", ";
+            }
+            oss << ") {\n";
+            oss << finalNode->glsl << "\n}\n\n";
         }
-        for (auto &output: finalNode->outputs) {
-            ioVars.emplace_back("out " + ShaderTypeToStringMap[output.type] + " " + output.name);
-        }
-        for (int i = 0; i < ioVars.size(); i++) {
-            oss << ioVars[i];
-            if (i < ioVars.size() - 1)
-                oss << ", ";
-        }
-        oss << ") {\n";
-        oss << finalNode->glsl << "\n}\n\n";
 
         return oss.str();
     }
 
-    inline std::string GetMain(const std::list<Node *> &orderedNodes) {
+    inline std::string GetMain(const std::list<Node *> &orderedNodes, Node *previewFinalNode = nullptr) {
         std::ostringstream oss;
         oss << "void main() {\n";
 
@@ -128,8 +169,29 @@ namespace CodeGeneration {
             oss << ");\n";
         }
 
+        // preview
+        if (previewFinalNode != nullptr && previewFinalNode->outputs.size() > 0) {
+            NodeOutput *output = &previewFinalNode->outputs.front();
+            std::string outputVar = output->GetVarName();
+            if (output->type != ShaderType::Vec4) {
+                std::string convertFunc = "convert_" + ShaderTypeToStringMap[output->type] + "_to_vec4";
+                oss << "\t" << convertFunc << "(" << outputVar << ", finalColor);\n";
+            }
+            oss << "\tfinalColor.a = 1.0;\n";
+        }
+
         oss << "}\n";
+
         return oss.str();
+    }
+
+    inline std::string GeneratePreviewCode(Node *finalNode) {
+        std::set<Node *> filteredNodes = FilterNodes(finalNode);
+        std::list<Node *> orderedNodes = TopologicalSort(filteredNodes);
+        const std::string prefix = GetPrefix();
+        const std::string functions = GetFunctions(nullptr);
+        const std::string main = GetMain(orderedNodes, finalNode);
+        return prefix + functions + main;
     }
 }
 

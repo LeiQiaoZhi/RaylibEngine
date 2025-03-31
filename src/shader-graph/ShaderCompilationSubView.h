@@ -12,12 +12,6 @@ public:
         renderer_ = new ScrollPanelRenderer(width, height - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT);
     }
 
-    void FilterNodes(const Context &context);
-
-    void TopologicalSortVisit(Node * node);
-
-    void TopologicalSort(const std::set<Node *> &list);
-
     void Render(Vector2 position, Context &context);
 
     Vector2 GetSize() const {

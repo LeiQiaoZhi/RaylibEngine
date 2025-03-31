@@ -164,6 +164,14 @@ int main() {
             typeInfoLabel.c_str())) {
             context.showTypeInfo = !context.showTypeInfo;
         }
+        std::string previewLabel = context.showPreviews ? "Hide Previews" : "Show Previews";
+        if (GuiButton(
+            {10, 90 + Editor::TextSize() * 1.5f + Editor::SmallGap(),
+             Editor::TextWidth(previewLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
+            previewLabel.c_str())) {
+            context.showPreviews = !context.showPreviews;
+        }
+
 
         // subviews
         shaderCompilationSubView.Render({0, windowHeight - shaderCompilationSubView.GetSize().y}, context);

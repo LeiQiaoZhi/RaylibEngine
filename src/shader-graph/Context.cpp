@@ -78,4 +78,7 @@ void Context::LoadGraph(const std::string &path) {
         node.LoadConnections(nodeJson, this);
         i++;
     }
+
+    // recompile
+    compileFlag = true;
 }

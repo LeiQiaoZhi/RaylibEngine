@@ -49,6 +49,7 @@ struct Context {
 
     // settings
     bool showTypeInfo;
+    bool showPreviews;
 
     Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
         : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {

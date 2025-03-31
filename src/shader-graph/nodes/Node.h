@@ -110,6 +110,11 @@ public:
     FoldoutProperty outputFoldout = FoldoutProperty("Outputs", true);
     bool codeEditMode;
     float height;
+
+    // preview
+    Shader shader = LoadShader(0, INTERNAL_ASSET_DIR "/shaders/uv.frag");
+    std::string previewCode;
+    bool showPreview;
 };
 
 
