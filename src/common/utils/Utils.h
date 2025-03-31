@@ -67,7 +67,8 @@ public:
 
     static std::string FormatFloat(float float_value) {
         std::ostringstream oss;
-        oss << std::fixed << std::setprecision(2) << float_value;
+        // Use defaultfloat so that precision is interpreted as significant digits rather than fixed decimals
+        oss << std::defaultfloat << std::setprecision(6) << float_value;
         return oss.str();
     }
 };

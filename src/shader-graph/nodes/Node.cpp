@@ -32,6 +32,7 @@ Node::Node(nlohmann::json j, bool dummyFromSave) {
     position = {j["position"][0], j["position"][1]};
     glsl = j.value("glsl", glsl);
     previewOutputIndex = j.value("previewOutputIndex", previewOutputIndex);
+    showPreview = j.value("showPreview", showPreview);
     if (j.contains("inputs")) {
         for (auto &input: j["inputs"]) {
             AddInput(input["name"], ShaderTypeMap[input["type"]], input["uid"]);
@@ -80,7 +81,7 @@ void Node::OnDraw(Context &context) {
     if (hovering || context.selectedNodeUID == uid) {
         static float edge = 4;
         DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
-                      context.selectedNodeUID == uid ? Fade(Editor::ThemeColor(), .2) : GRAY);
+                      context.selectedNodeUID == uid ? Fade(Editor::ThemeColor(), .5) : GRAY);
     }
     DrawRectangle(position.x, position.y, size.x, size.y, hovering ? BLACK : Color{10, 10, 10, 255});
 
@@ -116,7 +117,8 @@ void Node::OnDraw(Context &context) {
     size.y = std::max(inputRect.y, outputRect.y) - position.y;
 
     // preview
-    if (context.FinalNode() == this || previewOutputIndex < 0) return;
+    if (context.FinalNode() == this || previewOutputIndex < 0 || context.showPreviewState == ShowPreviewState::Off)
+        return;
 
     Rectangle previewRect = {position.x, position.y + size.y, size.x, Editor::TextSizeF()};
     const char *previewLabel = showPreview ? "Hide" : "Show";
@@ -126,7 +128,7 @@ void Node::OnDraw(Context &context) {
         showPreview = !showPreview;
     }
     size.y += Editor::TextSizeF() + Editor::SmallGap();
-    if (showPreview || context.showPreviews) {
+    if (showPreview || context.showPreviewState == ShowPreviewState::On) {
         BeginShaderMode(shader);
         RaylibUtils::DrawRectangleUV({
                                          previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(),
@@ -249,13 +251,6 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
 
     // outputs
 
-    // code
-    // if (GuiTextBox({rect.x, rect.y, rect.width, Editor::TextSize() * 5.0f}, const_cast<char *>(code.c_str()),
-    //                code.size(), codeEditMode)) {
-    //     codeEditMode = !codeEditMode;
-    // }
-    // rect.y += Editor::TextSize() * 5.0f + Editor::SmallGap();
-
     debugFoldout.OnEditorGUI(rect);
     if (!debugFoldout.IsFolded()) {
         // debug: uid, position, size
@@ -302,6 +297,7 @@ nlohmann::json Node::ToJson() const {
     j["uid"] = uid;
     j["position"] = {position.x, position.y};
     j["glsl"] = glsl;
+    j["showPreview"] = showPreview;
 
     std::vector<nlohmann::json> inputsJson;
     for (auto &input: inputs) {

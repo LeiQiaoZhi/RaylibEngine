@@ -2,6 +2,8 @@
 // Created by Qiaozhi Lei on 3/30/25.
 //
 #include "Context.h"
+
+#include "CodeGeneration.h"
 #include "nodes/Node.h"
 
 
@@ -41,6 +43,8 @@ void Context::SaveGraph(const std::string &path) {
     j["showTypeInfo"] = showTypeInfo;
     j["time"] = time(nullptr);
     j["selectedNodeUID"] = selectedNodeUID;
+    j["showPreviewState"] = showPreviewState;
+
     j["cameraPos"] = {camera.target.x, camera.target.y};
     j["cameraZoom"] = camera.zoom;
 
@@ -59,6 +63,9 @@ void Context::LoadGraph(const std::string &path) {
 
     showTypeInfo = j.value("showTypeInfo", showTypeInfo);
     selectedNodeUID = j.value("selectedNodeUID", selectedNodeUID);
+    showPreviewState = j.value("showPreviewState", showPreviewState);
+
+    // camera
     if (j.contains("cameraPos")) {
         camera.target.x = j["cameraPos"][0];
         camera.target.y = j["cameraPos"][1];
@@ -80,5 +87,6 @@ void Context::LoadGraph(const std::string &path) {
     }
 
     // recompile
+    shaderCode = CodeGeneration::GenerateCode(FinalNode());
     compileFlag = true;
 }

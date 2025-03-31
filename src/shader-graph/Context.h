@@ -22,6 +22,12 @@ enum class InteractionState {
     Connecting, // for connecting input/output
 };
 
+enum class ShowPreviewState {
+    Individual,
+    On,
+    Off
+};
+
 struct Context {
     // states
     Vector2 mousePos;
@@ -49,7 +55,7 @@ struct Context {
 
     // settings
     bool showTypeInfo;
-    bool showPreviews;
+    ShowPreviewState showPreviewState = ShowPreviewState::Individual;
 
     Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
         : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {

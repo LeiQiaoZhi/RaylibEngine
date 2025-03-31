@@ -193,6 +193,15 @@ namespace CodeGeneration {
         const std::string main = GetMain(orderedNodes, finalNode);
         return prefix + functions + main;
     }
+
+    inline std::string GenerateCode(Node *finalNode) {
+        std::set<Node *> filteredNodes = FilterNodes(finalNode);
+        std::list<Node *> orderedNodes = TopologicalSort(filteredNodes);
+        const std::string prefix = GetPrefix();
+        const std::string functions = GetFunctions(finalNode);
+        const std::string main = GetMain(orderedNodes, finalNode);
+        return prefix + functions + main;
+    }
 }
 
 #endif //CODEGENERATION_H
