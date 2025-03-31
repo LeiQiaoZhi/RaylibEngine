@@ -14,22 +14,6 @@
 #include "nodes/NodeOutput.h"
 
 namespace CodeGeneration {
-    inline std::vector<std::string> GetOptions() {
-        std::vector<std::string> options;
-        const std::string path = INTERNAL_ASSET_DIR "/nodes";
-        const FilePathList files = LoadDirectoryFilesEx(path.c_str(), NULL, false);
-        for (int i = 0; i < files.count; i++) {
-            const char *completeFilePath = files.paths[i];
-            const char *file = GetFileName(completeFilePath);
-            if (file[0] == '.' || !Utils::EndsWith(file, ".json"))
-                continue;
-
-            options.push_back(file);
-        }
-        UnloadDirectoryFiles(files);
-        return options;
-    }
-
     inline std::string GetPrefix() {
         std::ostringstream oss;
         oss << "#version 330\n";
@@ -55,6 +39,10 @@ namespace CodeGeneration {
                 continue;
 
             nlohmann::json j = JsonUtils::JsonFromFile(completeFilePath);
+
+            if (j["name"].get<std::string>().find(' ') != std::string::npos) {
+                std::cout << "Function name should not contain space: " << j["name"] << std::endl;
+            }
 
             // signature
             oss << "void " << j["name"].get<std::string>() << "(";

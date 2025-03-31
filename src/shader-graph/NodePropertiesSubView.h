@@ -27,6 +27,9 @@ public:
             options.push_back(file);
         }
         UnloadDirectoryFiles(files);
+
+        std::sort(options.begin(), options.end());
+
         return options;
     }
 

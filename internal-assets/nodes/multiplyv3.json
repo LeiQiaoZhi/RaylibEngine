@@ -1,5 +1,5 @@
 {
-    "name": "Multiply V3",
+    "name": "MultiplyV3",
     "inputs": [
         {
             "type": "vec3",

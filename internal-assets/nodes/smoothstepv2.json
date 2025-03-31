@@ -1,5 +1,5 @@
 {
-    "name": "Smoothstep V2",
+    "name": "SmoothstepV2",
     "inputs": [
         {
             "type": "vec2",
@@ -20,5 +20,5 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = smoothstep(Edge0, Edge1, In); "
+    "glsl": " Result = vec2(smoothstep(Edge0.x, Edge1.x, In), smoothstep(Edge0.y, Edge1.y, In)); "
 }

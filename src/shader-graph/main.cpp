@@ -49,6 +49,7 @@ int main() {
     std::list<Node> nodes;
     nodes.emplace_back(node1);
     nodes.front().name = "Final";
+    nodes.front().position = {200, 0};
     nodes.front().glsl = "finalColor = vec4(color, alpha);";
     nodes.front().AddInput("color", ShaderType::Vec3);
     nodes.front().AddInput("alpha", ShaderType::Float);

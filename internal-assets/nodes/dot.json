@@ -1,24 +1,20 @@
 {
-    "name": "Smoothstep V3",
+    "name": "Dot",
     "inputs": [
         {
-            "type": "vec3",
-            "name": "Edge0"
+            "type": "vec4",
+            "name": "A"
         },
         {
-            "type": "vec3",
-            "name": "Edge1"
-        },
-        {
-            "type": "float",
-            "name": "In"
+            "type": "vec4",
+            "name": "B"
         }
     ],
     "outputs": [
         {
-            "type": "vec3",
+            "type": "float",
             "name": "Result"
         }
     ],
-    "glsl": " Result = smoothstep(Edge0, Edge1, In); "
+    "glsl": " Result = dot(A, B); "
 }

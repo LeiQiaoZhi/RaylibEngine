@@ -1,20 +1,20 @@
 {
-    "name": "DivideV3",
+    "name": "Pow",
     "inputs": [
         {
-            "type": "vec3",
+            "type": "float",
             "name": "A"
         },
         {
-            "type": "vec3",
+            "type": "float",
             "name": "B"
         }
     ],
     "outputs": [
         {
-            "type": "vec3",
+            "type": "float",
             "name": "Result"
         }
     ],
-    "glsl": " Result = vec3(A.x / B.x, A.y / B.y, A.z / B.z); "
+    "glsl": " Result = pow(A, B); "
 }

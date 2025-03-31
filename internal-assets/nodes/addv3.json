@@ -1,5 +1,5 @@
 {
-    "name": "Add V3",
+    "name": "AddV3",
     "inputs": [
         {
             "type": "vec3",

@@ -1,0 +1,24 @@
+{
+    "name": "Remap",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "In"
+        },
+        {
+            "type": "float",
+            "name": "Min"
+        },
+        {
+            "type": "float",
+            "name": "Max"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = clamp(In, Min, Max); "
+}

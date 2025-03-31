@@ -1,0 +1,32 @@
+{
+    "name": "Remap",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "In"
+        },
+        {
+            "type": "float",
+            "name": "Min"
+        },
+        {
+            "type": "float",
+            "name": "Max"
+        },
+        {
+            "type": "float",
+            "name": "NewMin"
+        },
+        {
+            "type": "float",
+            "name": "NewMax"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = ((In - Min) / (Max - Min)) * (NewMax - NewMin) + NewMin; "
+}
