@@ -1,13 +1,9 @@
 {
-    "name": "Add V3",
+    "name": "Normalize",
     "inputs": [
         {
             "type": "vec3",
             "name": "A"
-        },
-        {
-            "type": "vec3",
-            "name": "B"
         }
     ],
     "outputs": [
@@ -16,5 +12,5 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = normalize(A); "
 }

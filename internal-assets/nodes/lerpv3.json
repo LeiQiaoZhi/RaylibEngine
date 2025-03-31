@@ -1,5 +1,5 @@
 {
-    "name": "Add V3",
+    "name": "Lerp V3",
     "inputs": [
         {
             "type": "vec3",
@@ -8,6 +8,10 @@
         {
             "type": "vec3",
             "name": "B"
+        },
+        {
+            "type": "float",
+            "name": "In"
         }
     ],
     "outputs": [
@@ -16,5 +20,5 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = mix(A, B, In); "
 }

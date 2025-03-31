@@ -1,20 +1,20 @@
 {
-    "name": "Add V3",
+    "name": "Multiply V2",
     "inputs": [
         {
-            "type": "vec3",
+            "type": "vec2",
             "name": "A"
         },
         {
-            "type": "vec3",
+            "type": "vec2",
             "name": "B"
         }
     ],
     "outputs": [
         {
-            "type": "vec3",
+            "type": "vec2",
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = vec2(A.x * B.x, A.y * B.y); "
 }

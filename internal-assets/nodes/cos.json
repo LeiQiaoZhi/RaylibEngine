@@ -1,0 +1,16 @@
+{
+    "name": "Cos",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = cos(A); "
+}

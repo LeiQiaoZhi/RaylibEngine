@@ -1,0 +1,16 @@
+{
+    "name": "Sin",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = sin(A); "
+}

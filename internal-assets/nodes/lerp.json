@@ -1,0 +1,24 @@
+{
+    "name": "Lerp",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        },
+        {
+            "type": "float",
+            "name": "B"
+        },
+        {
+            "type": "float",
+            "name": "In"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "glsl": " Result = mix(A, B, In); "
+}

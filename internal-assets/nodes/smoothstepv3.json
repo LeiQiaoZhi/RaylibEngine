@@ -1,13 +1,17 @@
 {
-    "name": "Add V3",
+    "name": "Smoothstep V3",
     "inputs": [
         {
             "type": "vec3",
-            "name": "A"
+            "name": "Edge0"
         },
         {
             "type": "vec3",
-            "name": "B"
+            "name": "Edge1"
+        },
+        {
+            "type": "float",
+            "name": "In"
         }
     ],
     "outputs": [
@@ -16,5 +20,5 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = smoothstep(Edge0, Edge1, In); "
 }

@@ -1,5 +1,5 @@
 {
-    "name": "Add V3",
+    "name": "Multiply V3",
     "inputs": [
         {
             "type": "vec3",
@@ -16,5 +16,5 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = vec3(A.x * B.x, A.y * B.y, A.z * B.z); "
 }

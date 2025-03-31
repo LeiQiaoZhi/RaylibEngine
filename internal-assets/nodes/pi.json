@@ -1,0 +1,19 @@
+{
+    "name": "PI",
+    "inputs": [],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "HalfPI"
+        },
+        {
+            "type": "float",
+            "name": "PI"
+        },
+        {
+            "type": "float",
+            "name": "TwoPI"
+        }
+    ],
+    "glsl": " HalfPI = 1.5707963267948966; PI = 3.141592653589793; TwoPI = 6.283185307179586; "
+}

@@ -1,20 +1,20 @@
 {
-    "name": "Add V3",
+    "name": "Divide",
     "inputs": [
         {
-            "type": "vec3",
+            "type": "float",
             "name": "A"
         },
         {
-            "type": "vec3",
+            "type": "float",
             "name": "B"
         }
     ],
     "outputs": [
         {
-            "type": "vec3",
+            "type": "float",
             "name": "Result"
         }
     ],
-    "glsl": " Result = A + B; "
+    "glsl": " Result = A / B; "
 }
