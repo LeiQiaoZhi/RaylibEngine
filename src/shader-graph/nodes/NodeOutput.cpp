@@ -12,7 +12,7 @@ Color NodeOutput::GetColor() const {
     if (targets.empty()) {
         return Fade(GRAY, alpha);
     }
-    return Fade(Editor::ThemeColor(), alpha);
+    return Fade(ShaderTypeToColorMap[type], alpha);
 }
 
 void NodeOutput::Draw(Rectangle &rect, Context &context) {

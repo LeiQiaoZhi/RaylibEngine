@@ -6,6 +6,7 @@
 #define SHADERTYPES_H
 
 #include <map>
+#include <raylib.h>
 
 enum class ShaderType {
     Float,
@@ -29,6 +30,18 @@ inline std::map<ShaderType, std::string> ShaderTypeToStringMap = {
     {ShaderType::Mat4, "mat4"},
     {ShaderType::Sampler2D, "sampler2D"},
     {ShaderType::SamplerCube, "samplerCube"},
+};
+
+inline std::map<ShaderType, Color> ShaderTypeToColorMap = {
+    {ShaderType::Float, {200, 200, 50, 255}},
+    {ShaderType::Vec2, {100, 200, 100, 255}},
+    {ShaderType::Vec3, {100, 150, 255, 255}},
+    {ShaderType::Vec4, {255, 50, 255, 255}},
+    {ShaderType::Mat2, {255, 128, 0, 255}},
+    {ShaderType::Mat3, {128, 0, 255, 255}},
+    {ShaderType::Mat4, {128, 128, 128, 255}},
+    {ShaderType::Sampler2D, {0, 128, 128, 255}},
+    {ShaderType::SamplerCube, {128, 128, 0, 255}},
 };
 
 inline std::map<std::string, ShaderType> ShaderTypeMap = {

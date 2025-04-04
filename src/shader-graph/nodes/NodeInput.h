@@ -28,6 +28,8 @@ public:
     float floatValue = 0;
     char floatBuffer[256] = "0"; // TODO: initialize with value
     bool floatEditMode = false;
+    bool lineHovering;
+    float handleLength;
     // FloatProperty floatProperty = FloatProperty(&floatValue, name);
 
     Color GetColor() const override;

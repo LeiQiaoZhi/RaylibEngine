@@ -80,7 +80,7 @@ int main() {
         //----------------------------------------------------------------------------------
         //----------------------------------------------------------------------------------
         context.mousePos = GetScreenToWorld2D(GetMousePosition(), camera);
-        dragState.Update();
+        context.Update();
         // reset immediate states
         context.interactionState = InteractionState::None;
         context.connectionOutput = nullptr;
@@ -92,6 +92,7 @@ int main() {
             camera.zoom = std::clamp(camera.zoom, 0.2f, 3.0f);
         }
         if (context.mouseDragState.isDragging && IsKeyDown(KEY_LEFT_ALT)) {
+            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             camera.target -= context.mouseDragState.delta;
         }
 
@@ -103,13 +104,6 @@ int main() {
             node.Resolve(context);
         }
 
-        if (context.interactionState == InteractionState::Dragging) {
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
-        } else if (context.interactionState == InteractionState::Connecting) {
-            SetMouseCursor(MOUSE_CURSOR_CROSSHAIR);
-        } else {
-            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-        }
 
         // update subview
         previewSubView.Update(context);
@@ -145,30 +139,44 @@ int main() {
         }
 
         EndMode2D();
-
-        DrawTextEx(Editor::GetFont(), TextFormat("Interaction State: [%i]", context.interactionState), {10, 10},
+        Vector2 pos = {10, 10};
+        DrawTextEx(Editor::GetFont(), TextFormat("Interaction State: [%i]", context.interactionState), pos,
                    Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
         DrawTextEx(Editor::GetFont(),
                    TextFormat("Connecting I: [%s]",
                               context.connectionInput == nullptr ? "NULL" : context.connectionInput->name.c_str()),
-                   {10, 30}, Editor::TextSizeF(), 2, WHITE);
+                   pos, Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
         DrawTextEx(Editor::GetFont(),
                    TextFormat("Connecting O: [%s]",
                               context.connectionOutput == nullptr ? "NULL" : context.connectionOutput->name.c_str()),
-                   {10, 50}, Editor::TextSizeF(), 2, WHITE);
-        DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), {10, 70},
+                   pos, Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
+        DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), pos,
                    Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
+        DrawTextEx(Editor::GetFont(), TextFormat("Selected Node: [%d]", context.selectedNodeUID), pos,
+                   Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
+        DrawTextEx(Editor::GetFont(),
+                   TextFormat("Selected Line: [%s]",
+                              context.selectedLine == nullptr ? "NULL" : context.selectedLine->name.c_str()),
+                   pos, Editor::TextSizeF(), 2, WHITE);
+        pos.y += Editor::TextSizeF() + Editor::SmallGap();
 
         std::string typeInfoLabel = context.showTypeInfo ? "Hide Type Info" : "Show Type Info";
         if (GuiButton(
-            {10, 90, Editor::TextWidth(typeInfoLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
+            {pos.x, pos.y, Editor::TextWidth(typeInfoLabel.c_str()) + Editor::LargeGap(), Editor::TextSize() * 1.5f},
             typeInfoLabel.c_str())) {
             context.showTypeInfo = !context.showTypeInfo;
         }
+        pos.y += Editor::TextSizeF() * 1.5 + Editor::SmallGap();
         // show preview
-        GuiComboBox({10, 120, 150, Editor::TextSize() * 1.5f},
-                       "Individual;Global On;Global Off", reinterpret_cast<int *>(&context.showPreviewState)
+        GuiComboBox({pos.x, pos.y, 150, Editor::TextSize() * 1.5f},
+                    "Individual;Global On;Global Off", reinterpret_cast<int *>(&context.showPreviewState)
         );
+        pos.y += Editor::TextSizeF() * 1.5 + Editor::SmallGap();
 
 
         // subviews

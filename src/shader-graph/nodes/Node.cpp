@@ -46,6 +46,19 @@ Node::Node(nlohmann::json j, bool dummyFromSave) {
     }
 }
 
+Node::Node(Node *node) {
+    name = node->name;
+    uid = Utils::GenerateUID(name);
+    glsl = node->glsl;
+    previewOutputIndex = node->previewOutputIndex;
+    for (auto &input: node->inputs) {
+        AddInput(input.name, input.type);
+    }
+    for (auto &output: node->outputs) {
+        AddOutput(output.name, output.type);
+    }
+}
+
 void Node::LoadConnections(const nlohmann::json &j, Context *context) {
     if (j.contains("inputs")) {
         int i = 0;
@@ -82,6 +95,11 @@ void Node::OnDraw(Context &context) {
         static float edge = 4;
         DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
                       context.selectedNodeUID == uid ? Fade(Editor::ThemeColor(), .5) : GRAY);
+    }
+    if (statusError) {
+        static float edge = 4;
+        DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
+                      RED);
     }
     DrawRectangle(position.x, position.y, size.x, size.y, hovering ? BLACK : Color{10, 10, 10, 255});
 
@@ -166,7 +184,7 @@ void Node::Update(Context &context) {
     }
 
     if (dragState.JustStartedDragging() && isHovering) {
-        context.selectedNodeUID = uid;
+        context.SelectNode(uid);
     }
 
     // handle dragging
@@ -197,7 +215,7 @@ void Node::Resolve(Context &context) {
     }
 
     // resolve compiling
-    if (context.compileFlag && previewOutputIndex >= 0) {
+    if (context.compileFlag && previewOutputIndex >= 0 && this != context.FinalNode()) {
         std::cout << "Compiling node: " << name << std::endl;
         previewCode = CodeGeneration::GeneratePreviewCode(this);
         std::cout << previewCode << std::endl;
@@ -206,8 +224,11 @@ void Node::Resolve(Context &context) {
             std::cout << "Compiled preview shader for node: " << name << std::endl;
             UnloadShader(shader);
             shader = newShader;
+            statusError = false;
         } else {
+            statusError = true;
             std::cerr << "Failed to compile preview shader for node: " << name << std::endl;
+            shader = LoadShader(0, INTERNAL_ASSET_DIR "/shaders/error.frag");
         }
     }
 }
@@ -262,6 +283,9 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
         rect.y += Editor::TextSize() + Editor::SmallGap();
         GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
                  TextFormat("Size: [%i, %i]", (int) size.x, (int) size.y));
+        rect.y += Editor::TextSize() + Editor::SmallGap();
+        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+                 TextFormat("Preview Output Index: %d", previewOutputIndex));
         rect.y += Editor::TextSize() + Editor::SmallGap();
         Editor::EndIndent(rect, Editor::LargeGap());
     }

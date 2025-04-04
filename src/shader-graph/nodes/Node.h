@@ -18,14 +18,14 @@
 class Node {
 public:
     Node() {
-        uid = Utils::GenerateUID("Node"); // TODO: replace with actual type
+        uid = Utils::GenerateUID(name);
     }
-
 
     explicit Node(nlohmann::json j);
 
     explicit Node(nlohmann::json j, bool dummyFromSave);
 
+    explicit Node(Node *node);
 
     void LoadConnections(const nlohmann::json &j, Context *context);
 
@@ -112,10 +112,11 @@ public:
     float height;
 
     // preview
-    Shader shader = LoadShader(0, INTERNAL_ASSET_DIR "/shaders/uv.frag");
+    Shader shader = LoadShader(0, INTERNAL_ASSET_DIR "/shaders/error.frag");
     std::string previewCode;
     bool showPreview;
     int previewOutputIndex = 0;
+    bool statusError = false;
 };
 
 

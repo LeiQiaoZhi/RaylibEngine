@@ -20,6 +20,9 @@ void Context::RemoveNode() {
     for (auto &input: nodeToDelete->inputs) {
         if (input.source != nullptr) {
             input.source->targets.remove(&input);
+            if (selectedLine == &input) {
+                selectedLine = nullptr;
+            }
         }
     }
 
@@ -89,4 +92,41 @@ void Context::LoadGraph(const std::string &path) {
     // recompile
     shaderCode = CodeGeneration::GenerateCode(FinalNode());
     compileFlag = true;
+}
+
+void Context::Update() {
+    mouseDragState.Update();
+
+    if (interactionState == InteractionState::Dragging) {
+        SetMouseCursor(MOUSE_CURSOR_ARROW);
+    } else if (interactionState == InteractionState::Connecting || interactionState == InteractionState::Hovering) {
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    } else {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    }
+
+    if (IsKeyPressed(KEY_DELETE)) {
+        std::cout << "Delete key pressed" << std::endl;
+        if (selectedNodeUID != 0) {
+            nodeToDelete = FindNodeByUID(selectedNodeUID);
+        }
+        if (selectedLine != nullptr) {
+            selectedLine->source->targets.remove(selectedLine);
+            selectedLine->source = nullptr;
+            selectedLine = nullptr;
+        }
+    }
+
+    if (IsKeyDown(KEY_LEFT_CONTROL)) {
+        if (IsKeyPressed(KEY_V) && selectedNodeUID != 0) {
+            std::cout << "Ctrl + V pressed" << std::endl;
+            // past selected node
+            Node *node = FindNodeByUID(selectedNodeUID);
+            if (node != nullptr) {
+                std::cout << "Pasting node: " << node->name << std::endl;
+                nodes.emplace_back(node);
+                nodes.back().position = {mousePos.x, mousePos.y};
+            }
+        }
+    }
 }

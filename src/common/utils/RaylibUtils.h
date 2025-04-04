@@ -196,14 +196,14 @@ public:
         RayCollision result = {0};
         // check AABB
         const BoundingBox aabb = GetModelAABBAfterTransform(model);
-        RayCollision aabbCollision = GetRayCollisionBox(ray, aabb);
+        const RayCollision aabbCollision = GetRayCollisionBox(ray, aabb);
 
         if (!aabbCollision.hit) return result;
 
         // check all meshes, return closest
         for (int i = 0; i < model.meshCount; i++) {
             const Mesh mesh = model.meshes[i];
-            RayCollision meshCollision = GetRayCollisionMesh(ray, mesh, model.transform);
+            const RayCollision meshCollision = GetRayCollisionMesh(ray, mesh, model.transform);
             if (meshCollision.hit) {
                 if (!result.hit || meshCollision.distance < result.distance) {
                     result = meshCollision;
@@ -552,8 +552,8 @@ public:
 
     // Draw a model (with texture if set)
     static void DrawModelWithShader(Model model, Vector3 position, float scale, Color tint, Shader shader) {
-        Vector3 vScale = {scale, scale, scale};
-        Vector3 rotationAxis = {0.0f, 1.0f, 0.0f};
+        const Vector3 vScale = {scale, scale, scale};
+        const Vector3 rotationAxis = {0.0f, 1.0f, 0.0f};
 
         DrawModelWithShaderEx(model, position, rotationAxis, 0.0f, vScale, tint, shader);
     }
@@ -656,7 +656,7 @@ public:
         static Model model = {0}; // Ensure uninitialized state
         if (model.meshCount == 0) {
             // Load only if model is not initialized
-            Mesh arrowHead = GenMeshCone(0.1f, 0.4f, 16);
+            const Mesh arrowHead = GenMeshCone(0.1f, 0.4f, 16);
             for (int i = 0; i < arrowHead.vertexCount; i++) {
                 arrowHead.vertices[i * 3 + 1] += 0.6f;
             }
@@ -681,37 +681,37 @@ public:
     }
 
     static void RecalculateMeshNormals(Mesh *mesh) {
-        float *vertices = mesh->vertices;
+        const float *vertices = mesh->vertices;
         float *normals = mesh->normals;
-        unsigned short *indices = mesh->indices;
+        const unsigned short *indices = mesh->indices;
 
         // For each triangle
         for (int i = 0; i < mesh->triangleCount * 3; i += 3) {
             // Get triangle vertices
-            Vector3 v0 = {
+            const Vector3 v0 = {
                 vertices[indices[i] * 3],
                 vertices[indices[i] * 3 + 1],
                 vertices[indices[i] * 3 + 2]
             };
-            Vector3 v1 = {
+            const Vector3 v1 = {
                 vertices[indices[i + 1] * 3],
                 vertices[indices[i + 1] * 3 + 1],
                 vertices[indices[i + 1] * 3 + 2]
             };
-            Vector3 v2 = {
+            const Vector3 v2 = {
                 vertices[indices[i + 2] * 3],
                 vertices[indices[i + 2] * 3 + 1],
                 vertices[indices[i + 2] * 3 + 2]
             };
 
             // Calculate triangle normal
-            Vector3 edge1 = Vector3Subtract(v1, v0);
-            Vector3 edge2 = Vector3Subtract(v2, v0);
-            Vector3 normal = Vector3Normalize(Vector3CrossProduct(edge1, edge2));
+            const Vector3 edge1 = Vector3Subtract(v1, v0);
+            const Vector3 edge2 = Vector3Subtract(v2, v0);
+            const Vector3 normal = Vector3Normalize(Vector3CrossProduct(edge1, edge2));
 
             // Add to vertex normals
             for (int j = 0; j < 3; j++) {
-                int idx = indices[i + j] * 3;
+                const int idx = indices[i + j] * 3;
                 normals[idx] = normal.x;
                 normals[idx + 1] = normal.y;
                 normals[idx + 2] = normal.z;
@@ -722,24 +722,28 @@ public:
         UpdateMeshBuffer(*mesh, 2, normals, mesh->vertexCount * 3 * sizeof(float), 0);
     }
 
-    static void DrawLineBezier(Vector2 A, Vector2 B, Vector2 C, Vector2 D, float thick, Color color) {
+    static Vector2 SampleBezier(Vector2 A, Vector2 B, Vector2 C, Vector2 D, float t) {
+        const Vector2 AB = Vector2Lerp(A, B, t);
+        const Vector2 BC = Vector2Lerp(B, C, t);
+        const Vector2 CD = Vector2Lerp(C, D, t);
+        const Vector2 ABC = Vector2Lerp(AB, BC, t);
+        const Vector2 BCD = Vector2Lerp(BC, CD, t);
+        return Vector2Lerp(ABC, BCD, t);
+    }
+
+    static void DrawLineBezier(Vector2 A, Vector2 B, Vector2 C, Vector2 D, float thick, Color color, Color color2) {
         Vector2 previous = A;
         Vector2 current = {0};
 
         Vector2 points[2 * SPLINE_SEGMENT_DIVISIONS + 2] = {0};
 
         for (int i = 1; i <= SPLINE_SEGMENT_DIVISIONS; i++) {
-            float t = (float) i / (float) SPLINE_SEGMENT_DIVISIONS;
-            Vector2 AB = Vector2Lerp(A, B, t);
-            Vector2 BC = Vector2Lerp(B, C, t);
-            Vector2 CD = Vector2Lerp(C, D, t);
-            Vector2 ABC = Vector2Lerp(AB, BC, t);
-            Vector2 BCD = Vector2Lerp(BC, CD, t);
-            current = Vector2Lerp(ABC, BCD, t);
+            const float t = (float) i / (float) SPLINE_SEGMENT_DIVISIONS;
+            current = SampleBezier(A, B, C, D, t);
 
-            float dy = current.y - previous.y;
-            float dx = current.x - previous.x;
-            float size = 0.5f * thick / sqrtf(dx * dx + dy * dy);
+            const float dy = current.y - previous.y;
+            const float dx = current.x - previous.x;
+            const float size = 0.5f * thick / sqrtf(dx * dx + dy * dy);
 
             if (i == 1) {
                 points[0].x = previous.x + dy * size;
@@ -756,9 +760,28 @@ public:
             previous = current;
         }
 
-        DrawTriangleStrip(points, 2 * SPLINE_SEGMENT_DIVISIONS + 2, color);
-    }
+        // DrawTriangleStrip(points, 2 * SPLINE_SEGMENT_DIVISIONS + 2, color);
+        int pointCount = 2 * SPLINE_SEGMENT_DIVISIONS + 2;
+        if (pointCount >= 3) {
+            rlBegin(RL_TRIANGLES);
 
+            for (int i = 2; i < pointCount; i++) {
+                float t = (float) i / (float) pointCount;
+                Color colorBlend = ColorLerp(color, color2, t);
+                rlColor4ub(colorBlend.r, colorBlend.g, colorBlend.b, colorBlend.a);
+                if ((i % 2) == 0) {
+                    rlVertex2f(points[i].x, points[i].y);
+                    rlVertex2f(points[i - 2].x, points[i - 2].y);
+                    rlVertex2f(points[i - 1].x, points[i - 1].y);
+                } else {
+                    rlVertex2f(points[i].x, points[i].y);
+                    rlVertex2f(points[i - 1].x, points[i - 1].y);
+                    rlVertex2f(points[i - 2].x, points[i - 2].y);
+                }
+            }
+            rlEnd();
+        }
+    }
 
     // Draw a color-filled rectangle with pro parameters
     static void DrawRectangleUV(Rectangle rec, Vector2 origin, float rotation, Color color) {
@@ -776,12 +799,12 @@ public:
             bottomLeft = (Vector2){x, y + rec.height};
             bottomRight = (Vector2){x + rec.width, y + rec.height};
         } else {
-            float sinRotation = sinf(rotation * DEG2RAD);
-            float cosRotation = cosf(rotation * DEG2RAD);
+            const float sinRotation = sinf(rotation * DEG2RAD);
+            const float cosRotation = cosf(rotation * DEG2RAD);
             float x = rec.x;
             float y = rec.y;
-            float dx = -origin.x;
-            float dy = -origin.y;
+            const float dx = -origin.x;
+            const float dy = -origin.y;
 
             topLeft.x = x + dx * cosRotation - dy * sinRotation;
             topLeft.y = y + dx * sinRotation + dy * cosRotation;
@@ -835,6 +858,19 @@ public:
 
         rlEnd();
 #endif
+    }
+
+    static bool CheckCollitionPointBezier(Vector2 check, float radius, Vector2 A, Vector2 B, Vector2 C, Vector2 D,
+                                          int samples = 10) {
+        float rsquare = radius * radius;
+        for (int i = 0; i < samples; i++) {
+            const float t = (float) i / (float) samples;
+            const Vector2 point = SampleBezier(A, B, C, D, t);
+            if (Vector2DistanceSqr(check, point) < rsquare) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 

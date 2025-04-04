@@ -11,11 +11,12 @@
 #include "../../common/utils/RaylibUtils.h"
 
 Color NodeInput::GetColor() const {
-    const float alpha = hovering ? 1.0f : 0.7f;
+    float alpha = hovering ? 1.0f : 0.7f;
     if (source == nullptr) {
-        return Fade(GRAY, alpha);
+        alpha *= .5;
+        // return Fade(GRAY, alpha);
     }
-    return Fade(Editor::ThemeColor(), alpha);
+    return Fade(ShaderTypeToColorMap[type], alpha);
 }
 
 void NodeInput::Draw(Rectangle &rect, Context &context) {
@@ -35,16 +36,24 @@ void NodeInput::Draw(Rectangle &rect, Context &context) {
 
     // line
     if (source != nullptr) {
-        const float handleLength = abs(std::max((circleCenter - source->circleCenter).x,
-                                                (circleCenter - source->circleCenter).y)) / 2;
-        RaylibUtils::DrawLineBezier(
-            circleCenter, circleCenter + Vector2{-handleLength, 0},
-            source->circleCenter + Vector2{handleLength, 0}, source->circleCenter,
-            2, Fade(Editor::ThemeColor(), 0.5f));
+        handleLength = abs(std::max((circleCenter - source->circleCenter).x,
+                                    (circleCenter - source->circleCenter).y)) / 2;
+        if (context.selectedLine == this) {
+            RaylibUtils::DrawLineBezier(
+                circleCenter, circleCenter + Vector2{-handleLength, 0},
+                source->circleCenter + Vector2{handleLength, 0}, source->circleCenter,
+                3, Editor::FocusedColor(), Editor::FocusedColor());
+        } else {
+            float alpha = lineHovering ? 1.0f : 0.4f;
+            RaylibUtils::DrawLineBezier(
+                circleCenter, circleCenter + Vector2{-handleLength, 0},
+                source->circleCenter + Vector2{handleLength, 0}, source->circleCenter,
+                2, Fade(ShaderTypeToColorMap[type], alpha), Fade(ShaderTypeToColorMap[source->type], alpha));
+        }
     }
 
     // type info
-    if (type != ShaderType::Float && context.showTypeInfo) {
+    if ((type != ShaderType::Float || source != nullptr) && context.showTypeInfo) {
         const float typeWidth = MeasureTextEx(Editor::GetFont(), ShaderTypeToStringMap[type].c_str(),
                                               Editor::TextSizeF(),
                                               1).x;
@@ -87,6 +96,24 @@ void NodeInput::Update(Context &context) {
         hovering = true;
     } else {
         hovering = false;
+    }
+
+    if (source != nullptr) {
+        // handle line hovering
+        const bool isLineHovering = RaylibUtils::CheckCollitionPointBezier(
+            context.mousePos, 10., circleCenter, circleCenter + Vector2{-handleLength, 0},
+            source->circleCenter + Vector2{handleLength, 0}, source->circleCenter);
+        if (isLineHovering && context.interactionStateLowerThan(InteractionState::LineHovering)) {
+            context.interactionState = InteractionState::LineHovering;
+            lineHovering = true;
+        } else {
+            lineHovering = false;
+        }
+
+        // handle line selection
+        if (isLineHovering && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            context.SelectLine(this);
+        }
     }
 
     // handle dragging

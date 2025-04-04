@@ -23,7 +23,7 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
     };
     renderer_->Begin();
 
-    // Scene save and load
+    // save and load
     const float labelWidth = Editor::TextWidth("Graph file") + Editor::SmallGap();
     GuiLabel({rect.x, rect.y, labelWidth, Editor::TextSize() * 1.0f}, "Graph file");
     rect.x += labelWidth;
@@ -68,10 +68,7 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
     Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
 
 
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-             TextFormat("Selected Node: %d", context.selectedNodeUID));
-    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
-
+    // nodes
     GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
     rect.y += Editor::SmallGap();
 

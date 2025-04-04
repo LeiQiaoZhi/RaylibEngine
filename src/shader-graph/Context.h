@@ -18,6 +18,7 @@ enum class InteractionState {
     None = 0,
     Hovering, // for a node
     IOHovering, // for input/output circle
+    LineHovering, // for line
     Dragging, // for a node
     Connecting, // for connecting input/output
 };
@@ -35,10 +36,13 @@ struct Context {
     Camera2D &camera;
     InteractionState interactionState;
 
+    // connection
     NodeInput *connectionInput;
     NodeOutput *connectionOutput;
 
+    // selection
     uint selectedNodeUID = 0;
+    NodeInput *selectedLine;
 
     std::list<Node> &nodes;
 
@@ -47,6 +51,7 @@ struct Context {
     }
 
     Node *FindNodeByUID(uint uid) const;
+
 
     // code
     std::string shaderCode;
@@ -75,6 +80,18 @@ struct Context {
     void SaveGraph(const std::string &path);
 
     void LoadGraph(const std::string &path);
+
+    void SelectNode(const int uid) {
+        selectedNodeUID = uid;
+        selectedLine = nullptr;
+    }
+
+    void SelectLine(NodeInput *line) {
+        selectedLine = line;
+        selectedNodeUID = 0;
+    }
+
+    void Update();
 };
 
 #endif //CONTEXT_H
