@@ -9,6 +9,7 @@
 
 #include "../common/input/MouseDragState.h"
 
+class NodeGroup;
 class Node;
 class NodeInput;
 class NodeOutput;
@@ -41,10 +42,10 @@ struct Context {
     NodeOutput *connectionOutput;
 
     // selection
-    uint selectedNodeUID = 0;
     NodeInput *selectedLine;
 
     std::list<Node> &nodes;
+    std::list<NodeGroup> &nodeGroups;
 
     Node *FinalNode() const {
         return &nodes.front();
@@ -62,8 +63,8 @@ struct Context {
     bool showTypeInfo;
     ShowPreviewState showPreviewState = ShowPreviewState::Individual;
 
-    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes)
-        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes) {
+    Context(MouseDragState &mouseDragState, Camera2D &camera, std::list<Node> &nodes, std::list<NodeGroup> &nodeGroups)
+        : mousePos(), mouseDragState(mouseDragState), camera(camera), nodes(nodes), nodeGroups(nodeGroups) {
     }
 
     void SendShaderCode(const std::string &code) {
@@ -71,7 +72,7 @@ struct Context {
         compileFlag = true;
     }
 
-    bool interactionStateLowerThan(InteractionState state) {
+    bool interactionStateLowerThan(InteractionState state) const {
         return static_cast<int>(interactionState) < static_cast<int>(state);
     }
 
@@ -81,15 +82,11 @@ struct Context {
 
     void LoadGraph(const std::string &path);
 
-    void SelectNode(const int uid) {
-        selectedNodeUID = uid;
-        selectedLine = nullptr;
-    }
+    void SelectNode(const int uid);
 
-    void SelectLine(NodeInput *line) {
-        selectedLine = line;
-        selectedNodeUID = 0;
-    }
+    void SelectLine(NodeInput *line);
+
+    NodeGroup *SelectionGroup() const;
 
     void Update();
 };

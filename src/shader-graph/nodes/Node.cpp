@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "Node.h"
+
+#include "NodeGroup.h"
 #include "raylib.h"
 #include "raymath.h"
 #include "../CodeGeneration.h"
@@ -91,10 +93,10 @@ void Node::LoadConnections(const nlohmann::json &j, Context *context) {
 
 void Node::OnDraw(Context &context) {
     // background
-    if (hovering || context.selectedNodeUID == uid) {
+    if (hovering || context.SelectionGroup()->Contains(this)) {
         static float edge = 4;
         DrawRectangle(position.x - edge / 2, position.y - edge / 2, size.x + edge, size.y + edge,
-                      context.selectedNodeUID == uid ? Fade(Editor::ThemeColor(), .5) : GRAY);
+                      context.SelectionGroup()->Contains(this) ? Fade(Editor::ThemeColor(), .5) : GRAY);
     }
     if (statusError) {
         static float edge = 4;
@@ -237,7 +239,7 @@ void Node::OnEditorGUI(Rectangle &rect, Context &context) {
     const float originalY = rect.y;
 
     // highlight when selected
-    if (context.selectedNodeUID == uid) {
+    if (context.SelectionGroup()->Contains(this)) {
         DrawRectangleRec({rect.x, rect.y, rect.width, height}, Fade(WHITE, 0.1f));
     }
 

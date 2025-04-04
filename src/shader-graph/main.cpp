@@ -12,6 +12,7 @@
 
 #include "../common/input/MouseDragState.h"
 #include "nodes/Node.h"
+#include "nodes/NodeGroup.h"
 #include "Context.h"
 #include "NodePropertiesSubView.h"
 #include "PreviewSubView.h"
@@ -35,6 +36,7 @@ int main() {
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     SetWindowState(FLAG_WINDOW_RESIZABLE);
+    SetExitKey(0); // Disable exit key (Esc) to avoid accidental exits
 
     // GUI: Initialize gui parameters
     GuiLoadStyle((std::string(PROJECT_DIR) + "/vendor/raygui/styles/" + style + "/style_" + style + ".rgs").c_str());
@@ -54,6 +56,8 @@ int main() {
     nodes.front().previewOutputIndex = -1;
     nodes.front().AddInput("color", ShaderType::Vec3);
     nodes.front().AddInput("alpha", ShaderType::Float);
+    std::list<NodeGroup> nodeGroups;
+    nodeGroups.emplace_back("Selection");
 
     Camera2D camera = {0};
     camera.target = (Vector2){0, 0};
@@ -61,7 +65,7 @@ int main() {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    Context context(dragState, camera, nodes);
+    Context context(dragState, camera, nodes, nodeGroups);
 
     Shader bgShader = LoadShader(
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
@@ -70,7 +74,7 @@ int main() {
 
     PreviewSubView previewSubView(windowWidth / 5, windowWidth / 5);
     NodePropertiesSubView nodePropertiesSubView(windowWidth / 5, windowHeight - previewSubView.GetSize().y);
-    ShaderCompilationSubView shaderCompilationSubView(windowWidth / 5, windowHeight / 2);
+    ShaderCompilationSubView shaderCompilationSubView(windowWidth / 10, windowHeight / 2);
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -87,21 +91,41 @@ int main() {
         context.connectionInput = nullptr;
 
         // update camera
+        bool updatingCamera = false;
         if (IsKeyDown(KEY_LEFT_ALT)) {
             camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
             camera.zoom = std::clamp(camera.zoom, 0.2f, 3.0f);
+            updatingCamera = true;
         }
         if (context.mouseDragState.isDragging && IsKeyDown(KEY_LEFT_ALT)) {
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             camera.target -= context.mouseDragState.delta;
+            updatingCamera = true;
         }
 
-        // test dragging
+        for (auto &group: nodeGroups) {
+            group.Update(context);
+        }
+        for (auto &group: nodeGroups) {
+            group.Resolve(context);
+        }
         for (auto &node: nodes) {
             node.Update(context);
         }
         for (auto &node: nodes) {
             node.Resolve(context);
+        }
+
+        // selection
+        if (dragState.JustFinishedDragging() && context.interactionStateLowerThan(InteractionState::Dragging) && !updatingCamera) {
+            context.SelectionGroup()->Clear();
+            const Vector2 startMouseWorldPos = GetScreenToWorld2D(dragState.startDragPosition, context.camera);
+            Rectangle dragRect = RaylibUtils::GetRectFromPoints(startMouseWorldPos, context.mousePos);
+            for (auto &node: nodes) {
+                if (CheckCollisionRecs(dragRect, {node.position.x, node.position.y, node.size.x, node.size.y})) {
+                    context.SelectionGroup()->AddNode(&node);
+                }
+            }
         }
 
 
@@ -125,6 +149,9 @@ int main() {
         EndShaderMode();
 
         BeginMode2D(camera);
+        for (auto &group: nodeGroups) {
+            group.OnDraw(context);
+        }
         for (auto &node: nodes) {
             node.OnDraw(context);
         }
@@ -133,9 +160,17 @@ int main() {
         const Vector2 mousePos = context.mousePos;
         DrawText(TextFormat("Mouse Position: [%i, %i]", (int) mousePos.x, (int) mousePos.y), mousePos.x, mousePos.y, 10,
                  WHITE);
-        if (dragState.isDragging) {
-            Vector2 mouseStart = GetScreenToWorld2D(dragState.startDragPosition, camera);
-            DrawLineV(mouseStart, mousePos, YELLOW);
+        // TODO: differ from dragging, connecting and box selecting
+        if (dragState.isDragging && !updatingCamera) {
+            Vector2 mouseStartWorld = GetScreenToWorld2D(dragState.startDragPosition, camera);
+            if (context.interactionStateLowerThan(InteractionState::Dragging)) {
+                // box selection
+                DrawRectangleLinesEx(
+                    RaylibUtils::GetRectFromPoints(mouseStartWorld, mousePos),
+                    1, YELLOW);
+            } else {
+                DrawLineV(mouseStartWorld, mousePos, YELLOW);
+            }
         }
 
         EndMode2D();
@@ -156,9 +191,9 @@ int main() {
         DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), pos,
                    Editor::TextSizeF(), 2, WHITE);
         pos.y += Editor::TextSizeF() + Editor::SmallGap();
-        DrawTextEx(Editor::GetFont(), TextFormat("Selected Node: [%d]", context.selectedNodeUID), pos,
-                   Editor::TextSizeF(), 2, WHITE);
-        pos.y += Editor::TextSizeF() + Editor::SmallGap();
+        // DrawTextEx(Editor::GetFont(), TextFormat("Selected Node: [%d]", context.selectedNodeUID), pos,
+        //            Editor::TextSizeF(), 2, WHITE);
+        // pos.y += Editor::TextSizeF() + Editor::SmallGap();
         DrawTextEx(Editor::GetFont(),
                    TextFormat("Selected Line: [%s]",
                               context.selectedLine == nullptr ? "NULL" : context.selectedLine->name.c_str()),

@@ -33,13 +33,13 @@ public:
 
     ~Node() = default;
 
-    void OnDraw(Context &context);
+    virtual void OnDraw(Context &context);
 
-    void Update(Context &context);
+    virtual void Update(Context &context);
 
-    void Resolve(Context &context);
+    virtual void Resolve(Context &context);
 
-    void OnEditorGUI(Rectangle &rect, Context &context);
+    virtual void OnEditorGUI(Rectangle &rect, Context &context);
 
     void AddInput(const std::string &name, ShaderType type) {
         inputs.emplace_back(name, type, this);

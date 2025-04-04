@@ -5,6 +5,7 @@
 
 #include "CodeGeneration.h"
 #include "nodes/Node.h"
+#include "nodes/NodeGroup.h"
 
 
 Node *Context::FindNodeByUID(uint uid) const {
@@ -45,7 +46,6 @@ void Context::SaveGraph(const std::string &path) {
 
     j["showTypeInfo"] = showTypeInfo;
     j["time"] = time(nullptr);
-    j["selectedNodeUID"] = selectedNodeUID;
     j["showPreviewState"] = showPreviewState;
 
     j["cameraPos"] = {camera.target.x, camera.target.y};
@@ -65,7 +65,6 @@ void Context::LoadGraph(const std::string &path) {
     const nlohmann::json j = JsonUtils::JsonFromFile(path);
 
     showTypeInfo = j.value("showTypeInfo", showTypeInfo);
-    selectedNodeUID = j.value("selectedNodeUID", selectedNodeUID);
     showPreviewState = j.value("showPreviewState", showPreviewState);
 
     // camera
@@ -94,6 +93,21 @@ void Context::LoadGraph(const std::string &path) {
     compileFlag = true;
 }
 
+void Context::SelectNode(const int uid) {
+    SelectionGroup()->Clear();
+    SelectionGroup()->AddNode(uid);
+    selectedLine = nullptr;
+}
+
+void Context::SelectLine(NodeInput *line) {
+    selectedLine = line;
+    SelectionGroup()->Clear();
+}
+
+NodeGroup *Context::SelectionGroup() const {
+    return &nodeGroups.front();
+}
+
 void Context::Update() {
     mouseDragState.Update();
 
@@ -107,9 +121,16 @@ void Context::Update() {
 
     if (IsKeyPressed(KEY_DELETE)) {
         std::cout << "Delete key pressed" << std::endl;
-        if (selectedNodeUID != 0) {
-            nodeToDelete = FindNodeByUID(selectedNodeUID);
+
+        for (auto nodeUID: SelectionGroup()->nodeUIDs) {
+            Node *node = FindNodeByUID(nodeUID);
+            if (node != nullptr) {
+                std::cout << "Deleting node: " << node->name << std::endl;
+                nodeToDelete = node;
+                RemoveNode();
+            }
         }
+
         if (selectedLine != nullptr) {
             selectedLine->source->targets.remove(selectedLine);
             selectedLine->source = nullptr;
@@ -118,15 +139,28 @@ void Context::Update() {
     }
 
     if (IsKeyDown(KEY_LEFT_CONTROL)) {
-        if (IsKeyPressed(KEY_V) && selectedNodeUID != 0) {
+        if (IsKeyPressed(KEY_V)) {
             std::cout << "Ctrl + V pressed" << std::endl;
             // past selected node
-            Node *node = FindNodeByUID(selectedNodeUID);
-            if (node != nullptr) {
-                std::cout << "Pasting node: " << node->name << std::endl;
-                nodes.emplace_back(node);
-                nodes.back().position = {mousePos.x, mousePos.y};
+            for (auto nodeUID: SelectionGroup()->nodeUIDs) {
+                Node *node = FindNodeByUID(nodeUID);
+                if (node != nullptr) {
+                    std::cout << "Pasting node: " << node->name << std::endl;
+                    nodes.emplace_back(node);
+                    nodes.back().position = mousePos + node->position - SelectionGroup()->position;
+                }
             }
         }
+
+        if (IsKeyPressed(KEY_A)) {
+            std::cout << "Ctrl + A pressed" << std::endl;
+            for (auto &node: nodes) {
+                SelectionGroup()->AddNode(&node);
+            }
+        }
+    }
+
+    if (IsKeyPressed(KEY_ESCAPE)) {
+        SelectionGroup()->Clear();
     }
 }

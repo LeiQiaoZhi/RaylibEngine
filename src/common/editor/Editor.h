@@ -13,9 +13,9 @@ public:
     static Color ThemeColor() { return {100, 150, 255, 255}; }
     static int TextSize() { return GuiGetStyle(DEFAULT, TEXT_SIZE); }
     static float TextSizeF() { return GuiGetStyle(DEFAULT, TEXT_SIZE) * 1.0f; }
-    static int SmallGap() { return 5; }
-    static int MediumGap() { return 10; }
-    static int LargeGap() { return 20; }
+    constexpr static int SmallGap() { return 5; }
+    constexpr static int MediumGap() { return 10; }
+    constexpr static int LargeGap() { return 20; }
     static int LabelWidth() { return TextSize() * 5 + LargeGap(); }
 
     static Font GetFont() {

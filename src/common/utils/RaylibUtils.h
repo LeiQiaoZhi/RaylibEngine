@@ -872,6 +872,18 @@ public:
         }
         return false;
     }
+
+    static Rectangle GetRectFromPoints(Vector2 A, Vector2 B) {
+        Vector2 size = {
+            fabsf(A.x - B.x),
+            fabsf(A.y - B.y)
+        };
+        Vector2 position = {
+            fminf(A.x, B.x),
+            fminf(A.y, B.y)
+        };
+        return Rectangle{position.x, position.y, size.x, size.y};
+    }
 };
 
 #endif //RAYLIBUTILS_H
