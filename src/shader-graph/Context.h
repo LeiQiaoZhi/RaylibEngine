@@ -22,6 +22,7 @@ enum class InteractionState {
     LineHovering, // for line
     Dragging, // for a node
     Connecting, // for connecting input/output
+    Camera, // camera interactions
 };
 
 enum class ShowPreviewState {
@@ -57,7 +58,10 @@ struct Context {
     // code
     std::string shaderCode;
     bool compileFlag = false;
+
+    // delete
     Node *nodeToDelete = nullptr;
+    NodeGroup *groupToDelete;
 
     // settings
     bool showTypeInfo;

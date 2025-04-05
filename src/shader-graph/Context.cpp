@@ -58,6 +58,13 @@ void Context::SaveGraph(const std::string &path) {
     }
     j["nodes"] = nodesJson;
 
+    // groups
+    std::vector<nlohmann::json> groupsJson;
+    for (auto &group: nodeGroups) {
+        groupsJson.emplace_back(group.ToJson());
+    }
+    j["groups"] = groupsJson;
+
     JsonUtils::JsonToFile(j, path);
 }
 
@@ -80,6 +87,16 @@ void Context::LoadGraph(const std::string &path) {
         nodes.emplace_back(nodeJson, true);
     }
 
+    // groups
+    nodeGroups.clear();
+    if (j.contains("groups")) {
+        for (const auto &groupJson: j["groups"]) {
+            nodeGroups.emplace_back(groupJson);
+        }
+    } else {
+        nodeGroups.emplace_back("Selection", true);
+    }
+
     // load connections
     int i = 0;
     for (auto &node: nodes) {
@@ -94,7 +111,8 @@ void Context::LoadGraph(const std::string &path) {
 }
 
 void Context::SelectNode(const int uid) {
-    SelectionGroup()->Clear();
+    if (!IsKeyDown(KEY_LEFT_SHIFT))
+        SelectionGroup()->Clear();
     SelectionGroup()->AddNode(uid);
     selectedLine = nullptr;
 }
@@ -109,6 +127,17 @@ NodeGroup *Context::SelectionGroup() const {
 }
 
 void Context::Update() {
+    if (nodeToDelete != nullptr) {
+        RemoveNode();
+    }
+    if (groupToDelete != nullptr) {
+        std::cout << "Deleting group: " << groupToDelete->name << std::endl;
+        nodeGroups.remove_if([this](const NodeGroup &g) {
+            return g.uid == groupToDelete->uid;
+        });
+        groupToDelete = nullptr;
+    }
+
     mouseDragState.Update();
 
     if (interactionState == InteractionState::Dragging) {
@@ -138,7 +167,7 @@ void Context::Update() {
         }
     }
 
-    if (IsKeyDown(KEY_LEFT_CONTROL)) {
+    if (IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_LEFT_SUPER)) {
         if (IsKeyPressed(KEY_V)) {
             std::cout << "Ctrl + V pressed" << std::endl;
             // past selected node
@@ -156,6 +185,13 @@ void Context::Update() {
             std::cout << "Ctrl + A pressed" << std::endl;
             for (auto &node: nodes) {
                 SelectionGroup()->AddNode(&node);
+            }
+        }
+
+        if (IsKeyPressed(KEY_G)) {
+            std::cout << "Ctrl + G pressed" << std::endl;
+            if (!SelectionGroup()->Empty()) {
+                nodeGroups.emplace_back(SelectionGroup(), "");
             }
         }
     }

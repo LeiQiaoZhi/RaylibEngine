@@ -213,7 +213,7 @@ void Node::Resolve(Context &context) {
 
     // resolve dragging
     if (dragging && context.interactionState == InteractionState::Dragging) {
-        position += context.mouseDragState.delta;
+        position += context.mouseDragState.delta / context.camera.zoom;
     }
 
     // resolve compiling

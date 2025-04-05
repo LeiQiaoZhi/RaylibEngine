@@ -43,6 +43,9 @@ private:
     ISubviewRenderer *renderer_;
     DropdownProperty nodesDropdown;
 
+    FoldoutProperty nodesFoldout = FoldoutProperty("Nodes", true);
+    FoldoutProperty groupsFoldout = FoldoutProperty("Groups", true);
+
     char graphFilename[32] = "test.graph.json";
     bool editMode;
     std::string statusText;

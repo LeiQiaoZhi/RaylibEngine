@@ -6,6 +6,7 @@
 
 #include "../common/subviews/ScrollPanelRenderer.h"
 #include "../common/editor/Editor.h"
+#include "nodes/NodeGroup.h"
 
 
 void NodePropertiesSubView::Render(Vector2 position, Context &context) {
@@ -69,18 +70,32 @@ void NodePropertiesSubView::Render(Vector2 position, Context &context) {
 
 
     // nodes
-    GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
-    rect.y += Editor::SmallGap();
-
-    for (auto &node: context.nodes) {
-        node.OnEditorGUI(rect, context);
-
+    nodesFoldout.OnEditorGUI(rect);
+    if (!nodesFoldout.IsFolded()) {
         GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
         rect.y += Editor::SmallGap();
+
+        for (auto &node: context.nodes) {
+            node.OnEditorGUI(rect, context);
+
+            GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
+            rect.y += Editor::SmallGap();
+        }
     }
-    if (context.nodeToDelete != nullptr) {
-        context.RemoveNode();
+    // groups
+    groupsFoldout.OnEditorGUI(rect);
+    if (!groupsFoldout.IsFolded()) {
+        GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
+        rect.y += Editor::SmallGap();
+
+        for (auto &group: context.nodeGroups) {
+            group.OnEditorGUI(rect, context);
+
+            GuiLine({rect.x, rect.y, rect.x + rect.width, Editor::SmallGap() * 1.0f}, nullptr);
+            rect.y += Editor::SmallGap();
+        }
     }
+
 
     // add node
     const float addWidth = Editor::TextWidth("Add Node") + Editor::LargeGap();

@@ -29,7 +29,7 @@ public:
 
     void LoadConnections(const nlohmann::json &j, Context *context);
 
-    nlohmann::json ToJson() const;
+    virtual nlohmann::json ToJson() const;
 
     ~Node() = default;
 

@@ -57,7 +57,7 @@ int main() {
     nodes.front().AddInput("color", ShaderType::Vec3);
     nodes.front().AddInput("alpha", ShaderType::Float);
     std::list<NodeGroup> nodeGroups;
-    nodeGroups.emplace_back("Selection");
+    nodeGroups.emplace_back("Selection", true);
 
     Camera2D camera = {0};
     camera.target = (Vector2){0, 0};
@@ -91,16 +91,15 @@ int main() {
         context.connectionInput = nullptr;
 
         // update camera
-        bool updatingCamera = false;
         if (IsKeyDown(KEY_LEFT_ALT)) {
             camera.zoom += ((float) GetMouseWheelMove() * 0.05f);
-            camera.zoom = std::clamp(camera.zoom, 0.2f, 3.0f);
-            updatingCamera = true;
+            camera.zoom = std::clamp(camera.zoom, 0.5f, 3.0f);
+            context.interactionState = InteractionState::Camera;
         }
         if (context.mouseDragState.isDragging && IsKeyDown(KEY_LEFT_ALT)) {
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             camera.target -= context.mouseDragState.delta;
-            updatingCamera = true;
+            context.interactionState = InteractionState::Camera;
         }
 
         for (auto &group: nodeGroups) {
@@ -117,7 +116,7 @@ int main() {
         }
 
         // selection
-        if (dragState.JustFinishedDragging() && context.interactionStateLowerThan(InteractionState::Dragging) && !updatingCamera) {
+        if (dragState.JustFinishedDragging() && context.interactionStateLowerThan(InteractionState::Dragging)) {
             context.SelectionGroup()->Clear();
             const Vector2 startMouseWorldPos = GetScreenToWorld2D(dragState.startDragPosition, context.camera);
             Rectangle dragRect = RaylibUtils::GetRectFromPoints(startMouseWorldPos, context.mousePos);
@@ -158,10 +157,10 @@ int main() {
 
         // debug
         const Vector2 mousePos = context.mousePos;
-        DrawText(TextFormat("Mouse Position: [%i, %i]", (int) mousePos.x, (int) mousePos.y), mousePos.x, mousePos.y, 10,
-                 WHITE);
-        // TODO: differ from dragging, connecting and box selecting
-        if (dragState.isDragging && !updatingCamera) {
+        // DrawText(TextFormat("Mouse Position: [%i, %i]", (int) mousePos.x, (int) mousePos.y), mousePos.x, mousePos.y, 10,
+        //          WHITE);
+        // TODO: connecting preview
+        if (dragState.isDragging) {
             Vector2 mouseStartWorld = GetScreenToWorld2D(dragState.startDragPosition, camera);
             if (context.interactionStateLowerThan(InteractionState::Dragging)) {
                 // box selection
@@ -188,8 +187,8 @@ int main() {
                               context.connectionOutput == nullptr ? "NULL" : context.connectionOutput->name.c_str()),
                    pos, Editor::TextSizeF(), 2, WHITE);
         pos.y += Editor::TextSizeF() + Editor::SmallGap();
-        DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f]", camera.target.x, camera.target.y), pos,
-                   Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(), TextFormat("Camera Pos: [%f, %f], Zoom: [%f]", camera.target.x, camera.target.y,
+                                                 camera.zoom), pos, Editor::TextSizeF(), 2, WHITE);
         pos.y += Editor::TextSizeF() + Editor::SmallGap();
         // DrawTextEx(Editor::GetFont(), TextFormat("Selected Node: [%d]", context.selectedNodeUID), pos,
         //            Editor::TextSizeF(), 2, WHITE);
