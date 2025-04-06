@@ -89,8 +89,8 @@ namespace CodeGeneration {
         if (exportType == ShaderFileType::GLSL) {
             oss << "#version 330\n";
             oss << "in vec2 fragTexCoord;\n";
-            oss << "out vec4 finalColor;\n";
             oss << "uniform sampler2D mainTex;\n";
+            oss << "out vec4 finalColor;\n";
         }
 
         return oss.str();
@@ -171,7 +171,7 @@ namespace CodeGeneration {
             oss << ") {\n";
             oss <<
                     (fileType == ShaderFileType::GLSL ? finalNode->glsl : finalNode->hlsl)
-            << "\n}\n\n";
+                    << "\n}\n\n";
         }
 
         return oss.str();
@@ -194,6 +194,9 @@ namespace CodeGeneration {
                 oss << ", ";
         }
         oss << "){\n";
+        if (previewFinalNode != nullptr && fileType == ShaderFileType::GLSL) {
+            oss << "mainTex;\n"; // prevent unused variable removal
+        }
 
         for (auto *node: orderedNodes) {
             // declare variables
@@ -274,7 +277,7 @@ namespace CodeGeneration {
         std::list<Node *> orderedNodes = TopologicalSort(filteredNodes);
         const std::string prefix = GetPrefix(fileType);
         const std::string functions = GetFunctions(finalNode, fileType);
-        const std::string main = GetMain(orderedNodes, finalNode, fileType);
+        const std::string main = GetMain(orderedNodes, nullptr, fileType);
         return prefix + functions + main;
     }
 }

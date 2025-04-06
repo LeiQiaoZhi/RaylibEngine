@@ -1,0 +1,17 @@
+{
+    "name": "Float",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "hlsl": " Result = A; ",
+    "glsl": " Result = A; "
+}

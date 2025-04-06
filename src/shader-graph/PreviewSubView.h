@@ -17,7 +17,6 @@ public:
         camera.up = (Vector3){0.0f, 0.0f, -1.0f};
 
         model = LoadModelFromMesh(GenMeshPlane(1.0f, 1.0f, 1, 1));
-        SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, LoadTexture(INTERNAL_ASSET_DIR "/textures/test.png"));
     }
 
     void Render(Vector2 position = {0, 0});

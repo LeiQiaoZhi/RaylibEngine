@@ -1,0 +1,520 @@
+{
+    "cameraPos": [
+        581.5625,
+        -151.46875
+    ],
+    "cameraZoom": 0.8447405695915222,
+    "groups": [
+        {
+            "isSelectionGroup": true,
+            "name": "Selection",
+            "nodeUIDs": [],
+            "uid": 3186243314
+        },
+        {
+            "isSelectionGroup": false,
+            "name": "Brightness",
+            "nodeUIDs": [
+                -1522563255,
+                1760802544,
+                725352577,
+                946699418
+            ],
+            "uid": 2166155566
+        }
+    ],
+    "nodes": [
+        {
+            "glsl": "finalColor = vec4(color, alpha);",
+            "hlsl": "finalColor = float4(color, alpha);",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "color",
+                    "source": {
+                        "parent": 3224031352,
+                        "uid": 1347032217
+                    },
+                    "type": "vec3",
+                    "uid": 1031705732
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "alpha",
+                    "type": "float",
+                    "uid": 1569400697
+                }
+            ],
+            "name": "Final",
+            "outputs": [],
+            "position": [
+                1026.083251953125,
+                -357.9737243652344
+            ],
+            "showPreview": false,
+            "uid": 879261618
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "uv",
+                    "source": {
+                        "parent": 1760802544,
+                        "uid": 1229135452
+                    },
+                    "type": "vec2",
+                    "uid": 1229157670
+                }
+            ],
+            "name": "SampleMainTex",
+            "outputs": [
+                {
+                    "name": "color",
+                    "targets": [
+                        {
+                            "parent": 946699418,
+                            "uid": 3339451246
+                        }
+                    ],
+                    "type": "vec4",
+                    "uid": 1031726828
+                }
+            ],
+            "position": [
+                -108.3249740600586,
+                36.578712463378906
+            ],
+            "showPreview": true,
+            "uid": 2772404041
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [],
+            "name": "UV",
+            "outputs": [
+                {
+                    "name": "uv",
+                    "targets": [
+                        {
+                            "parent": 2772404041,
+                            "uid": 1229157670
+                        }
+                    ],
+                    "type": "vec2",
+                    "uid": 1229135452
+                }
+            ],
+            "position": [
+                -213.77110290527344,
+                46.2061767578125
+            ],
+            "showPreview": false,
+            "uid": 1760802544
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.2126000076532364,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708574913
+                },
+                {
+                    "floatValue": 0.7155999541282654,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691776599
+                },
+                {
+                    "floatValue": 0.0722000002861023,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742120184
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 946699418,
+                            "uid": 3289081110
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347037320
+                }
+            ],
+            "position": [
+                -105.36727142333984,
+                -143.70889282226563
+            ],
+            "showPreview": false,
+            "uid": 725352577
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 725352577,
+                        "uid": 1347037320
+                    },
+                    "type": "vec4",
+                    "uid": 3289081110
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 2772404041,
+                        "uid": 1031726828
+                    },
+                    "type": "vec4",
+                    "uid": 3339451246
+                }
+            ],
+            "name": "Dot",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2805226371,
+                            "uid": 3339409138
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347052508
+                }
+            ],
+            "position": [
+                79.12953186035156,
+                -45.418235778808594
+            ],
+            "showPreview": true,
+            "uid": 946699418
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 1283554549,
+                        "uid": 1347036506
+                    },
+                    "type": "float",
+                    "uid": 3289094899
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 946699418,
+                        "uid": 1347052508
+                    },
+                    "type": "float",
+                    "uid": 3339409138
+                }
+            ],
+            "name": "Multiply",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 1587846372,
+                            "uid": 3289078306
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347068459
+                }
+            ],
+            "position": [
+                242.93003845214844,
+                -190.2164764404297
+            ],
+            "showPreview": false,
+            "uid": 2805226371
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 4.0,
+                    "name": "A",
+                    "type": "float",
+                    "uid": 3289070811
+                }
+            ],
+            "name": "Float",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2805226371,
+                            "uid": 3289094899
+                        },
+                        {
+                            "parent": 2103965715,
+                            "uid": 3339445791
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347036506
+                }
+            ],
+            "position": [
+                65.58760070800781,
+                -311.0986328125
+            ],
+            "showPreview": false,
+            "uid": 1283554549
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 2805226371,
+                        "uid": 1347068459
+                    },
+                    "type": "float",
+                    "uid": 3289078306
+                }
+            ],
+            "name": "Floor",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2103965715,
+                            "uid": 3289094343
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347088478
+                }
+            ],
+            "position": [
+                412.945556640625,
+                -187.4921875
+            ],
+            "showPreview": false,
+            "uid": 1587846372
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 1587846372,
+                        "uid": 1347088478
+                    },
+                    "type": "float",
+                    "uid": 3289094343
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 1283554549,
+                        "uid": 1347036506
+                    },
+                    "type": "float",
+                    "uid": 3339445791
+                }
+            ],
+            "name": "Divide",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224031352,
+                            "uid": 1088958110
+                        }
+                    ],
+                    "type": "float",
+                    "uid": 1347058175
+                }
+            ],
+            "position": [
+                594.8396606445313,
+                -280.56591796875
+            ],
+            "showPreview": true,
+            "uid": 2103965715
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 725363518,
+                        "uid": 1347072847
+                    },
+                    "type": "vec3",
+                    "uid": 3289099968
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 725416577,
+                        "uid": 1347035906
+                    },
+                    "type": "vec3",
+                    "uid": 3339440663
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "In",
+                    "source": {
+                        "parent": 2103965715,
+                        "uid": 1347058175
+                    },
+                    "type": "float",
+                    "uid": 1088958110
+                }
+            ],
+            "name": "LerpV3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 879261618,
+                            "uid": 1031705732
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347032217
+                }
+            ],
+            "position": [
+                794.8837280273438,
+                -397.2327575683594
+            ],
+            "showPreview": false,
+            "uid": 3224031352
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.5,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708615635
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691825158
+                },
+                {
+                    "floatValue": 0.5,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742114609
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224031352,
+                            "uid": 3339440663
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347035906
+                }
+            ],
+            "position": [
+                596.8895874023438,
+                -436.87445068359375
+            ],
+            "showPreview": false,
+            "uid": 725416577
+        },
+        {
+            "glsl": "",
+            "hlsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708574722
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691826740
+                },
+                {
+                    "floatValue": 0.6000000238418579,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742144439
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 3224031352,
+                            "uid": 3289099968
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347072847
+                }
+            ],
+            "position": [
+                595.7685546875,
+                -588.3353881835938
+            ],
+            "showPreview": false,
+            "uid": 725363518
+        }
+    ],
+    "showPreviewState": 0,
+    "showTypeInfo": false,
+    "time": 1743935828
+}

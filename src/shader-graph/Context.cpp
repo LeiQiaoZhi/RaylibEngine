@@ -153,7 +153,7 @@ void Context::Update() {
 
         for (auto nodeUID: SelectionGroup()->nodeUIDs) {
             Node *node = FindNodeByUID(nodeUID);
-            if (node != nullptr) {
+            if (node != nullptr && node != FinalNode()) {
                 std::cout << "Deleting node: " << node->name << std::endl;
                 nodeToDelete = node;
                 RemoveNode();

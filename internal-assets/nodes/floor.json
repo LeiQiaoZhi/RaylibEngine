@@ -1,0 +1,17 @@
+{
+    "name": "Floor",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "hlsl": " Result = floor(A); ",
+    "glsl": " Result = floor(A); "
+}

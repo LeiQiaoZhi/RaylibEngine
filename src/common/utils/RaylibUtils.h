@@ -828,16 +828,16 @@ public:
         rlNormal3f(0.0f, 0.0f, 1.0f);
         rlColor4ub(color.r, color.g, color.b, color.a);
 
-        rlTexCoord2f(0.0f, 1.0f);
+        rlTexCoord2f(0.0f, 0.0f);
         rlVertex2f(topLeft.x, topLeft.y);
 
-        rlTexCoord2f(0.0f, 0.0f);
+        rlTexCoord2f(0.0f, 1.0f);
         rlVertex2f(bottomLeft.x, bottomLeft.y);
 
-        rlTexCoord2f(1.0f, 0.0f);
+        rlTexCoord2f(1.0f, 1.0f);
         rlVertex2f(bottomRight.x, bottomRight.y);
 
-        rlTexCoord2f(1.0f, 1.0f);
+        rlTexCoord2f(1.0f, 0.0f);
         rlVertex2f(topRight.x, topRight.y);
 
         rlEnd();

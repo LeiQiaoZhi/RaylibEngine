@@ -1,0 +1,17 @@
+{
+    "name": "Fraction",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "hlsl": " Result = frac(A); ",
+    "glsl": " Result = fract(A); "
+}

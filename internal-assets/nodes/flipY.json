@@ -1,0 +1,17 @@
+{
+    "name": "FlipY",
+    "inputs": [
+        {
+            "type": "vec2",
+            "name": "A"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "vec2",
+            "name": "Result"
+        }
+    ],
+    "hlsl": " Result = float2(A.x, 1-A.y); ",
+    "glsl": " Result = vec2(A.x , 1.-A.y); "
+}

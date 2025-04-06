@@ -67,7 +67,7 @@ int main() {
     camera.zoom = 1.0f;
 
     Context context(dragState, camera, nodes, nodeGroups);
-    context.mainTexture = LoadTexture(INTERNAL_ASSET_DIR "/textures/GreenSky.png");
+    context.mainTexture = LoadTexture(INTERNAL_ASSET_DIR "/textures/test.png");
     context.compileFlag = true;
 
     Shader bgShader = LoadShader(

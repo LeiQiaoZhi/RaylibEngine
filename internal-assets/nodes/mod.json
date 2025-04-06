@@ -1,0 +1,21 @@
+{
+    "name": "Mod",
+    "inputs": [
+        {
+            "type": "float",
+            "name": "A"
+        },
+        {
+            "type": "float",
+            "name": "B"
+        }
+    ],
+    "outputs": [
+        {
+            "type": "float",
+            "name": "Result"
+        }
+    ],
+    "hlsl": " Result = A % B; ",
+    "glsl": " Result = mod(A, B); "
+}

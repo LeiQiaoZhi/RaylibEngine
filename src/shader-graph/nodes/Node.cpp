@@ -150,9 +150,9 @@ void Node::OnDraw(Context &context) {
     }
     size.y += Editor::TextSizeF() + Editor::SmallGap();
     if (showPreview || context.showPreviewState == ShowPreviewState::On) {
+        const int loc = GetShaderLocation(shader, "mainTex");
+        SetShaderValueTexture(shader, loc, context.mainTexture);
         BeginShaderMode(shader);
-        shader.locs[SHADER_LOC_MAP_DIFFUSE] = GetShaderLocation(shader, "mainTex");
-        SetShaderValueTexture(shader, SHADER_LOC_MAP_DIFFUSE, context.mainTexture);
         RaylibUtils::DrawRectangleUV({
                                          previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(),
                                          size.x, size.x

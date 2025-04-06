@@ -1,7 +1,7 @@
 #version 330
 in vec2 fragTexCoord;
-out vec4 finalColor;
 uniform sampler2D mainTex;
+out vec4 finalColor;
 // float
 
 void convert_float_to_int(const float f, out int i) {
@@ -73,7 +73,7 @@ void DivideV2(in vec2 A, in vec2 B, out vec2 Result) {
  Result = vec2(A.x / B.x, A.y / B.y); 
 }
 
-void Remap(in float In, in float Min, in float Max, out float Result) {
+void Clamp(in float In, in float Min, in float Max, out float Result) {
  Result = clamp(In, Min, Max); 
 }
 
@@ -89,6 +89,10 @@ void Normalize(in vec3 A, out vec3 Result) {
  Result = normalize(A); 
 }
 
+void Floor(in float A, out float Result) {
+ Result = floor(A); 
+}
+
 void DivideV3(in vec3 A, in vec3 B, out vec3 Result) {
  Result = vec3(A.x / B.x, A.y / B.y, A.z / B.z); 
 }
@@ -101,8 +105,16 @@ void Vec3(in float X, in float Y, in float Z, out vec3 Result) {
  Result = vec3(X, Y, Z); 
 }
 
+void Mod(in float A, in float B, out float Result) {
+ Result = mod(A, B); 
+}
+
 void Smoothstep(in float Edge0, in float Edge1, in float In, out float Result) {
  Result = smoothstep(Edge0, Edge1, In); 
+}
+
+void FlipY(in vec2 A, out vec2 Result) {
+ Result = vec2(A.x , 1.-A.y); 
 }
 
 void MultiplyV2(in vec2 A, in vec2 B, out vec2 Result) {
@@ -149,7 +161,11 @@ void MultiplyV3(in vec3 A, in vec3 B, out vec3 Result) {
  Result = vec3(A.x * B.x, A.y * B.y, A.z * B.z); 
 }
 
-void SampleMainTex(in vec2 uv, out float color) {
+void Float(in float A, out float Result) {
+ Result = A; 
+}
+
+void SampleMainTex(in vec2 uv, out vec4 color) {
  color = texture(mainTex, uv); 
 }
 
@@ -181,6 +197,10 @@ void Cos(in float A, out float Result) {
  Result = cos(A); 
 }
 
+void Fraction(in float A, out float Result) {
+ Result = fract(A); 
+}
+
 void PI(out float HalfPI, out float PI, out float TwoPI) {
  HalfPI = 1.5707963267948966; PI = 3.141592653589793; TwoPI = 6.283185307179586; 
 }
@@ -198,94 +218,73 @@ finalColor = vec4(color, alpha);
 }
 
 void main(){
-	float input_725416546_X;
-	input_725416546_X = 0.6000000238;
-	float input_725416546_Y;
-	input_725416546_Y = 0.3000000119;
-	float input_725416546_Z;
-	input_725416546_Z = 0.3000000119;
-	vec3 output_725416546_Result;
-	Vec3(input_725416546_X, input_725416546_Y, input_725416546_Z, output_725416546_Result);
-	float input_725356669_X;
-	input_725356669_X = 0.5;
-	float input_725356669_Y;
-	input_725356669_Y = 0.6999999881;
-	float input_725356669_Z;
-	input_725356669_Z = 1;
-	vec3 output_725356669_Result;
-	Vec3(input_725356669_X, input_725356669_Y, input_725356669_Z, output_725356669_Result);
-	float input_742186553_X;
-	input_742186553_X = 0.5;
-	float input_742186553_Y;
-	input_742186553_Y = 0.5;
-	vec2 output_742186553_Result;
-	Vec2(input_742186553_X, input_742186553_Y, output_742186553_Result);
-	vec2 output_1760778010_uv;
-	UV(output_1760778010_uv);
-	vec2 input_2633002973_A;
-	input_2633002973_A = output_1760778010_uv;
-	vec2 input_2633002973_B;
-	input_2633002973_B = output_742186553_Result;
-	vec2 output_2633002973_Result;
-	SubtractV2(input_2633002973_A, input_2633002973_B, output_2633002973_Result);
-	vec4 input_379690931_V;
-	convert_vec2_to_vec4(output_2633002973_Result,input_379690931_V);
-	float output_379690931_X;
-	float output_379690931_Y;
-	float output_379690931_Z;
-	float output_379690931_W;
-	Split(input_379690931_V, output_379690931_X, output_379690931_Y, output_379690931_Z, output_379690931_W);
-	float input_2742869785_Y;
-	input_2742869785_Y = output_379690931_Y;
-	float input_2742869785_X;
-	input_2742869785_X = output_379690931_X;
-	float output_2742869785_Result;
-	ArcTan(input_2742869785_Y, input_2742869785_X, output_2742869785_Result);
-	float input_2805251754_A;
-	input_2805251754_A = output_2742869785_Result;
-	float input_2805251754_B;
-	input_2805251754_B = 8;
-	float output_2805251754_Result;
-	Multiply(input_2805251754_A, input_2805251754_B, output_2805251754_Result);
-	float input_1578696448_A;
-	input_1578696448_A = output_2805251754_Result;
-	float output_1578696448_Result;
-	Cos(input_1578696448_A, output_1578696448_Result);
-	float input_2805256430_A;
-	input_2805256430_A = output_1578696448_Result;
-	float input_2805256430_B;
-	input_2805256430_B = 0.0700000003;
-	float output_2805256430_Result;
-	Multiply(input_2805256430_A, input_2805256430_B, output_2805256430_Result);
-	vec3 input_3428714217_V;
-	convert_vec2_to_vec3(output_2633002973_Result,input_3428714217_V);
-	float output_3428714217_Length;
-	Length(input_3428714217_V, output_3428714217_Length);
-	float input_2646859247_A;
-	input_2646859247_A = output_3428714217_Length;
-	float input_2646859247_B;
-	input_2646859247_B = output_2805256430_Result;
-	float output_2646859247_Result;
-	Add(input_2646859247_A, input_2646859247_B, output_2646859247_Result);
-	float input_3632677935_Edge0;
-	input_3632677935_Edge0 = 0.400000006;
-	float input_3632677935_Edge1;
-	input_3632677935_Edge1 = 0.200000003;
-	float input_3632677935_In;
-	input_3632677935_In = output_2646859247_Result;
-	float output_3632677935_Result;
-	Smoothstep(input_3632677935_Edge0, input_3632677935_Edge1, input_3632677935_In, output_3632677935_Result);
-	vec3 input_3224017289_A;
-	input_3224017289_A = output_725416546_Result;
-	vec3 input_3224017289_B;
-	input_3224017289_B = output_725356669_Result;
-	float input_3224017289_In;
-	input_3224017289_In = output_3632677935_Result;
-	vec3 output_3224017289_Result;
-	LerpV3(input_3224017289_A, input_3224017289_B, input_3224017289_In, output_3224017289_Result);
-	vec3 input_879279141_color;
-	input_879279141_color = output_3224017289_Result;
-	float input_879279141_alpha;
-	input_879279141_alpha = 1;
-	Final(input_879279141_color, input_879279141_alpha);
+	float input_725416577_X;
+	input_725416577_X = 0.5;
+	float input_725416577_Y;
+	input_725416577_Y = 1;
+	float input_725416577_Z;
+	input_725416577_Z = 0.5;
+	vec3 output_725416577_Result;
+	Vec3(input_725416577_X, input_725416577_Y, input_725416577_Z, output_725416577_Result);
+	float input_725363518_X;
+	input_725363518_X = 0;
+	float input_725363518_Y;
+	input_725363518_Y = 0;
+	float input_725363518_Z;
+	input_725363518_Z = 0.3000000119;
+	vec3 output_725363518_Result;
+	Vec3(input_725363518_X, input_725363518_Y, input_725363518_Z, output_725363518_Result);
+	float input_1283554549_A;
+	input_1283554549_A = 4;
+	float output_1283554549_Result;
+	Float(input_1283554549_A, output_1283554549_Result);
+	vec2 output_1760802544_uv;
+	UV(output_1760802544_uv);
+	vec2 input_2772404041_uv;
+	input_2772404041_uv = output_1760802544_uv;
+	vec4 output_2772404041_color;
+	SampleMainTex(input_2772404041_uv, output_2772404041_color);
+	float input_725352577_X;
+	input_725352577_X = 0.2126000077;
+	float input_725352577_Y;
+	input_725352577_Y = 0.7155999541;
+	float input_725352577_Z;
+	input_725352577_Z = 0.07220000029;
+	vec3 output_725352577_Result;
+	Vec3(input_725352577_X, input_725352577_Y, input_725352577_Z, output_725352577_Result);
+	vec4 input_946699418_A;
+	convert_vec3_to_vec4(output_725352577_Result,input_946699418_A);
+	vec4 input_946699418_B;
+	input_946699418_B = output_2772404041_color;
+	float output_946699418_Result;
+	Dot(input_946699418_A, input_946699418_B, output_946699418_Result);
+	float input_2805226371_A;
+	input_2805226371_A = output_1283554549_Result;
+	float input_2805226371_B;
+	input_2805226371_B = output_946699418_Result;
+	float output_2805226371_Result;
+	Multiply(input_2805226371_A, input_2805226371_B, output_2805226371_Result);
+	float input_1587846372_A;
+	input_1587846372_A = output_2805226371_Result;
+	float output_1587846372_Result;
+	Floor(input_1587846372_A, output_1587846372_Result);
+	float input_2103965715_A;
+	input_2103965715_A = output_1587846372_Result;
+	float input_2103965715_B;
+	input_2103965715_B = output_1283554549_Result;
+	float output_2103965715_Result;
+	Divide(input_2103965715_A, input_2103965715_B, output_2103965715_Result);
+	vec3 input_3224031352_A;
+	input_3224031352_A = output_725363518_Result;
+	vec3 input_3224031352_B;
+	input_3224031352_B = output_725416577_Result;
+	float input_3224031352_In;
+	input_3224031352_In = output_2103965715_Result;
+	vec3 output_3224031352_Result;
+	LerpV3(input_3224031352_A, input_3224031352_B, input_3224031352_In, output_3224031352_Result);
+	vec3 input_879261618_color;
+	input_879261618_color = output_3224031352_Result;
+	float input_879261618_alpha;
+	input_879261618_alpha = 1;
+	Final(input_879261618_color, input_879261618_alpha);
 }
