@@ -20,5 +20,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = float3(smoothstep(Edge0.x, Edge1.x, In), smoothstep(Edge0.y, Edge1.y, In), smoothstep(Edge0.z, Edge1.z, In)); ",
     "glsl": " Result = vec3(smoothstep(Edge0.x, Edge1.x, In), smoothstep(Edge0.y, Edge1.y, In), smoothstep(Edge0.z, Edge1.z, In)); "
 }

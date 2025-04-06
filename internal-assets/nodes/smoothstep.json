@@ -20,5 +20,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = smoothstep(Edge0, Edge1, In); ",
     "glsl": " Result = smoothstep(Edge0, Edge1, In); "
 }

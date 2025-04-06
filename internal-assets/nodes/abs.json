@@ -12,5 +12,6 @@
             "name": "Result"
         }
     ],
-    "glsl": " Result = abs(A); "
+    "glsl": " Result = abs(A); ",
+    "hlsl": " Result = abs(A); "
 }

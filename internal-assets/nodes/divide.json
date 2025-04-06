@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = A / B; ",
     "glsl": " Result = A / B; "
 }

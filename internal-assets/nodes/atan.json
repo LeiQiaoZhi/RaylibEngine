@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = atan2(Y, X); ",
     "glsl": " Result = atan(Y, X); "
 }

@@ -14,6 +14,37 @@
 #include "nodes/NodeOutput.h"
 
 namespace CodeGeneration {
+    enum class ShaderFileType {
+        GLSL,
+        HLSL
+    };
+
+    inline std::vector<std::tuple<bool, ShaderType, std::string> > hlslIOs = {
+        // true -- in, false -- inout
+        {true, ShaderType::Vec2, "fragTexCoord"},
+        {true, ShaderType::Texture2D, "mainTex"},
+        {true, ShaderType::Sampler2D, "mainTexSampler"},
+        {false, ShaderType::Vec4, "finalColor"}
+    };
+
+    inline std::string ShaderTypeToString(ShaderType type, ShaderFileType exportType = ShaderFileType::GLSL) {
+        if (exportType == ShaderFileType::GLSL) {
+            return ShaderTypeToStringMap[type];
+        } else {
+            return ShaderTypeToStringMapHLSL[type];
+        }
+    }
+
+    inline std::string ShaderTypeFromJson(const nlohmann::json &j, ShaderFileType exportType = ShaderFileType::GLSL) {
+        std::string typeStr = j["type"].get<std::string>();
+        ShaderType type = ShaderTypeMap[typeStr];
+        if (exportType == ShaderFileType::GLSL) {
+            return ShaderTypeToStringMap[type];
+        } else {
+            return ShaderTypeToStringMapHLSL[type];
+        }
+    }
+
     inline std::set<Node *> FilterNodes(Node *finalNode) {
         std::set<Node *> filteredNodes;
         // DFS to find all nodes reachable from final node
@@ -53,19 +84,29 @@ namespace CodeGeneration {
     }
 
 
-    inline std::string GetPrefix() {
+    inline std::string GetPrefix(ShaderFileType exportType = ShaderFileType::GLSL) {
         std::ostringstream oss;
-        oss << "#version 330\n";
-        oss << "in vec2 fragTexCoord;\n";
-        oss << "out vec4 finalColor;\n";
+        if (exportType == ShaderFileType::GLSL) {
+            oss << "#version 330\n";
+            oss << "in vec2 fragTexCoord;\n";
+            oss << "out vec4 finalColor;\n";
+            oss << "uniform sampler2D mainTex;\n";
+        }
 
         return oss.str();
     }
 
-    inline std::string GetFunctions(Node *finalNode) {
+    inline std::string GetFunctions(Node *finalNode, ShaderFileType fileType = ShaderFileType::GLSL) {
+        std::vector<std::tuple<bool, ShaderType, std::string> > mainIOs =
+                (fileType == ShaderFileType::GLSL)
+                    ? std::vector<std::tuple<bool, ShaderType, std::string> >{}
+                    : hlslIOs;
         std::ostringstream oss;
 
-        char *convert = LoadFileText(INTERNAL_ASSET_DIR "/shaders/convert.glsl");
+        char *convert =
+                fileType == ShaderFileType::GLSL
+                    ? LoadFileText(INTERNAL_ASSET_DIR "/shaders/convert.glsl")
+                    : LoadFileText(INTERNAL_ASSET_DIR "/shaders/convert.hlsl");
         oss << convert << "\n";
         UnloadFileText(convert);
 
@@ -85,19 +126,25 @@ namespace CodeGeneration {
 
             // signature
             oss << "void " << j["name"].get<std::string>() << "(";
+            for (auto &mainIO: mainIOs) {
+                oss << (std::get<0>(mainIO) ? "in" : "inout") << " "
+                        << ShaderTypeToString(std::get<1>(mainIO), fileType)
+                        << " " << std::get<2>(mainIO) << ", ";
+            }
             for (auto &input: j["inputs"]) {
-                oss << "in " << input["type"].get<std::string>() << " " << input["name"].get<std::string>() << ", ";
+                oss << "in " << ShaderTypeFromJson(input, fileType) << " " << input["name"].get<std::string>() << ", ";
             }
             for (int i = 0; i < j["outputs"].size(); i++) {
-                oss << "out " << j["outputs"][i]["type"].get<std::string>() << " " << j["outputs"][i]["name"].get<
-                    std::string>();
+                oss << "out " << ShaderTypeFromJson(j["outputs"][i], fileType) << " "
+                        << j["outputs"][i]["name"].get<std::string>();
                 if (i < j["outputs"].size() - 1)
                     oss << ", ";
             }
             oss << ") {\n";
 
             // body
-            oss << j["glsl"].get<std::string>() << "\n}\n\n";
+            oss << (fileType == ShaderFileType::GLSL ? j["glsl"].get<std::string>() : j["hlsl"].get<std::string>())
+                    << "\n}\n\n";
         }
 
         // final node function -- don't need for preview
@@ -105,11 +152,16 @@ namespace CodeGeneration {
             std::vector<std::string> ioVars;
             ioVars.reserve(finalNode->inputs.size() + finalNode->outputs.size());
             oss << "void " << finalNode->name << "(";
+            for (auto &mainIO: mainIOs) {
+                oss << (std::get<0>(mainIO) ? "in" : "inout") << " "
+                        << ShaderTypeToString(std::get<1>(mainIO), fileType)
+                        << " " << std::get<2>(mainIO) << ", ";
+            }
             for (auto &input: finalNode->inputs) {
-                ioVars.emplace_back("in " + ShaderTypeToStringMap[input.type] + " " + input.name);
+                ioVars.emplace_back("in " + ShaderTypeToString(input.type, fileType) + " " + input.name);
             }
             for (auto &output: finalNode->outputs) {
-                ioVars.emplace_back("out " + ShaderTypeToStringMap[output.type] + " " + output.name);
+                ioVars.emplace_back("out " + ShaderTypeToString(output.type, fileType) + " " + output.name);
             }
             for (int i = 0; i < ioVars.size(); i++) {
                 oss << ioVars[i];
@@ -117,27 +169,44 @@ namespace CodeGeneration {
                     oss << ", ";
             }
             oss << ") {\n";
-            oss << finalNode->glsl << "\n}\n\n";
+            oss <<
+                    (fileType == ShaderFileType::GLSL ? finalNode->glsl : finalNode->hlsl)
+            << "\n}\n\n";
         }
 
         return oss.str();
     }
 
-    inline std::string GetMain(const std::list<Node *> &orderedNodes, Node *previewFinalNode = nullptr) {
+    inline std::string GetMain(const std::list<Node *> &orderedNodes, Node *previewFinalNode = nullptr,
+                               ShaderFileType fileType = ShaderFileType::GLSL) {
+        std::vector<std::tuple<bool, ShaderType, std::string> > mainIOs =
+                (fileType == ShaderFileType::GLSL)
+                    ? std::vector<std::tuple<bool, ShaderType, std::string> >{}
+                    : hlslIOs;
+
         std::ostringstream oss;
-        oss << "void main() {\n";
+        oss << "void main(";
+        for (int i = 0; i < mainIOs.size(); i++) {
+            oss << (std::get<0>(mainIOs[i]) ? "in" : "inout") << " "
+                    << ShaderTypeToString(std::get<1>(mainIOs[i]), fileType)
+                    << " " << std::get<2>(mainIOs[i]);
+            if (i < mainIOs.size() - 1)
+                oss << ", ";
+        }
+        oss << "){\n";
 
         for (auto *node: orderedNodes) {
             // declare variables
             for (auto &input: node->inputs) {
                 std::string inputVar = input.GetVarName();
-                oss << "\t" << ShaderTypeToStringMap[input.type] << " " << inputVar << ";\n";
+                oss << "\t" << ShaderTypeToString(input.type, fileType) << " " << inputVar << ";\n";
                 // give values to inputs
                 if (input.source != nullptr) {
                     std::string sourceVar = input.source->GetVarName();
                     if (input.source->type != input.type) {
-                        std::string convertFunc = "convert_" + ShaderTypeToStringMap[input.source->type] + "_to_" +
-                                                  ShaderTypeToStringMap[input.type];
+                        std::string convertFunc =
+                                "convert_" + ShaderTypeToString(input.source->type, fileType) + "_to_" +
+                                ShaderTypeToString(input.type, fileType);
                         oss << "\t" << convertFunc << "(" << sourceVar << "," << inputVar << ");\n";
                     } else {
                         oss << "\t" << inputVar << " = " << sourceVar << ";\n";
@@ -149,7 +218,7 @@ namespace CodeGeneration {
             }
             for (auto &output: node->outputs) {
                 std::string outputVar = "output_" + std::to_string(node->uid) + "_" + output.name;
-                oss << "\t" << ShaderTypeToStringMap[output.type] << " " << outputVar << ";\n";
+                oss << "\t" << ShaderTypeToString(output.type, fileType) << " " << outputVar << ";\n";
             }
 
             // call function
@@ -160,6 +229,9 @@ namespace CodeGeneration {
             }
             for (auto &output: node->outputs) {
                 ioVars.emplace_back(output.GetVarName());
+            }
+            for (auto &mainIO: mainIOs) {
+                oss << std::get<2>(mainIO) << ", ";
             }
             for (int i = 0; i < ioVars.size(); i++) {
                 oss << ioVars[i];
@@ -174,8 +246,11 @@ namespace CodeGeneration {
             NodeOutput *output = &previewFinalNode->outputs[previewFinalNode->previewOutputIndex];
             std::string outputVar = output->GetVarName();
             if (output->type != ShaderType::Vec4) {
-                std::string convertFunc = "convert_" + ShaderTypeToStringMap[output->type] + "_to_vec4";
+                std::string convertFunc = "convert_" + ShaderTypeToString(output->type, fileType)
+                                          + "_to_" + ShaderTypeToString(ShaderType::Vec4, fileType);
                 oss << "\t" << convertFunc << "(" << outputVar << ", finalColor);\n";
+            } else {
+                oss << "\tfinalColor = " << outputVar << ";\n";
             }
             oss << "\tfinalColor.a = 1.0;\n";
         }
@@ -194,12 +269,12 @@ namespace CodeGeneration {
         return prefix + functions + main;
     }
 
-    inline std::string GenerateCode(Node *finalNode) {
+    inline std::string GenerateCode(Node *finalNode, ShaderFileType fileType = ShaderFileType::GLSL) {
         std::set<Node *> filteredNodes = FilterNodes(finalNode);
         std::list<Node *> orderedNodes = TopologicalSort(filteredNodes);
-        const std::string prefix = GetPrefix();
-        const std::string functions = GetFunctions(finalNode);
-        const std::string main = GetMain(orderedNodes, finalNode);
+        const std::string prefix = GetPrefix(fileType);
+        const std::string functions = GetFunctions(finalNode, fileType);
+        const std::string main = GetMain(orderedNodes, finalNode, fileType);
         return prefix + functions + main;
     }
 }

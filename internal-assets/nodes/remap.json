@@ -28,5 +28,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = ((In - Min) / (Max - Min)) * (NewMax - NewMin) + NewMin; ",
     "glsl": " Result = ((In - Min) / (Max - Min)) * (NewMax - NewMin) + NewMin; "
 }

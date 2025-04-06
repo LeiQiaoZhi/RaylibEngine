@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = float3(A.x * B.x, A.y * B.y, A.z * B.z); ",
     "glsl": " Result = vec3(A.x * B.x, A.y * B.y, A.z * B.z); "
 }

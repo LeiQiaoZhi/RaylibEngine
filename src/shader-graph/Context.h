@@ -6,6 +6,7 @@
 #define CONTEXT_H
 
 #include <list>
+#include <map>
 
 #include "../common/input/MouseDragState.h"
 
@@ -23,6 +24,16 @@ enum class InteractionState {
     Dragging, // for a node
     Connecting, // for connecting input/output
     Camera, // camera interactions
+};
+
+inline std::map<InteractionState, std::string> InteractionStateToStringMap = {
+    {InteractionState::None, "None"},
+    {InteractionState::Hovering, "Hovering"},
+    {InteractionState::IOHovering, "IOHovering"},
+    {InteractionState::LineHovering, "LineHovering"},
+    {InteractionState::Dragging, "Dragging"},
+    {InteractionState::Connecting, "Connecting"},
+    {InteractionState::Camera, "Camera"},
 };
 
 enum class ShowPreviewState {
@@ -54,10 +65,10 @@ struct Context {
 
     Node *FindNodeByUID(uint uid) const;
 
-
     // code
     std::string shaderCode;
     bool compileFlag = false;
+    Texture2D mainTexture;
 
     // delete
     Node *nodeToDelete = nullptr;

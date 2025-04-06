@@ -20,5 +20,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = lerp(A, B, In); ",
     "glsl": " Result = mix(A, B, In); "
 }

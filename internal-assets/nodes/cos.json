@@ -12,5 +12,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = cos(A); ",
     "glsl": " Result = cos(A); "
 }

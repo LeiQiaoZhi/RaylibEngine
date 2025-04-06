@@ -120,6 +120,7 @@ void NodeGroup::Update(Context &context) {
 void NodeGroup::Resolve(Context &context) {
     // resolve dragging
     if (dragging && context.interactionState == InteractionState::Dragging) {
+        std::cout << "Dragging group: " << name << std::endl;
         for (auto &node: nodeUIDs) {
             Node *n = context.FindNodeByUID(node);
             if (n == nullptr) continue;

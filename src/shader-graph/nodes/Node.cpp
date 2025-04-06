@@ -33,6 +33,7 @@ Node::Node(nlohmann::json j, bool dummyFromSave) {
     uid = j["uid"];
     position = {j["position"][0], j["position"][1]};
     glsl = j.value("glsl", glsl);
+    hlsl = j.value("hlsl", hlsl);
     previewOutputIndex = j.value("previewOutputIndex", previewOutputIndex);
     showPreview = j.value("showPreview", showPreview);
     if (j.contains("inputs")) {
@@ -150,6 +151,8 @@ void Node::OnDraw(Context &context) {
     size.y += Editor::TextSizeF() + Editor::SmallGap();
     if (showPreview || context.showPreviewState == ShowPreviewState::On) {
         BeginShaderMode(shader);
+        shader.locs[SHADER_LOC_MAP_DIFFUSE] = GetShaderLocation(shader, "mainTex");
+        SetShaderValueTexture(shader, SHADER_LOC_MAP_DIFFUSE, context.mainTexture);
         RaylibUtils::DrawRectangleUV({
                                          previewRect.x, previewRect.y + Editor::TextSizeF() + Editor::SmallGap(),
                                          size.x, size.x
@@ -323,6 +326,7 @@ nlohmann::json Node::ToJson() const {
     j["uid"] = uid;
     j["position"] = {position.x, position.y};
     j["glsl"] = glsl;
+    j["hlsl"] = hlsl;
     j["showPreview"] = showPreview;
 
     std::vector<nlohmann::json> inputsJson;

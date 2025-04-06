@@ -20,5 +20,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = float3(X, Y, Z); ",
     "glsl": " Result = vec3(X, Y, Z); "
 }

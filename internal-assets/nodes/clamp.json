@@ -20,5 +20,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = clamp(In, Min, Max); ",
     "glsl": " Result = clamp(In, Min, Max); "
 }

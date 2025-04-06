@@ -26,5 +26,6 @@
             "name": "W"
         }
     ],
+    "hlsl": " X = V.x; Y = V.y; Z = V.z; W = V.w; ",
     "glsl": " X = V.x; Y = V.y; Z = V.z; W = V.w; "
 }

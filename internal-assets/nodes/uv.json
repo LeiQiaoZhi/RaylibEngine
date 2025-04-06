@@ -8,5 +8,6 @@
             "name": "uv"
         }
     ],
+    "hlsl": " uv = fragTexCoord; ",
     "glsl": " uv = fragTexCoord; "
 }

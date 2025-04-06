@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = dot(A, B); ",
     "glsl": " Result = dot(A, B); "
 }

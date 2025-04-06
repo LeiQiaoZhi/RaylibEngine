@@ -12,5 +12,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = sin(A); ",
     "glsl": " Result = sin(A); "
 }

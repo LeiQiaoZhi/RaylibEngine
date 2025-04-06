@@ -95,7 +95,9 @@ public:
     Vector2 position = {0, 0};
     Vector2 size = {100, 100};
     uint uid;
+
     std::string glsl;
+    std::string hlsl;
 
     std::vector<NodeInput> inputs;
     std::vector<NodeOutput> outputs;

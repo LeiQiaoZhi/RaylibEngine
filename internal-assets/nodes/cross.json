@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = cross(A, B); ",
     "glsl": " Result = cross(A, B); "
 }

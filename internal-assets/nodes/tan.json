@@ -12,5 +12,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = tan(A); ",
     "glsl": " Result = tan(A); "
 }

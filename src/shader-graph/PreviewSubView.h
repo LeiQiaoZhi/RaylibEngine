@@ -12,12 +12,12 @@ public:
 
         camera.target = (Vector3){0.0f, 0.0f, 0.0f};
         camera.fovy = 45.0f;
-        camera.position = (Vector3){0.0f, 2.0f, 0.0f};
+        camera.position = (Vector3){0.0f, 1.5f, 0.0f};
         camera.projection = CAMERA_PERSPECTIVE;
-        camera.up = (Vector3){0.0f, 0.0f, 1.0f};
+        camera.up = (Vector3){0.0f, 0.0f, -1.0f};
 
         model = LoadModelFromMesh(GenMeshPlane(1.0f, 1.0f, 1, 1));
-        // model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
+        SetMaterialTexture(&model.materials[0], MATERIAL_MAP_DIFFUSE, LoadTexture(INTERNAL_ASSET_DIR "/textures/test.png"));
     }
 
     void Render(Vector2 position = {0, 0});

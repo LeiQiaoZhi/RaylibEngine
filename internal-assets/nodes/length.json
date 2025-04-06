@@ -12,5 +12,6 @@
             "name": "Length"
         }
     ],
+    "hlsl": " Length = length(V); ",
     "glsl": " Length = length(V); "
 }

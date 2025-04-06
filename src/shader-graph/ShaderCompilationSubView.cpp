@@ -24,6 +24,42 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
 
     renderer_->Begin();
 
+    // export
+    if (GuiTextBox(
+        {rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
+        exportName.data(), 256, exportNameEditMode)) {
+        exportNameEditMode = !exportNameEditMode;
+    }
+    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    GuiComboBox({rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "GLSL;HLSL",
+                reinterpret_cast<int *>(&exportType));
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+    if (GuiButton(
+        {rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f},
+        "Export")) {
+        std::string exportPath = std::string(ASSET_DIR) + "/shaders/" + exportName.c_str()
+                                 + (exportType == CodeGeneration::ShaderFileType::GLSL ? ".glsl" : ".hlsl");
+        std::string code = GenerateCode(context.FinalNode(), exportType);
+        // write code to file
+        std::ofstream file(exportPath);
+        if (file.is_open()) {
+            file << code;
+            file.close();
+            statusText = "Exported to " + exportPath;
+            statusWarning = false;
+        } else {
+            statusText = "Failed to export to " + exportPath;
+            statusWarning = true;
+        }
+    }
+    rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
+
+    Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
+    GuiLine({rect.x, rect.y, rect.width, 1}, nullptr);
+    rect.y += Editor::SmallGap();
+
+    // compile
     if (GuiButton(Rectangle{rect.x, rect.y, rect.width, Editor::TextSize() * 1.5f}, "Compile")) {
         nodes = CodeGeneration::FilterNodes(context.FinalNode());
         orderedNodes = CodeGeneration::TopologicalSort(nodes);
@@ -35,18 +71,21 @@ void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
     rect.y += Editor::TextSize() * 1.5f + Editor::SmallGap();
 
     // nodes
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, TextFormat("Nodes: %d", nodes.size()));
-    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
-    for (auto &node: nodes) {
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
-        rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    nodesFoldout.SetLabel(TextFormat("Nodes: %d", nodes.size()));
+    nodesFoldout.OnEditorGUI(rect);
+    if (!nodesFoldout.IsFolded()) {
+        for (auto &node: nodes) {
+            GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
+            rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+        }
     }
-    GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f},
-             TextFormat("Ordered Nodes: %d", orderedNodes.size()));
-    rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
-    for (auto &node: orderedNodes) {
-        GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
-        rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+    orderedNodesFoldout.SetLabel(TextFormat("Ordered Nodes: %d", orderedNodes.size()));
+    orderedNodesFoldout.OnEditorGUI(rect);
+    if (!orderedNodesFoldout.IsFolded()) {
+        for (auto &node: orderedNodes) {
+            GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, node->name.c_str());
+            rect.y += Editor::TextSize() * 1.0f + Editor::SmallGap();
+        }
     }
 
     renderer_->End();

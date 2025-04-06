@@ -1,0 +1,197 @@
+{
+    "cameraPos": [
+        283.67578125,
+        -50.4375
+    ],
+    "cameraZoom": 1.3883217573165894,
+    "groups": [
+        {
+            "isSelectionGroup": true,
+            "name": "Selection",
+            "nodeUIDs": [],
+            "uid": 3186243314
+        }
+    ],
+    "nodes": [
+        {
+            "glsl": "finalColor = vec4(color, alpha);",
+            "hlsl": "finalColor = float4(color, alpha);",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "color",
+                    "source": {
+                        "parent": 2616251015,
+                        "uid": 1347063299
+                    },
+                    "type": "vec3",
+                    "uid": 1031705732
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "alpha",
+                    "type": "float",
+                    "uid": 1569400697
+                }
+            ],
+            "name": "Final",
+            "outputs": [],
+            "position": [
+                335.4150695800781,
+                -46.46178436279297
+            ],
+            "showPreview": false,
+            "uid": 879261618
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "uv",
+                    "source": {
+                        "parent": 1760802544,
+                        "uid": 1229135452
+                    },
+                    "type": "vec2",
+                    "uid": 1229157670
+                }
+            ],
+            "name": "SampleMainTex",
+            "outputs": [
+                {
+                    "name": "color",
+                    "targets": [
+                        {
+                            "parent": 2616251015,
+                            "uid": 3339423821
+                        }
+                    ],
+                    "type": "vec4",
+                    "uid": 1031726828
+                }
+            ],
+            "position": [
+                -32.03059005737305,
+                -10.953539848327637
+            ],
+            "showPreview": false,
+            "uid": 2772404041
+        },
+        {
+            "glsl": "",
+            "inputs": [],
+            "name": "UV",
+            "outputs": [
+                {
+                    "name": "uv",
+                    "targets": [
+                        {
+                            "parent": 2772404041,
+                            "uid": 1229157670
+                        }
+                    ],
+                    "type": "vec2",
+                    "uid": 1229135452
+                }
+            ],
+            "position": [
+                -129.87240600585938,
+                -12.084622383117676
+            ],
+            "showPreview": false,
+            "uid": 1760802544
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 0.0,
+                    "name": "A",
+                    "source": {
+                        "parent": 725352577,
+                        "uid": 1347037320
+                    },
+                    "type": "vec3",
+                    "uid": 3289100119
+                },
+                {
+                    "floatValue": 0.0,
+                    "name": "B",
+                    "source": {
+                        "parent": 2772404041,
+                        "uid": 1031726828
+                    },
+                    "type": "vec3",
+                    "uid": 3339423821
+                }
+            ],
+            "name": "SubtractV3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 879261618,
+                            "uid": 1031705732
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347063299
+                }
+            ],
+            "position": [
+                133.2628173828125,
+                -117.89470672607422
+            ],
+            "showPreview": false,
+            "uid": 2616251015
+        },
+        {
+            "glsl": "",
+            "inputs": [
+                {
+                    "floatValue": 1.0,
+                    "name": "X",
+                    "type": "float",
+                    "uid": 3708574913
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "Y",
+                    "type": "float",
+                    "uid": 3691776599
+                },
+                {
+                    "floatValue": 1.0,
+                    "name": "Z",
+                    "type": "float",
+                    "uid": 3742120184
+                }
+            ],
+            "name": "Vec3",
+            "outputs": [
+                {
+                    "name": "Result",
+                    "targets": [
+                        {
+                            "parent": 2616251015,
+                            "uid": 3289100119
+                        }
+                    ],
+                    "type": "vec3",
+                    "uid": 1347037320
+                }
+            ],
+            "position": [
+                -48.6282958984375,
+                -249.5396728515625
+            ],
+            "showPreview": false,
+            "uid": 725352577
+        }
+    ],
+    "showPreviewState": 0,
+    "showTypeInfo": false,
+    "time": 1743907005
+}

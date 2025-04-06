@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = float2(X, Y); ",
     "glsl": " Result = vec2(X, Y); "
 }

@@ -16,5 +16,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = pow(A, B); ",
     "glsl": " Result = pow(A, B); "
 }

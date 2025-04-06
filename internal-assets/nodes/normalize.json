@@ -12,5 +12,6 @@
             "name": "Result"
         }
     ],
+    "hlsl": " Result = normalize(A); ",
     "glsl": " Result = normalize(A); "
 }

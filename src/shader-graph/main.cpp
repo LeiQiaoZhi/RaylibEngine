@@ -53,6 +53,7 @@ int main() {
     nodes.front().name = "Final";
     nodes.front().position = {200, 0};
     nodes.front().glsl = "finalColor = vec4(color, alpha);";
+    nodes.front().hlsl = "finalColor = float4(color, alpha);";
     nodes.front().previewOutputIndex = -1;
     nodes.front().AddInput("color", ShaderType::Vec3);
     nodes.front().AddInput("alpha", ShaderType::Float);
@@ -66,6 +67,8 @@ int main() {
     camera.zoom = 1.0f;
 
     Context context(dragState, camera, nodes, nodeGroups);
+    context.mainTexture = LoadTexture(INTERNAL_ASSET_DIR "/textures/GreenSky.png");
+    context.compileFlag = true;
 
     Shader bgShader = LoadShader(
         (std::string(INTERNAL_ASSET_DIR) + "/shaders/default.vert").c_str(),
@@ -105,11 +108,12 @@ int main() {
         for (auto &group: nodeGroups) {
             group.Update(context);
         }
-        for (auto &group: nodeGroups) {
-            group.Resolve(context);
-        }
         for (auto &node: nodes) {
             node.Update(context);
+        }
+
+        for (auto &group: nodeGroups) {
+            group.Resolve(context);
         }
         for (auto &node: nodes) {
             node.Resolve(context);
@@ -174,8 +178,9 @@ int main() {
 
         EndMode2D();
         Vector2 pos = {10, 10};
-        DrawTextEx(Editor::GetFont(), TextFormat("Interaction State: [%i]", context.interactionState), pos,
-                   Editor::TextSizeF(), 2, WHITE);
+        DrawTextEx(Editor::GetFont(),
+                   TextFormat("Interaction State: [%s]", InteractionStateToStringMap[context.interactionState].c_str()),
+                   pos, Editor::TextSizeF(), 2, WHITE);
         pos.y += Editor::TextSizeF() + Editor::SmallGap();
         DrawTextEx(Editor::GetFont(),
                    TextFormat("Connecting I: [%s]",
