@@ -71,7 +71,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /permissive-")  # more permissive mode
 endif()
 
-# Shader editor executable using raylib and raygui only.
+# Shader editor executable
 file(GLOB_RECURSE SHADER_GRAPH_SOURCES "src/shader-graph/*.cpp")
 add_executable(shader_editor ${SHADER_GRAPH_SOURCES} ${COMMON_SOURCES})
 
@@ -84,4 +84,18 @@ target_link_libraries(shader_editor raylib)
 target_link_libraries(shader_editor lua::lib)
 target_link_libraries(shader_editor nlohmann_json::nlohmann_json)
 target_link_libraries(shader_editor common_defs)
+
+# cubemap editor executable
+file(GLOB_RECURSE CUBEMAP_SOURCES "src/cubemap/*.cpp")
+add_executable(cubemap ${CUBEMAP_SOURCES} ${COMMON_SOURCES})
+
+target_include_directories(cubemap PRIVATE vendor/raylib/src)
+target_include_directories(cubemap PRIVATE vendor/raygui/src)
+target_include_directories(cubemap PRIVATE vendor/sol2/include)
+target_include_directories(cubemap PRIVATE /src)
+
+target_link_libraries(cubemap raylib)
+target_link_libraries(cubemap lua::lib)
+target_link_libraries(cubemap nlohmann_json::nlohmann_json)
+target_link_libraries(cubemap common_defs)
 
