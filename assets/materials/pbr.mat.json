@@ -1,0 +1,66 @@
+{
+  "Shader": {
+    "Vertex": "custom.vert",
+    "Fragment": "pbr.frag"
+  },
+  "Maps": [
+    {
+      "Type": 0,
+      "Path": "/textures/sloppy-mortar-stone-wall_albedo.png",
+      "Color": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    },
+    {
+      "Type": 1,
+      "Path": "/textures/sloppy-mortar-stone-wall_metallic.png",
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    },
+    {
+      "Type": 3,
+      "Path": "/textures/sloppy-mortar-stone-wall_roughness.png",
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    },
+    {
+      "Type": 4,
+      "Path": "/textures/sloppy-mortar-stone-wall_ao.png",
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    },
+    {
+      "Type": 6,
+      "Path": "/textures/sloppy-mortar-stone-wall_height.png",
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    },
+    {
+      "Enabled": true,
+      "Type": 2,
+      "Path": "/textures/sloppy-mortar-stone-wall_normal-ogl.png",
+      "Wrap": "repeat",
+      "Filter": "trilinear"
+    }
+  ],
+  "Params": [
+    {
+      "Name": "iTiling",
+      "Type": "vec2",
+      "Value": [
+        1,
+        1
+      ]
+    },
+    {
+      "Name": "iHeightScale",
+      "Type": "float",
+      "Value": 0.01
+    }
+  ]
+}

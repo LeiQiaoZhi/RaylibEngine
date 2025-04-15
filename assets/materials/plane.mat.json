@@ -1,7 +1,7 @@
 {
   "Shader": {
     "Vertex": "custom.vert",
-    "Fragment": "lighting.frag"
+    "Fragment": "pbr.frag"
   },
   "Maps": [
     {
@@ -28,21 +28,21 @@
   ],
   "Params": [
     {
-      "Name": "iSpecularPower",
+      "Name": "iMetallic",
       "Type": "float",
-      "Value": 20.0
+      "Value": 0.0
     },
     {
-      "Name": "iSpecularStrength",
+      "Name": "iRoughness",
       "Type": "float",
-      "Value": 0.1
+      "Value": 0.5
     },
     {
       "Name": "iTiling",
       "Type": "vec2",
       "Value": [
-        5,
-        5
+        2,
+        2
       ]
     }
   ]

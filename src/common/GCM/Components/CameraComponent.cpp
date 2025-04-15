@@ -87,8 +87,13 @@ nlohmann::json CameraComponent::ToJson() const {
 
 void CameraComponent::FromJson(const nlohmann::json &json) {
     cameraMode = json["cameraMode"];
-    if (json.contains("cameraPosition"))
+    if (json.contains("cameraPosition")) {
         camera->position = {json["cameraPosition"][0], json["cameraPosition"][1], json["cameraPosition"][2]};
+        if (gameObject != nullptr) {
+            TransformComponent *transform = gameObject->GetTransform();
+            transform->SetWorldPosition(camera->position);
+        }
+    }
     if (json.contains("cameraTarget"))
         camera->target = {json["cameraTarget"][0], json["cameraTarget"][1], json["cameraTarget"][2]};
     if (json.contains("cameraUp"))

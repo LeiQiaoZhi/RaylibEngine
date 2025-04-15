@@ -42,6 +42,8 @@ public:
 
     void OnDrawGizmosSelected(Scene *scene) const override;
 
+    void GenModelTangents();
+
     void EditorStart() override;
 
     void EditorUpdate() override;
@@ -55,6 +57,8 @@ public:
     void OnDrawGizmosBottom(Scene *scene) const override;
 
     nlohmann::json ToJson() const override;
+
+    void InitMaterialsFromJson();
 
     void FromJson(const nlohmann::json &json) override;
 
@@ -80,6 +84,7 @@ private:
 
     ModelAnimation *animations = nullptr;
     int activeAnimationIndex = -1;
+    nlohmann::json materialsJson;
 
     // UI
     FoldoutProperty materialsFoldout = FoldoutProperty("Materials");

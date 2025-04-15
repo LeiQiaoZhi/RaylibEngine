@@ -62,6 +62,7 @@ void ProceduralMeshComponent::OnDrawGizmosSelected(Scene *scene) const {
 }
 
 void ProceduralMeshComponent::EditorStart() {
+    GetLogger().Log("ProceduralMeshComponent::EditorStart");
     modelComponent = gameObject->GetComponent<ModelComponent>();
     if (!modelComponent) {
         statusText = "Model Component not found";
@@ -81,9 +82,12 @@ void ProceduralMeshComponent::OnDrawGizmosBottom(Scene *scene) const {
 
 void ProceduralMeshComponent::GenerateMesh() {
     if (!modelComponent) {
-        statusText = "Model Component not found";
-        statusWarning = true;
-        return;
+        modelComponent = gameObject->GetComponent<ModelComponent>();
+        if (!modelComponent) {
+            statusText = "Model Component not found";
+            statusWarning = true;
+            return;
+        }
     }
     Mesh mesh{0};
     if (meshType == MeshType::Cube) {

@@ -218,6 +218,14 @@ finalColor = vec4(color, alpha);
 }
 
 void main(){
+	float input_725363518_X;
+	input_725363518_X = 0;
+	float input_725363518_Y;
+	input_725363518_Y = 0;
+	float input_725363518_Z;
+	input_725363518_Z = 0.6000000238;
+	vec3 output_725363518_Result;
+	Vec3(input_725363518_X, input_725363518_Y, input_725363518_Z, output_725363518_Result);
 	float input_725416577_X;
 	input_725416577_X = 0.5;
 	float input_725416577_Y;
@@ -226,24 +234,10 @@ void main(){
 	input_725416577_Z = 0.5;
 	vec3 output_725416577_Result;
 	Vec3(input_725416577_X, input_725416577_Y, input_725416577_Z, output_725416577_Result);
-	float input_725363518_X;
-	input_725363518_X = 0;
-	float input_725363518_Y;
-	input_725363518_Y = 0;
-	float input_725363518_Z;
-	input_725363518_Z = 0.3000000119;
-	vec3 output_725363518_Result;
-	Vec3(input_725363518_X, input_725363518_Y, input_725363518_Z, output_725363518_Result);
 	float input_1283554549_A;
 	input_1283554549_A = 4;
 	float output_1283554549_Result;
 	Float(input_1283554549_A, output_1283554549_Result);
-	vec2 output_1760802544_uv;
-	UV(output_1760802544_uv);
-	vec2 input_2772404041_uv;
-	input_2772404041_uv = output_1760802544_uv;
-	vec4 output_2772404041_color;
-	SampleMainTex(input_2772404041_uv, output_2772404041_color);
 	float input_725352577_X;
 	input_725352577_X = 0.2126000077;
 	float input_725352577_Y;
@@ -252,6 +246,12 @@ void main(){
 	input_725352577_Z = 0.07220000029;
 	vec3 output_725352577_Result;
 	Vec3(input_725352577_X, input_725352577_Y, input_725352577_Z, output_725352577_Result);
+	vec2 output_1760802544_uv;
+	UV(output_1760802544_uv);
+	vec2 input_2772404041_uv;
+	input_2772404041_uv = output_1760802544_uv;
+	vec4 output_2772404041_color;
+	SampleMainTex(input_2772404041_uv, output_2772404041_color);
 	vec4 input_946699418_A;
 	convert_vec3_to_vec4(output_725352577_Result,input_946699418_A);
 	vec4 input_946699418_B;

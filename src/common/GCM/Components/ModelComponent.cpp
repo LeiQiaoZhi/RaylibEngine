@@ -117,12 +117,17 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
                     SetHighlightedMesh(i);
             }
             Editor::BeginIndent(rect, buttonWidth);
+            if (GuiButton({rect.x, rect.y, buttonWidth, Editor::TextSize() * 1.0f}, "Tangent")) {
+                GenMeshTangents(&model->meshes[i]);
+            }
+            Editor::BeginIndent(rect, buttonWidth);
             oss.str("");
             oss << i << ". " << mesh.vertexCount << " vertices, " << mesh.triangleCount << " triangles" <<
                     ", material: [" << materialIndex << "]" << std::endl;
             rect.y += Editor::TextSize() * 0.5f + Editor::SmallGap();
             GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
             rect.y += Editor::TextSize() * 0.5f + Editor::SmallGap();
+            Editor::EndIndent(rect, buttonWidth);
             Editor::EndIndent(rect, buttonWidth);
         }
         Editor::EndIndent(rect, Editor::LargeGap());
@@ -144,8 +149,8 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
                 std::string mapType = RaylibUtils::MaterialMapTypeToString(i);
                 if (material.maps[i].texture.id != 0) {
                     oss.str("");
-                    oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id << "]" <<
-                            std::endl;
+                    oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id
+                    << ", Mipmaps: " << material.maps[i].texture.mipmaps << "]" << std::endl;
                     float recWidth = Editor::TextSize() * 1.0f;
                     DrawRectangleRec({
                                          rect.x + rect.width - recWidth, rect.y - recWidth * 1.0f, recWidth,
@@ -269,10 +274,17 @@ void ModelComponent::OnDrawGizmosSelected(Scene *scene) const {
     if (activeAnimationIndex != -1) {
         animationProps[activeAnimationIndex].DrawGizmos(scene, drawBonesLines, drawBoneNames, radius);
     }
+}
 
+void ModelComponent::GenModelTangents() {
+    if (model == nullptr) return;
+    for (int i = 0; i < model->meshCount; i++) {
+        GenMeshTangents(&model->meshes[i]);
+    }
 }
 
 void ModelComponent::EditorStart() {
+    GenModelTangents();
 }
 
 void ModelComponent::EditorUpdate() {
@@ -348,6 +360,9 @@ void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
     for (int i = 0; i < model->meshCount; i++)
         materialProps.emplace_back(model, i);
 
+    InitMaterialsFromJson();
+    GenModelTangents();
+
     // mesh has no animations
     animationProps.clear();
 }
@@ -377,6 +392,19 @@ nlohmann::json ModelComponent::ToJson() const {
     return j;
 }
 
+void ModelComponent::InitMaterialsFromJson() {
+    int i = 0;
+    for (const auto &materialPropJson: materialsJson) {
+        if (i >= materialProps.size()) {
+            statusText = "More materials than expected";
+            statusWarning = true;
+            break;
+        }
+        materialProps[i].FromJson(materialPropJson);
+        i++;
+    }
+}
+
 void ModelComponent::FromJson(const nlohmann::json &json) {
     std::strncpy(filename, json.at("filename").get<std::string>().c_str(), 32);
     drawSurface = json.value("drawSurface", drawSurface);
@@ -392,16 +420,8 @@ void ModelComponent::FromJson(const nlohmann::json &json) {
 
     LoadModelFromFile(filename);
 
-    int i = 0;
-    for (const auto &materialPropJson: json.at("materials")) {
-        if (i >= materialProps.size()) {
-            statusText = "More materials than expected";
-            statusWarning = true;
-            break;
-        }
-        materialProps[i].FromJson(materialPropJson);
-        i++;
-    }
+    materialsJson = json.value("materials", materialsJson);
+    InitMaterialsFromJson();
 }
 
 void ModelComponent::SetHighlightedMesh(int index) {

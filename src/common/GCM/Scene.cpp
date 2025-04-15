@@ -156,10 +156,12 @@ void Scene::Load(const char *path) {
     if (j.contains("editorCamera"))
         editorCamera->FromJson(j["editorCamera"]);
     // initialize scene
-    // StartComponents();
     FindLights();
 
     rootFileHierarchyProperty = new GameObjectHierarchyProperty(root, false);
+
+    // start when all objs are loaded
+    Start();
 }
 
 void Scene::DrawBackground() {

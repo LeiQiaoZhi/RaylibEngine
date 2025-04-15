@@ -236,19 +236,28 @@ public:
         Material material = LoadMaterialDefault();
 
         std::cout << "Loading material from file: " << path << std::endl;
-        std::cout << j.dump(4) << std::endl;
 
         // Shader
         if (j["Shader"]["Vertex"] != "default" || j["Shader"]["Fragment"] != "default") {
             const std::string vertPath = ASSET_DIR + std::string("/shaders/") + std::string(j["Shader"]["Vertex"]);
             const std::string fragPath = ASSET_DIR + std::string("/shaders/") + std::string(j["Shader"]["Fragment"]);
-            material.shader = LoadShader(vertPath.c_str(), fragPath.c_str());
+            Shader shader = LoadShader(vertPath.c_str(), fragPath.c_str());
+
+            if (IsShaderValid(shader)) {
+                material.shader = shader;
+            } else {
+                std::cerr << "Failed to load shader: " << vertPath << " " << fragPath << std::endl;
+            }
 
             // set up locations
             material.shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(material.shader, "viewPos");
             material.shader.locs[SHADER_LOC_MAP_ALBEDO] = GetShaderLocation(material.shader, "albedoMap");
             material.shader.locs[SHADER_LOC_COLOR_DIFFUSE] = GetShaderLocation(material.shader, "albedoColor");
+            material.shader.locs[SHADER_LOC_MAP_ROUGHNESS] = GetShaderLocation(material.shader, "roughnessMap");
+            material.shader.locs[SHADER_LOC_MAP_METALNESS] = GetShaderLocation(material.shader, "metallicMap");
+            material.shader.locs[SHADER_LOC_MAP_OCCLUSION] = GetShaderLocation(material.shader, "occlusionMap");
             material.shader.locs[SHADER_LOC_MAP_NORMAL] = GetShaderLocation(material.shader, "normalMap");
+            material.shader.locs[SHADER_LOC_MAP_HEIGHT] = GetShaderLocation(material.shader, "heightMap");
             material.shader.locs[SHADER_LOC_MAP_CUBEMAP] = GetShaderLocation(material.shader, "environmentMap");
         }
 
@@ -269,6 +278,9 @@ public:
                 material.maps[type].texture = LoadTexture(texturePath.c_str());
             }
 
+            // TODO: configure
+            GenTextureMipmaps(&material.maps[type].texture);
+
             // Set texture parameters
             if (mapJson.contains("Wrap")) {
                 const TextureWrap wrap = StringToTextureWrapEnum(mapJson["Wrap"]);
@@ -279,8 +291,12 @@ public:
                 SetTextureFilter(material.maps[type].texture, filter);
             }
             // Other map properties
-            auto &color = mapJson["Color"];
-            material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
+            if (mapJson.contains("Color")) {
+                auto &color = mapJson["Color"];
+                material.maps[type].color = Color{color[0], color[1], color[2], color[3]};
+            } else {
+                material.maps[type].color = WHITE;
+            }
 
             if (type == MATERIAL_MAP_NORMAL) {
                 int loc = GetShaderLocation(material.shader, "useNormalMap");

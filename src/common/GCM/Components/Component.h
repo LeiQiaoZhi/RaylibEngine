@@ -36,7 +36,7 @@ public:
         OnEditorDraw(scene);
     }
 
-    virtual void Start() {
+virtual void Start() {
         EditorStart();
     }
 

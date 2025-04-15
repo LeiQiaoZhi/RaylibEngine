@@ -73,7 +73,8 @@ void GameObject::AddComponent(Component *component) {
     component->gameObject = this;
     components.push_back(component);
 
-    component->EditorStart();
+    // start is called when all objs are loaded in scene load
+    // component->EditorStart();
 }
 
 void GameObject::EditorUpdate() const {
