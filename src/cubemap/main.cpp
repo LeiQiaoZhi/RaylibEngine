@@ -9,6 +9,13 @@
 #include "../common/editor/Editor.h"
 #include "sol/sol.hpp"
 #include "CubemapUtils.h"
+#include "../common/utils/Utils.h"
+
+enum class PreviewTarget {
+    HDR = 0,
+    CUBEMAP,
+    IRRADIANCE
+};
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -50,54 +57,66 @@ int main() {
         INTERNAL_ASSET_DIR "/shaders/default.vert",
         INTERNAL_ASSET_DIR "/shaders/cubemap.frag"
     );
-    SetShaderValue(hdrToCubemapShader, GetShaderLocation(hdrToCubemapShader, "equirectangularMap"), (int[1]){0},
-                   SHADER_UNIFORM_INT);
-
 
     Camera camera;
-    camera.fovy = 45.0;
-    camera.position = {0.0f, 1.0f, 1.0f};
-    camera.target = {0.0f, 0.0f, 0.0f};
+    camera.fovy = 90.0;
+    camera.position = {0.0f, 0.0f, 0.0f};
+    camera.target = {1.0f, 0.0f, 0.0f};
     camera.up = {0.0f, 1.0f, 0.0f};
     camera.projection = CAMERA_PERSPECTIVE;
 
     Model skybox;
     Mesh cube = GenMeshCube(1.0f, 1.0f, 1.0f);
     skybox = LoadModelFromMesh(cube);
-    Material &material = skybox.materials[skybox.meshMaterial[0]];
-    skybox.materials[skybox.meshMaterial[0]].shader = LoadShader(
+    Material &skyboxMat = skybox.materials[skybox.meshMaterial[0]];
+    skyboxMat.shader = LoadShader(
         ASSET_DIR "/shaders/custom.vert",
         ASSET_DIR "/shaders/skybox.frag"
     );
-    skybox.materials[skybox.meshMaterial[0]].shader.locs[SHADER_LOC_MAP_CUBEMAP] = GetShaderLocation(
-        material.shader, "environmentMap");
+    skyboxMat.shader.locs[SHADER_LOC_MAP_CUBEMAP] = GetShaderLocation(skyboxMat.shader, "environmentMap");
 
+    Model hdrSkybox;
+    Mesh cube2 = GenMeshCube(1.0f, 1.0f, 1.0f);
+    hdrSkybox = LoadModelFromMesh(cube2);
+    Material &hdrMat = hdrSkybox.materials[hdrSkybox.meshMaterial[0]];
+    hdrMat.shader = hdrToCubemapShader;
+    hdrMat.shader.locs[SHADER_LOC_MAP_DIFFUSE] = GetShaderLocation(hdrMat.shader, "equirectangularMap");
+
+    RenderTexture renderTexture = LoadRenderTexture(512, 512);
+
+    bool skyboxFlipY = false;
+    bool updateCamera = false;
+    float settingsHeight = 0.0f;
+    int targetFace = 0;
+    PreviewTarget previewTarget = PreviewTarget::HDR;
+    std::string statusText;
+    bool statusWarning = false;
+    int dimensionIndex = 2;
+
+    // default file
+    LoadHDRMap(INTERNAL_ASSET_DIR "/textures/default.hdr", hdrTexture, hdrMat);
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
-        UpdateCamera(&camera, CAMERA_FREE);
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            updateCamera = !updateCamera;
+        }
+        if (updateCamera) {
+            SetMouseCursor(MOUSE_CURSOR_CROSSHAIR);
+            UpdateCamera(&camera, CAMERA_FREE);
+        } else {
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        }
 
         if (IsFileDropped()) {
             FilePathList droppedFiles = LoadDroppedFiles();
-            std::cout << "Dropped files count: " << droppedFiles.count << std::endl;
-
-            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".png")) {
-                std::cout << "Dropped png file: " << droppedFiles.paths[0] << std::endl;
-                UnloadTexture(cubemapTexture);
-                Image cubemapImage = LoadImage(droppedFiles.paths[0]);
-                cubemapTexture = LoadTextureCubemap(cubemapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
-                skybox.materials[skybox.meshMaterial[0]].maps[MATERIAL_MAP_CUBEMAP].texture = cubemapTexture;
-                UnloadImage(cubemapImage);
-            }
-            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".hdr")) {
-                std::cout << "Dropped hdr file: " << droppedFiles.paths[0] << std::endl;
-                UnloadTexture(hdrTexture);
-                hdrTexture = LoadTexture(droppedFiles.paths[0]);
-            }
-
+            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".png"))
+                LoadCubemap(droppedFiles.paths[0], cubemapTexture, skyboxMat);
+            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".hdr"))
+                LoadHDRMap(droppedFiles.paths[0], hdrTexture, hdrMat);
             UnloadDroppedFiles(droppedFiles); // Unload filepaths from memory
         }
 
@@ -108,18 +127,31 @@ int main() {
         BeginDrawing();
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
 
-
-        if (IsTextureValid(cubemapTexture)) {
+        if (IsTextureValid(hdrTexture) && previewTarget == PreviewTarget::HDR) {
             BeginMode3D(camera);
-            DrawGrid(10, 1.0f);
+            rlDisableDepthMask();
+            rlDisableBackfaceCulling();
+            int value = skyboxFlipY ? 1 : 0;
+            SetShaderValue(hdrMat.shader, GetShaderLocation(hdrMat.shader, "flipY"),
+                           &value, SHADER_UNIFORM_INT);
+            SetShaderValue(hdrMat.shader, GetShaderLocation(hdrMat.shader, "viewPos"),
+                           &camera.position, SHADER_UNIFORM_VEC3);
+            DrawModel(hdrSkybox, camera.position, 1.0f, WHITE);
+            rlEnableBackfaceCulling();
+            rlEnableDepthMask();
+            EndMode3D();
+        }
+
+        if (IsTextureValid(cubemapTexture) && previewTarget == PreviewTarget::CUBEMAP) {
+            BeginMode3D(camera);
             // Draw skybox
             rlDisableDepthMask();
             rlDisableBackfaceCulling();
-            Material *material = &skybox.materials[skybox.meshMaterial[0]];
-            // SetShaderValue(material->shader, GetShaderLocation(material->shader, "flipY"), &skyboxFlipY,
-            //                SHADER_UNIFORM_INT);
-            SetShaderValue(material->shader, GetShaderLocation(material->shader, "viewPos"),
+            SetShaderValue(skyboxMat.shader, GetShaderLocation(skyboxMat.shader, "viewPos"),
                            &camera.position, SHADER_UNIFORM_VEC3);
+            int value = skyboxFlipY ? 1 : 0;
+            SetShaderValue(skyboxMat.shader, GetShaderLocation(skyboxMat.shader, "flipY"),
+                           &value, SHADER_UNIFORM_INT);
             DrawModel(skybox, camera.position, 1.0f, WHITE);
             rlEnableBackfaceCulling();
             rlEnableDepthMask();
@@ -130,27 +162,75 @@ int main() {
         DrawFPS(windowWidth - 80, 0);
 
 
-        Rectangle rect = {Editor::MediumGap(), Editor::MediumGap(), 500, Editor::TextSizeF() * 1.5f};
+        Rectangle rect = {Editor::MediumGap(), Editor::MediumGap(), 400, Editor::TextSizeF() * 1.5f};
+        DrawRectangle(0, 0, rect.width + 3 * Editor::MediumGap(), settingsHeight, Fade(BLACK, .5f));
+
+        GuiToggleGroup({rect.x, rect.y, rect.width / 3, rect.height}, "HDR;Cubemap;Irradiance",
+                       reinterpret_cast<int *>(&previewTarget));
+        rect.y += rect.height + Editor::SmallGap();
+
         GuiLabel(rect, TextFormat("HDR: %s, Cubemap: %s, Irradiance: %s",
                                   IsTextureValid(hdrTexture) ? "Loaded" : "Not loaded",
                                   IsTextureValid(cubemapTexture) ? "Loaded" : "Not loaded",
                                   IsTextureValid(irradianceTexture) ? "Loaded" : "Not loaded"));
         rect.y += rect.height + Editor::SmallGap();
+
+        GuiToggleGroup({rect.x, rect.y, rect.width / 5, rect.height}, dimensionNames.c_str(), &dimensionIndex);
+        rect.y += rect.height + Editor::SmallGap();
+
         if (GuiButton(rect, "HDR to cubemap")) {
             if (!IsTextureValid(hdrTexture)) {
-                std::cout << "No HDR texture loaded" << std::endl;
+                statusText = "No HDR texture loaded";
+                statusWarning = true;
             } else {
-                std::cout << "HDR to cubemap" << std::endl;
-                cubemapTexture = GenTextureCubemap(hdrToCubemapShader, hdrTexture, 1024,
-                                                   PIXELFORMAT_UNCOMPRESSED_R8G8B8);
-                skybox.materials[skybox.meshMaterial[0]].maps[MATERIAL_MAP_CUBEMAP].texture = cubemapTexture;
+                renderTexture = LoadRenderTexture(dimensions[dimensionIndex], dimensions[dimensionIndex]);
+                camera.fovy = 90.0f;
+                camera.position = Vector3{0.0f, 0.0f, 0.0f};
+                for (int i = 0; i < 6; i++) {
+                    camera.target = cameraTargets[i];
+                    camera.up = cameraUps[i];
 
-                // export
-                // Image image = LoadImageFromTexture(cubemapTexture);
-                // ExportImage(image, INTERNAL_ASSET_DIR "/textures/cubemap.png");
+                    RenderCubeFace(i, renderTexture, hdrSkybox, hdrMat, camera, skyboxFlipY);
+
+                    // export
+                    Image image = LoadImageFromTexture(renderTexture.texture);
+                    std::string path = TextFormat("%s/textures/cubemap%i.png", INTERNAL_ASSET_DIR, i);
+                    if (!FileExists(path.c_str())) {
+                        Utils::CreateEmptyFile(path);
+                    }
+                    ExportImage(image, path.c_str());
+                    UnloadImage(image);
+                }
+
+                GenerateCubemapAtlas(renderTexture.texture.width, renderTexture.texture.height);
+                LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap.png", cubemapTexture, skyboxMat);
+
+                statusText = "Cubemap generated";
+                statusWarning = false;
             }
         }
         rect.y += rect.height + Editor::SmallGap();
+        Editor::DrawStatusInfoBox(rect, statusText, statusWarning);
+
+        GuiCheckBox({rect.x, rect.y, rect.height, rect.height}, "Flip Y", &skyboxFlipY);
+        rect.y += rect.height + Editor::SmallGap();
+
+        GuiToggleGroup({rect.x, rect.y, rect.width / 6, rect.height}, targetNames.c_str(), &targetFace);
+        rect.y += rect.height + Editor::SmallGap();
+
+        if (GuiButton(rect, "Set Target Face")) {
+            camera.fovy = 90.0f;
+            camera.position = Vector3{0.0f, 0.0f, 0.0f};
+            camera.target = cameraTargets[targetFace];
+            camera.up = cameraUps[targetFace];
+            std::cout << "Camera target: " << cameraTargets[targetFace].x << ", "
+                    << cameraTargets[targetFace].y << ", " << cameraTargets[targetFace].z << std::endl;
+            std::cout << "Up: " << cameraUps[targetFace].x << ", "
+                    << cameraUps[targetFace].y << ", " << cameraUps[targetFace].z << std::endl;
+        }
+        rect.y += rect.height + Editor::SmallGap();
+
+        settingsHeight = rect.y;
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

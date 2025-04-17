@@ -10,6 +10,7 @@ in vec3 fragNormal;
 uniform samplerCube environmentMap;
 uniform vec3 viewPos;
 uniform bool flipY;
+uniform bool test;
 
 // Output fragment color
 out vec4 finalColor;
