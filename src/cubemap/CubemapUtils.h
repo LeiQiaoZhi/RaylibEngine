@@ -8,11 +8,12 @@
 #include <raylib.h>
 #include "raymath.h"
 #include "rlgl.h"
+#include "../common/utils/Utils.h"
 
 inline std::string targetNames = "X+;X-;Y+;Y-;Z+;Z-";
 
-inline std::string dimensionNames = "256;512;1024;2048;4096";
-inline int dimensions[5] = {256, 512, 1024, 2048, 4096};
+inline std::string dimensionNames = "128;256;512;1024;2048;4096";
+inline std::vector<int> dimensions = {128, 256, 512, 1024, 2048, 4096};
 
 inline Vector3 cameraTargets[6] = {
     (Vector3){1.0f, 0.0f, 0.0f},
@@ -41,37 +42,88 @@ inline Vector2 atlasPositions[6] = {
     (Vector2){0.0f, 1.0f}
 };
 
-inline void LoadHDRMap(const std::string &path, Texture &hdrTexture, Material &hdrMat) {
+inline void SaveRenderTexture(const std::string &path, const RenderTexture &renderTexture) {
+    const Image image = LoadImageFromTexture(renderTexture.texture);
+    if (!FileExists(path.c_str())) {
+        Utils::CreateEmptyFile(path);
+    }
+    ExportImage(image, path.c_str());
+    UnloadImage(image);
+}
+
+inline void DrawPreviewTexture(const Texture &previewTexture, const float windowWidth, const float windowHeight) {
+    const float scale = (windowWidth / 4.0f) / previewTexture.width;
+    const Vector2 texTopLeft = {0, windowHeight - previewTexture.height * scale};
+    DrawText(TextFormat("Preview: %i x %i", previewTexture.width, previewTexture.height),
+             texTopLeft.x + 20, texTopLeft.y - 30, 20, WHITE);
+    DrawTextureEx(previewTexture, texTopLeft, 0, scale, WHITE);
+}
+
+inline void LoadHDRMap(const std::string &path, Texture &hdrTexture, Material &hdrMat, Material &irradianceMat) {
     std::cout << "Dropped hdr file: " << path << std::endl;
     UnloadTexture(hdrTexture);
     hdrTexture = LoadTexture(path.c_str());
 
     hdrMat.maps[MATERIAL_MAP_DIFFUSE].texture = hdrTexture;
+    irradianceMat.maps[MATERIAL_MAP_DIFFUSE].texture = hdrTexture;
 }
 
-inline void LoadCubemap(const std::string &path, TextureCubemap &cubemapTexture, Material &skyboxMat) {
+inline void LoadCubemap(const std::string &path, TextureCubemap &cubemapTexture,
+                        std::vector<Material *> &dependentMats, Texture &previewTexture) {
     std::cout << "Dropped png file: " << path << std::endl;
     UnloadTexture(cubemapTexture);
-    Image cubemapImage = LoadImage(path.c_str());
+    const Image cubemapImage = LoadImage(path.c_str());
     cubemapTexture = LoadTextureCubemap(cubemapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
     UnloadImage(cubemapImage);
 
-    skyboxMat.maps[MATERIAL_MAP_CUBEMAP].texture = cubemapTexture;
+    for (const Material *mat: dependentMats) {
+        mat->maps[MATERIAL_MAP_CUBEMAP].texture = cubemapTexture;
+    }
+
+    previewTexture = LoadTexture(path.c_str());
 }
 
-inline void GenerateCubemapAtlas(int width, int height) {
-    int atlasWidth = width * 4;
-    int atlasHeight = height * 3;
+inline void LoadIrradianceMapForPreview(const std::string &path, TextureCubemap &irradianceTexture,
+                                        Material &irradiancePreviewMat,
+                                        Texture &previewTexture) {
+    std::cout << "Dropped png file: " << path << std::endl;
+    UnloadTexture(irradianceTexture);
+    const Image image = LoadImage(path.c_str());
+    irradianceTexture = LoadTextureCubemap(image, CUBEMAP_LAYOUT_AUTO_DETECT);
+    UnloadImage(image);
+
+    irradiancePreviewMat.maps[MATERIAL_MAP_CUBEMAP].texture = irradianceTexture;
+
+    previewTexture = LoadTexture(path.c_str());
+}
+
+inline void LoadPrefilterMapForPreview(const std::string &path, TextureCubemap &prefilterTexture,
+                                       Material &prefilterPreviewMat,
+                                       Texture &previewTexture) {
+    std::cout << "Dropped png file: " << path << std::endl;
+    UnloadTexture(prefilterTexture);
+    const Image image = LoadImage(path.c_str());
+    prefilterTexture = LoadTextureCubemap(image, CUBEMAP_LAYOUT_AUTO_DETECT);
+    UnloadImage(image);
+
+    prefilterPreviewMat.maps[MATERIAL_MAP_CUBEMAP].texture = prefilterTexture;
+
+    previewTexture = LoadTexture(path.c_str());
+}
+
+inline void GenerateCubemapAtlas(const std::string &name, const int width, const int height) {
+    const int atlasWidth = width * 4;
+    const int atlasHeight = height * 3;
     Image atlas = GenImageColor(atlasWidth, atlasHeight, BLACK); // blank atlas
     std::array<Image, 6> cubeImages;
     for (int i = 0; i < 6; i++) {
-        std::string path = TextFormat("%s/textures/cubemap%i.png", INTERNAL_ASSET_DIR, i);
+        std::string path = TextFormat("%s/textures/%s%i.png", INTERNAL_ASSET_DIR, name.c_str(), i);
         cubeImages[i] = LoadImage(path.c_str());
     }
-    Rectangle srcRect = {0, 0, static_cast<float>(width), static_cast<float>(height)};
+    const Rectangle srcRect = {0, 0, static_cast<float>(width), static_cast<float>(height)};
 
     for (int i = 0; i < 6; i++) {
-        Rectangle destRect = {
+        const Rectangle destRect = {
             atlasPositions[i].x * width,
             atlasPositions[i].y * height,
             srcRect.width,
@@ -80,20 +132,39 @@ inline void GenerateCubemapAtlas(int width, int height) {
         ImageDraw(&atlas, cubeImages[i], srcRect, destRect, WHITE);
     }
 
-    ExportImage(atlas, (std::string(INTERNAL_ASSET_DIR) + "/textures/cubemap.png").c_str());
+    ExportImage(atlas, TextFormat("%s/textures/%s.png", INTERNAL_ASSET_DIR, name.c_str()));
 
     for (int i = 0; i < 6; i++) {
         UnloadImage(cubeImages[i]);
     }
 }
 
+inline void DrawSkybox(const Camera &camera, const Model &model, const Material &material, const bool flipY) {
+    BeginMode3D(camera);
+    // Draw skybox
+    rlDisableDepthMask();
+    rlDisableBackfaceCulling();
+    SetShaderValue(material.shader, GetShaderLocation(material.shader, "viewPos"),
+                   &camera.position, SHADER_UNIFORM_VEC3);
+    const int value = flipY ? 1 : 0;
+    SetShaderValue(material.shader, GetShaderLocation(material.shader, "flipY"),
+                   &value, SHADER_UNIFORM_INT);
+    DrawModel(model, camera.position, 1.0f, WHITE);
+    rlEnableBackfaceCulling();
+    rlEnableDepthMask();
+    EndMode3D();
+}
+
 inline void RenderCubeFace(int faceId, const RenderTexture &renderTexture, const Model &model, const Material &material,
-                           const Camera &camera, const bool flipY = false) {
+                           Camera &camera, const bool flipY = false) {
+    camera.target = cameraTargets[faceId];
+    camera.up = cameraUps[faceId];
+
     BeginTextureMode(renderTexture);
     BeginMode3D(camera);
     rlDisableDepthMask();
     rlDisableBackfaceCulling();
-    int value = flipY ? 0 : 1; // invert to match coordinate system change
+    const int value = flipY ? 0 : 1; // invert to match coordinate system change
     SetShaderValue(material.shader, GetShaderLocation(material.shader, "flipY"),
                    &value, SHADER_UNIFORM_INT);
     SetShaderValue(material.shader, GetShaderLocation(material.shader, "viewPos"),
@@ -106,17 +177,18 @@ inline void RenderCubeFace(int faceId, const RenderTexture &renderTexture, const
 }
 
 // Generate cubemap texture from HDR texture
-inline TextureCubemap GenTextureCubemap(Shader shader, Texture2D panorama, int size, int format) {
+inline TextureCubemap GenTextureCubemap(const Shader shader, const Texture2D &panorama, const int size,
+                                        const int format) {
     TextureCubemap cubemap = {0};
 
     rlDisableBackfaceCulling(); // Disable backface culling to render inside the cube
 
     // STEP 1: Setup framebuffer
     //------------------------------------------------------------------------------------------
-    unsigned int rbo = rlLoadTextureDepth(size, size, true);
+    const unsigned int rbo = rlLoadTextureDepth(size, size, true);
     cubemap.id = rlLoadTextureCubemap(0, size, format, 1);
 
-    unsigned int fbo = rlLoadFramebuffer();
+    const unsigned int fbo = rlLoadFramebuffer();
     rlFramebufferAttach(fbo, rbo, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_RENDERBUFFER, 0);
     rlFramebufferAttach(fbo, cubemap.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_CUBEMAP_POSITIVE_X, 0);
 
@@ -130,11 +202,11 @@ inline TextureCubemap GenTextureCubemap(Shader shader, Texture2D panorama, int s
     rlEnableShader(shader.id);
 
     // Define projection matrix and send it to shader
-    Matrix matFboProjection = MatrixPerspective(90.0 * DEG2RAD, 1.0, rlGetCullDistanceNear(), rlGetCullDistanceFar());
+    const Matrix matFboProjection = MatrixPerspective(90.0 * DEG2RAD, 1.0, rlGetCullDistanceNear(), rlGetCullDistanceFar());
     rlSetUniformMatrix(shader.locs[SHADER_LOC_MATRIX_PROJECTION], matFboProjection);
 
     // Define view matrix for every side of the cubemap
-    Matrix fboViews[6] = {
+    const Matrix fboViews[6] = {
         MatrixLookAt((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){1.0f, 0.0f, 0.0f}, (Vector3){0.0f, -1.0f, 0.0f}),
         MatrixLookAt((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){-1.0f, 0.0f, 0.0f}, (Vector3){0.0f, -1.0f, 0.0f}),
         MatrixLookAt((Vector3){0.0f, 0.0f, 0.0f}, (Vector3){0.0f, 1.0f, 0.0f}, (Vector3){0.0f, 0.0f, 1.0f}),
