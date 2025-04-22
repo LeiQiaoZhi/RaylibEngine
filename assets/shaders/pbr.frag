@@ -133,13 +133,15 @@ void main()
     }
 
     // ambient IBL
+    vec3 reflectDir = reflect(-view, normal);
     vec3 irradiance = texture(irradianceMap, normal).rgb;
     vec3 diffuse = irradiance * albedo.rgb;
+    vec3 kD = (1.0 - f0) * (1.0 - metallic);
     const int numLod = 5;
-    vec3 prefilter = textureLod(prefilterMap, normal, roughness * (numLod - 1)).rgb;
+    vec3 prefilter = textureLod(prefilterMap, reflectDir, roughness * (numLod - 1)).rgb;
     vec2 brdf = texture(brdfLUT, vec2(max(dot(normal, view), 0.0), roughness)).rg;
     vec3 specular = prefilter * (f0 * brdf.x + brdf.y);
-    vec3 ambient = ((1.0 - f0) * diffuse + specular) * ao;
+    vec3 ambient = (kD * diffuse + specular) * ao;
     finalColor.rgb += ambient;
 
     // tonemapping
