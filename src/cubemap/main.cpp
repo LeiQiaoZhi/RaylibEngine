@@ -136,7 +136,7 @@ int main() {
 
     // default file
     LoadHDRMap(INTERNAL_ASSET_DIR "/textures/default.hdr", hdrTexture, hdrMat, irradianceMat);
-    LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap.png", cubemapTexture, cubemapDependentMaterials,
+    LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap." + format, cubemapTexture, cubemapDependentMaterials,
                 cubemapPreviewTexture);
 
     // Main game loop
@@ -156,7 +156,7 @@ int main() {
 
         if (IsFileDropped()) {
             FilePathList droppedFiles = LoadDroppedFiles();
-            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".png")) {
+            if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], format.c_str())) {
                 LoadCubemap(droppedFiles.paths[0], cubemapTexture, cubemapDependentMaterials, cubemapPreviewTexture);
             }
             if (droppedFiles.count == 1 && IsFileExtension(droppedFiles.paths[0], ".hdr"))
@@ -217,12 +217,12 @@ int main() {
                 for (int i = 0; i < 6; i++) {
                     RenderCubeFace(i, renderTexture, hdrSkybox, hdrMat, camera, skyboxFlipY);
 
-                    std::string path = TextFormat("%s/textures/cubemap%i.png", INTERNAL_ASSET_DIR, i);
+                    std::string path = TextFormat("%s/textures/cubemap%i.%s", INTERNAL_ASSET_DIR, i, format.c_str());
                     SaveRenderTexture(path, renderTexture);
                 }
 
                 GenerateCubemapAtlas("cubemap", renderTexture.texture.width, renderTexture.texture.height);
-                LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap.png", cubemapTexture, cubemapDependentMaterials,
+                LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap." + format, cubemapTexture, cubemapDependentMaterials,
                             cubemapPreviewTexture);
 
                 statusText = "Cubemap generated";
@@ -243,12 +243,12 @@ int main() {
                 for (int i = 0; i < 6; i++) {
                     RenderCubeFace(i, renderTexture, irradianceSkybox, irradianceMat, camera, skyboxFlipY);
 
-                    std::string path = TextFormat("%s/textures/irradiance%i.png", INTERNAL_ASSET_DIR, i);
+                    std::string path = TextFormat("%s/textures/irradiance%i.%s", INTERNAL_ASSET_DIR, i, format.c_str());
                     SaveRenderTexture(path, renderTexture);
                 }
 
                 GenerateCubemapAtlas("irradiance", renderTexture.texture.width, renderTexture.texture.height);
-                LoadIrradianceMapForPreview(INTERNAL_ASSET_DIR "/textures/irradiance.png", irradianceTexture,
+                LoadIrradianceMapForPreview(INTERNAL_ASSET_DIR "/textures/irradiance." + format, irradianceTexture,
                                             irradiancePreviewSkyboxMat,
                                             irradiancePreviewTexture);
 
@@ -275,7 +275,7 @@ int main() {
                     for (int i = 0; i < 6; i++) {
                         RenderCubeFace(i, renderTexture, prefilterSkybox, prefilterMat, camera, skyboxFlipY);
 
-                        std::string path = TextFormat("%s/textures/prefilter-%i%i.png", INTERNAL_ASSET_DIR, mip, i);
+                        std::string path = TextFormat("%s/textures/prefilter-%i%i.%s", INTERNAL_ASSET_DIR, mip, i, format.c_str());
                         SaveRenderTexture(path, renderTexture);
                     }
 
@@ -283,7 +283,7 @@ int main() {
                     GenerateCubemapAtlas(name, renderTexture.texture.width, renderTexture.texture.height);
                 }
                 std::string name = TextFormat("prefilter-%i", currentMip);
-                LoadPrefilterMapForPreview(TextFormat("%s/textures/%s.png", INTERNAL_ASSET_DIR, name.c_str()),
+                LoadPrefilterMapForPreview(TextFormat("%s/textures/%s.%s", INTERNAL_ASSET_DIR, name.c_str(), format.c_str()),
                                            prefilterTexture,
                                            prefilterPreviewSkyboxMat,
                                            prefilterPreviewTexture);
@@ -319,7 +319,7 @@ int main() {
             if (GuiButton(rect, "Set Prefilter Mip Level")) {
                 std::cout << "Setting prefilter mip level: " << currentMip << std::endl;
                 std::string name = TextFormat("prefilter-%i", currentMip);
-                LoadPrefilterMapForPreview(TextFormat("%s/textures/%s.png", INTERNAL_ASSET_DIR, name.c_str()),
+                LoadPrefilterMapForPreview(TextFormat("%s/textures/%s.%s", INTERNAL_ASSET_DIR, name.c_str(), format.c_str()),
                                            prefilterTexture,
                                            prefilterPreviewSkyboxMat,
                                            prefilterPreviewTexture);

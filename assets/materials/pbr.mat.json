@@ -60,7 +60,7 @@
     {
       "Name": "iHeightScale",
       "Type": "float",
-      "Value": 0.01
+      "Value": 0.0
     }
   ]
 }

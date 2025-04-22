@@ -6,7 +6,7 @@
   "Maps": [
     {
       "Type": 7,
-      "Path": "/textures/night.png",
+      "Path": "/textures/cubemap.png",
       "Color": [
         255,
         255,

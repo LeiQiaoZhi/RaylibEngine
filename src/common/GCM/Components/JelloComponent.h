@@ -141,7 +141,7 @@ private:
     FloatSlider dragStrengthDecayProperty = FloatSlider(&dragStrengthDecay, "Drag Decay", 0, 1);
     FloatSlider gravityProperty = FloatSlider(&gravity, "Gravity", 0, 10);
     FloatSlider airResistanceProperty = FloatSlider(&airResistance, "Air Resistance", 0, 1);
-    MaterialProperty materialProperty = MaterialProperty(nullptr, 0);
+    MaterialProperty materialProperty = MaterialProperty(nullptr, 0, this);
 
     // rk4 states
     Matrix3D k1PositionChanges;

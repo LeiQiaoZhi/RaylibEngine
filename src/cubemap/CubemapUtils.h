@@ -10,6 +10,7 @@
 #include "rlgl.h"
 #include "../common/utils/Utils.h"
 
+inline std::string format = "png";
 inline std::string targetNames = "X+;X-;Y+;Y-;Z+;Z-";
 
 inline std::string dimensionNames = "128;256;512;1024;2048;4096";
@@ -117,7 +118,7 @@ inline void GenerateCubemapAtlas(const std::string &name, const int width, const
     Image atlas = GenImageColor(atlasWidth, atlasHeight, BLACK); // blank atlas
     std::array<Image, 6> cubeImages;
     for (int i = 0; i < 6; i++) {
-        std::string path = TextFormat("%s/textures/%s%i.png", INTERNAL_ASSET_DIR, name.c_str(), i);
+        std::string path = TextFormat("%s/textures/%s%i.%s", INTERNAL_ASSET_DIR, name.c_str(), i, format.c_str());
         cubeImages[i] = LoadImage(path.c_str());
     }
     const Rectangle srcRect = {0, 0, static_cast<float>(width), static_cast<float>(height)};
@@ -132,7 +133,7 @@ inline void GenerateCubemapAtlas(const std::string &name, const int width, const
         ImageDraw(&atlas, cubeImages[i], srcRect, destRect, WHITE);
     }
 
-    ExportImage(atlas, TextFormat("%s/textures/%s.png", INTERNAL_ASSET_DIR, name.c_str()));
+    ExportImage(atlas, TextFormat("%s/textures/%s.%s", INTERNAL_ASSET_DIR, name.c_str(), format.c_str()));
 
     for (int i = 0; i < 6; i++) {
         UnloadImage(cubeImages[i]);

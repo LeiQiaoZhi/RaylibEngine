@@ -38,7 +38,6 @@ public:
 
     void Update() const;
 
-
     void SetRoot(GameObject *gameObject);
 
     GameObject *GetRoot() const {
@@ -51,7 +50,11 @@ public:
 
     void SendLightInfoToModel(const Model *model) const;
 
+    void SendEnvironmentIBLInfoToMaterial(const Material *material);
+
     void Save(const char *path);
+
+    void LoadHardCodedIBLMaps();
 
     void Load(const char *data);
 
@@ -77,6 +80,8 @@ public:
         return isPlayMode ? Fade(RED, 0.1f) : Fade(WHITE, 0.0f);
     }
 
+    void SendEnvironmentIBLInfoToModel(const Model *model);
+
     std::string name;
     int selectedGameObjectUID = -1;
     Rectangle screenSpaceRect = {0, 0, 0, 0};
@@ -92,6 +97,12 @@ public:
 private:
     GameObject *root = nullptr;
     std::vector<LightComponent *> lights;
+
+    // pbr environment maps
+    // TODO: provide UI to configure these
+    TextureCubemap irradianceMap = {};
+    std::vector<TextureCubemap> prefilteredMap = {};
+    Texture2D brdfLut = {};
 };
 
 

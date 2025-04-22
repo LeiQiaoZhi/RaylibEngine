@@ -64,7 +64,7 @@ virtual void Start() {
 
     static std::vector<std::string> &GetAvailableComponentTypes();
 
-protected:
+public:
     Logger &GetLogger() const;
 
 public:

@@ -121,8 +121,33 @@ void Scene::SendLightInfoToShader(const Shader *shader) const {
 
 void Scene::SendLightInfoToModel(const Model *model) const {
     for (int i = 0; i < model->materialCount; i++) {
-        const Shader *shader = &model->materials[i].shader;
-        SendLightInfoToShader(shader);
+        const Shader &shader = model->materials[i].shader;
+        SendLightInfoToShader(&shader);
+    }
+}
+
+void Scene::SendEnvironmentIBLInfoToMaterial(const Material *material) {
+    if (!IsTextureValid(irradianceMap)) {
+        logger.Log("Irradiance map not ready for material", LogLevel::Error);
+    } else {
+        LoadHardCodedIBLMaps();
+        material->maps[MATERIAL_MAP_IRRADIANCE].texture = irradianceMap;
+        material->maps[MATERIAL_MAP_IRRADIANCE].color = WHITE;
+    }
+}
+
+
+void Scene::SendEnvironmentIBLInfoToModel(const Model *model) {
+    for (int i = 0; i < model->materialCount; i++) {
+        const Material &material = model->materials[i];
+        const Shader &shader = model->materials[i].shader;
+
+        if (!IsTextureValid(irradianceMap)) {
+            logger.Log("Failed to load irradiance map", LogLevel::Error);
+        } else {
+            logger.Log("Sending environment IBL info to model");
+            material.maps[MATERIAL_MAP_IRRADIANCE].texture = irradianceMap;
+        }
     }
 }
 
@@ -134,6 +159,18 @@ void Scene::Save(const char *path) {
     j["saveTime"] = time(nullptr);
     j["editorCamera"] = editorCamera->ToJson();
     JsonUtils::JsonToFile(j, path);
+}
+
+void Scene::LoadHardCodedIBLMaps() {
+    const Image irradianceImage = LoadImage(INTERNAL_ASSET_DIR "/textures/irradiance.png");
+    irradianceMap = LoadTextureCubemap(irradianceImage, CUBEMAP_LAYOUT_AUTO_DETECT);
+    if (!IsTextureValid(irradianceMap)) {
+        // std::cerr << "Failed to load irradiance map" << std::endl;
+        logger.Log("[hard load] Failed to load irradiance map", LogLevel::Error);
+    } else {
+        logger.Log("Irradiance map loaded");
+        // std::cout << "irradianceMap loaded" << std::endl;
+    }
 }
 
 void Scene::Load(const char *path) {
@@ -149,7 +186,7 @@ void Scene::Load(const char *path) {
     if (editorCamera == nullptr) {
         editorCamera = new CameraComponent();
         // hidden obj to hold editor camera
-        GameObject* hiddenObj = new GameObject("Editor Camera", Utils::GenerateUID("Editor Camera"));
+        GameObject *hiddenObj = new GameObject("Editor Camera", Utils::GenerateUID("Editor Camera"));
         hiddenObj->scene = this;
         hiddenObj->AddComponent(editorCamera);
     }
@@ -157,6 +194,7 @@ void Scene::Load(const char *path) {
         editorCamera->FromJson(j["editorCamera"]);
     // initialize scene
     FindLights();
+    LoadHardCodedIBLMaps();
 
     rootFileHierarchyProperty = new GameObjectHierarchyProperty(root, false);
 

@@ -259,6 +259,7 @@ public:
             material.shader.locs[SHADER_LOC_MAP_NORMAL] = GetShaderLocation(material.shader, "normalMap");
             material.shader.locs[SHADER_LOC_MAP_HEIGHT] = GetShaderLocation(material.shader, "heightMap");
             material.shader.locs[SHADER_LOC_MAP_CUBEMAP] = GetShaderLocation(material.shader, "environmentMap");
+            material.shader.locs[SHADER_LOC_MAP_IRRADIANCE] = GetShaderLocation(material.shader, "irradianceMap");
         }
 
         // Textures

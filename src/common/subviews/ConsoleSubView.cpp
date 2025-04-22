@@ -27,7 +27,7 @@ void ConsoleSubView::Render(const Scene &scene, const Vector2 position) const {
         renderer_->GetContentSize().x - Editor::SmallGap(), renderer_->GetContentSize().y - Editor::SmallGap() * 2
     };
 
-    for (int i = 0; i < logEntries.size(); ++i) {
+    for (int i = logEntries.size() - 1; i >= 0; i--) {
         const float timeWidth = Editor::TextWidth(logEntries[i].GetTimestampString().c_str()) + Editor::LargeGap();
 
         const char* message = GuiIconText(logEntries[i].GetIcon(), logEntries[i].message.c_str());
@@ -40,7 +40,7 @@ void ConsoleSubView::Render(const Scene &scene, const Vector2 position) const {
     }
     renderer_->End();
 
-    renderer_->SetContentSize(renderer_->GetContentSize().x, (logEntries.size() + 1) * textSize + 10);
+    renderer_->SetContentSize(renderer_->GetContentSize().x, rect.y);
 
     const auto contentPosition = Vector2{position.x, position.y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT};
     renderer_->Show(contentPosition, scene.GetTint());

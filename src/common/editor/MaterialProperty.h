@@ -7,10 +7,12 @@
 #include "../utils/ShaderParam.h"
 
 
+class Component;
+
 class MaterialProperty {
 public:
-    explicit MaterialProperty(Model *model, const int meshIndex)
-        : model(model), meshIndex(meshIndex) {
+    explicit MaterialProperty(Model *model, const int meshIndex, Component* parent)
+        : model(model), meshIndex(meshIndex), parent(parent) {
     }
 
     void OnEditorGUI(Rectangle &rect);
@@ -44,6 +46,7 @@ public:
     void FromJson(const nlohmann::json &json);
 
 private:
+    Component* parent = nullptr;
     Model *model = nullptr;
     char filename[256] = "";
     int meshIndex = 0;

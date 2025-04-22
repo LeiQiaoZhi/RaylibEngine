@@ -72,7 +72,7 @@ private:
 
     // UI
     ColorProperty backgroundColorProperty = ColorProperty(&backgroundColor, "Background Color", false);
-    MaterialProperty skyboxMaterialProperty = MaterialProperty(&skybox, 0);
+    MaterialProperty skyboxMaterialProperty = MaterialProperty(&skybox, 0, this);
     float height;
     bool updating = false;
 };

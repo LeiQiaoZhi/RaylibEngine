@@ -150,13 +150,21 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
                 if (material.maps[i].texture.id != 0) {
                     oss.str("");
                     oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id
-                    << ", Mipmaps: " << material.maps[i].texture.mipmaps << "]" << std::endl;
+                            << ", Mipmaps: " << material.maps[i].texture.mipmaps << "]" << std::endl;
                     float recWidth = Editor::TextSize() * 1.0f;
                     DrawRectangleRec({
                                          rect.x + rect.width - recWidth, rect.y - recWidth * 1.0f, recWidth,
                                          Editor::TextSize() * 1.0f
                                      }, material.maps[i].color);
                     GuiLabel({rect.x, rect.y, rect.width, Editor::TextSize() * 1.0f}, oss.str().c_str());
+
+                    float scale = std::min(recWidth / material.maps[i].texture.width,
+                                           recWidth / material.maps[i].texture.height);
+                    DrawTextureEx(material.maps[i].texture, (Vector2){
+                                      rect.x + rect.width - 2 * recWidth,
+                                      rect.y - recWidth * 1.0f
+                                  }, 0, scale, WHITE);
+
                     rect.y += Editor::TextSize() + Editor::SmallGap();
                 }
             }
@@ -285,6 +293,8 @@ void ModelComponent::GenModelTangents() {
 
 void ModelComponent::EditorStart() {
     GenModelTangents();
+    LoadModelFromFile(filename);
+    InitMaterialsFromJson();
 }
 
 void ModelComponent::EditorUpdate() {
@@ -328,7 +338,7 @@ void ModelComponent::LoadModelFromFile(const std::string &filename) {
         // update properties
         materialProps.clear();
         for (int i = 0; i < model->meshCount; i++)
-            materialProps.emplace_back(model, i);
+            materialProps.emplace_back(model, i, this);
 
         LoadModelAnimationsFromPath(path);
 
@@ -358,7 +368,7 @@ void ModelComponent::SetModelFromMesh(const Mesh &mesh) {
     // update properties
     materialProps.clear();
     for (int i = 0; i < model->meshCount; i++)
-        materialProps.emplace_back(model, i);
+        materialProps.emplace_back(model, i, this);
 
     InitMaterialsFromJson();
     GenModelTangents();
@@ -418,10 +428,8 @@ void ModelComponent::FromJson(const nlohmann::json &json) {
     animationsFoldout.FromJson(json.value("animationFoldout", animationsFoldout.ToJson()));
     debugFoldout.FromJson(json.value("debugFoldout", debugFoldout.ToJson()));
 
-    LoadModelFromFile(filename);
 
     materialsJson = json.value("materials", materialsJson);
-    InitMaterialsFromJson();
 }
 
 void ModelComponent::SetHighlightedMesh(int index) {

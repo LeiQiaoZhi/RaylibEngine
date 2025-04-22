@@ -1,6 +1,8 @@
 #include <raygui.h>
 #include "MaterialProperty.h"
 #include "Editor.h"
+#include "../GCM/GameObject.h"
+#include "../GCM/Components/Component.h"
 #include "../utils/RaylibUtils.h"
 #include "../utils/Utils.h"
 
@@ -144,10 +146,16 @@ void MaterialProperty::LoadMaterialFromFile(const char *filename) {
         const auto fullPath = ASSET_DIR + std::string("/materials/") + std::string(filename);
         model->materials[model->meshMaterial[meshIndex]] = RaylibUtils::LoadMaterialFromFile(
             fullPath.c_str(), shaderParams);
-        statusText = "Material loaded";
-        statusWarning = false;
+
+        if (parent != nullptr && parent->gameObject != nullptr) {
+            parent->GetLogger().Log(TextFormat("Sending IBL to: %s", filename));
+            parent->gameObject->scene->SendEnvironmentIBLInfoToMaterial(
+                &model->materials[model->meshMaterial[meshIndex]]);
+        }
 
         currentMaterialFilename = filename;
+        statusText = "Material loaded";
+        statusWarning = false;
     }
 }
 

@@ -18,6 +18,9 @@ uniform sampler2D heightMap;
 uniform float iHeightScale = 0.1;
 uniform bool useNormalMap;
 
+// IBL maps
+uniform samplerCube irradianceMap;
+
 // Output fragment color
 out vec4 finalColor;
 
@@ -126,6 +129,13 @@ void main()
                 (diffuse + specular) * radiance * max(dot(normal, toLight), 0.0);
         }
     }
+
+    // ambient IBL
+    vec3 irradiance = texture(irradianceMap, normal).rgb;
+    vec3 diffuse = irradiance * albedo.rgb;
+    // TODO: prefilter and brdf lut
+    vec3 ambient = (diffuse) * ao;
+    finalColor.rgb += ambient;
 
     // tonemapping
     finalColor.rgb = finalColor.rgb / (finalColor.rgb + vec3(1.0));
