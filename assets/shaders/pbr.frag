@@ -20,6 +20,8 @@ uniform bool useNormalMap;
 
 // IBL maps
 uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 
 // Output fragment color
 out vec4 finalColor;
@@ -133,8 +135,11 @@ void main()
     // ambient IBL
     vec3 irradiance = texture(irradianceMap, normal).rgb;
     vec3 diffuse = irradiance * albedo.rgb;
-    // TODO: prefilter and brdf lut
-    vec3 ambient = (diffuse) * ao;
+    const int numLod = 5;
+    vec3 prefilter = textureLod(prefilterMap, normal, roughness * (numLod - 1)).rgb;
+    vec2 brdf = texture(brdfLUT, vec2(max(dot(normal, view), 0.0), roughness)).rg;
+    vec3 specular = prefilter * (f0 * brdf.x + brdf.y);
+    vec3 ambient = ((1.0 - f0) * diffuse + specular) * ao;
     finalColor.rgb += ambient;
 
     // tonemapping

@@ -101,7 +101,7 @@ private:
     // pbr environment maps
     // TODO: provide UI to configure these
     TextureCubemap irradianceMap = {};
-    std::vector<TextureCubemap> prefilteredMap = {};
+    TextureCubemap prefilteredMap = {};
     Texture2D brdfLut = {};
 };
 

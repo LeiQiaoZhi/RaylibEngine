@@ -150,7 +150,9 @@ void ModelComponent::OnEditorGUI(Rectangle &rect) {
                 if (material.maps[i].texture.id != 0) {
                     oss.str("");
                     oss << "   [" << i << ", " << mapType << ", Texture" << material.maps[i].texture.id
-                            << ", Mipmaps: " << material.maps[i].texture.mipmaps << "]" << std::endl;
+                            << ", Mipmaps: " << material.maps[i].texture.mipmaps
+                            << ", " << material.maps[i].texture.width << "x" << material.maps[i].texture.height
+                            << "]" << std::endl;
                     float recWidth = Editor::TextSize() * 1.0f;
                     DrawRectangleRec({
                                          rect.x + rect.width - recWidth, rect.y - recWidth * 1.0f, recWidth,

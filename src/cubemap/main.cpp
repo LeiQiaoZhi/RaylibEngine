@@ -136,7 +136,7 @@ int main() {
 
     // default file
     LoadHDRMap(INTERNAL_ASSET_DIR "/textures/default.hdr", hdrTexture, hdrMat, irradianceMat);
-    LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap." + format, cubemapTexture, cubemapDependentMaterials,
+    LoadCubemap(INTERNAL_ASSET_DIR "/textures/cubemap.dds", cubemapTexture, cubemapDependentMaterials,
                 cubemapPreviewTexture);
 
     // Main game loop

@@ -6,7 +6,7 @@
   "Maps": [
     {
       "Type": 7,
-      "Path": "/textures/cubemap.png",
+      "Path": "/textures/cubemap.dds",
       "Color": [
         255,
         255,

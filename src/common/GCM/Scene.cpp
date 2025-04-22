@@ -133,9 +133,14 @@ void Scene::SendEnvironmentIBLInfoToMaterial(const Material *material) {
         LoadHardCodedIBLMaps();
         material->maps[MATERIAL_MAP_IRRADIANCE].texture = irradianceMap;
         material->maps[MATERIAL_MAP_IRRADIANCE].color = WHITE;
+
+        material->maps[MATERIAL_MAP_PREFILTER].texture = prefilteredMap;
+        material->maps[MATERIAL_MAP_PREFILTER].color = WHITE;
+
+        material->maps[MATERIAL_MAP_BRDF].texture = brdfLut;
+        material->maps[MATERIAL_MAP_BRDF].color = WHITE;
     }
 }
-
 
 void Scene::SendEnvironmentIBLInfoToModel(const Model *model) {
     for (int i = 0; i < model->materialCount; i++) {
@@ -151,6 +156,29 @@ void Scene::SendEnvironmentIBLInfoToModel(const Model *model) {
     }
 }
 
+void Scene::LoadHardCodedIBLMaps() {
+    const Image irradianceImage = LoadImage(INTERNAL_ASSET_DIR "/textures/irradiance.png");
+    irradianceMap = LoadTextureCubemap(irradianceImage, CUBEMAP_LAYOUT_AUTO_DETECT);
+    if (!IsTextureValid(irradianceMap)) {
+        logger.Log("Failed to load irradiance map", LogLevel::Error);
+    } else {
+        logger.Log("Irradiance map loaded");
+    }
+    const Image prefilterImage = LoadImage(INTERNAL_ASSET_DIR "/textures/prefilter.dds");
+    prefilteredMap = LoadTextureCubemap(prefilterImage, CUBEMAP_LAYOUT_AUTO_DETECT);
+    if (!IsTextureValid(prefilteredMap)) {
+        logger.Log("Failed to load prefilter map", LogLevel::Error);
+    } else {
+        logger.Log("Prefilter map loaded");
+    }
+    brdfLut = LoadTexture(INTERNAL_ASSET_DIR "/textures/brdfLUT.png");
+    if (!IsTextureValid(brdfLut)) {
+        logger.Log("Failed to load brdfLUT", LogLevel::Error);
+    } else {
+        logger.Log("brdfLUT loaded");
+    }
+}
+
 void Scene::Save(const char *path) {
     nlohmann::json j = {};
     j["name"] = name;
@@ -161,17 +189,6 @@ void Scene::Save(const char *path) {
     JsonUtils::JsonToFile(j, path);
 }
 
-void Scene::LoadHardCodedIBLMaps() {
-    const Image irradianceImage = LoadImage(INTERNAL_ASSET_DIR "/textures/irradiance.png");
-    irradianceMap = LoadTextureCubemap(irradianceImage, CUBEMAP_LAYOUT_AUTO_DETECT);
-    if (!IsTextureValid(irradianceMap)) {
-        // std::cerr << "Failed to load irradiance map" << std::endl;
-        logger.Log("[hard load] Failed to load irradiance map", LogLevel::Error);
-    } else {
-        logger.Log("Irradiance map loaded");
-        // std::cout << "irradianceMap loaded" << std::endl;
-    }
-}
 
 void Scene::Load(const char *path) {
     // unload current scene
