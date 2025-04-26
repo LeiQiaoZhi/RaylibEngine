@@ -7,8 +7,8 @@
 
 #include "raylib.h"
 #include <string>
-#include "../common/utils/Utils.h"
-#include "../common/utils/JsonUtils.h"
+#include "utils/Utils.h"
+#include "utils/JsonUtils.h"
 #include "nodes/Node.h"
 #include "nodes/NodeInput.h"
 #include "nodes/NodeOutput.h"

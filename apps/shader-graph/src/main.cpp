@@ -1,23 +1,20 @@
 #include "raygui.h"
 
-#define RAYGUI_IMPLEMENTATION
 #include <string>
-#include "raygui.h"
-#undef RAYGUI_IMPLEMENTATION
 
 #include <raylib.h>
 #include <raymath.h>
 #include <iostream>
 #include <list>
 
-#include "../common/input/MouseDragState.h"
+#include "input/MouseDragState.h"
 #include "nodes/Node.h"
 #include "nodes/NodeGroup.h"
 #include "Context.h"
 #include "NodePropertiesSubView.h"
 #include "PreviewSubView.h"
 #include "ShaderCompilationSubView.h"
-#include "../common/editor/Editor.h"
+#include "editor/Editor.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point

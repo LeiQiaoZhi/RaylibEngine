@@ -11,8 +11,8 @@
 
 #include "NodeIO.h"
 #include "../Context.h"
-#include "../../common/editor/DropdownProperty.h"
-#include "../../common/editor/SingleValueProperty.h"
+#include "editor/DropdownProperty.h"
+#include "editor/SingleValueProperty.h"
 
 class NodeOutput;
 class Node;

@@ -5,7 +5,7 @@
 #include "NodeOutput.h"
 
 #include "Node.h"
-#include "../../common/editor/Editor.h"
+#include "editor/Editor.h"
 
 Color NodeOutput::GetColor() const {
     const float alpha = hovering ? 1.0f : 0.7f;

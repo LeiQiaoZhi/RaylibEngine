@@ -1,8 +1,8 @@
 #ifndef PreviewSubView_H
 #define PreviewSubView_H
-#include "../common/subviews/RenderTextureRenderer.h"
-#include "../common/GCM/Scene.h"
-#include "../common/editor/FileHierarchyProperty.h"
+#include "subviews/RenderTextureRenderer.h"
+#include "GCM/Scene.h"
+#include "editor/FileHierarchyProperty.h"
 #include "nodes/Node.h"
 
 class PreviewSubView {

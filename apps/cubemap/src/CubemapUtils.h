@@ -8,7 +8,7 @@
 #include <raylib.h>
 #include "raymath.h"
 #include "rlgl.h"
-#include "../common/utils/Utils.h"
+#include "utils/Utils.h"
 
 inline std::string format = "png";
 inline std::string targetNames = "X+;X-;Y+;Y-;Z+;Z-";

@@ -10,7 +10,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "../CodeGeneration.h"
-#include "../../common/editor/Editor.h"
+#include "editor/Editor.h"
 
 Node::Node(nlohmann::json j) {
     name = j.value("name", name);

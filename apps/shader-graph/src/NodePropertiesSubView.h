@@ -1,9 +1,9 @@
 #ifndef NodePropertiesSubView_H
 #define NodePropertiesSubView_H
-#include "../common/editor/DropdownProperty.h"
-#include "../common/subviews/ScrollPanelRenderer.h"
-#include "../common/GCM/Scene.h"
-#include "../common/editor/FileHierarchyProperty.h"
+#include "editor/DropdownProperty.h"
+#include "subviews/ScrollPanelRenderer.h"
+#include "GCM/Scene.h"
+#include "editor/FileHierarchyProperty.h"
 #include "nodes/Node.h"
 
 class NodePropertiesSubView {

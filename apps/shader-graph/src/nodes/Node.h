@@ -12,8 +12,8 @@
 #include <set>
 
 #include "../Context.h"
-#include "../../common/editor/FoldoutProperty.h"
-#include "../../common/utils/Utils.h"
+#include "editor/FoldoutProperty.h"
+#include "utils/Utils.h"
 
 class Node {
 public:

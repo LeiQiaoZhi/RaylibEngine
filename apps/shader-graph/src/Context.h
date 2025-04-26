@@ -8,7 +8,7 @@
 #include <list>
 #include <map>
 
-#include "../common/input/MouseDragState.h"
+#include "input/MouseDragState.h"
 
 class NodeGroup;
 class Node;

@@ -12,7 +12,7 @@
 #include "raylib.h"
 
 #include "../Context.h"
-#include "../../common/utils/Utils.h"
+#include "utils/Utils.h"
 
 class NodeIO {
 public:

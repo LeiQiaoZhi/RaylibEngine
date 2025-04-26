@@ -1,21 +1,14 @@
 #include "raygui.h"
 
-#define RAYGUI_IMPLEMENTATION
 #include <string>
-#include "raygui.h"
-#undef RAYGUI_IMPLEMENTATION
-
 #include "raylib.h"
 #include <iostream>
-#include "common/GCM/Scene.h"
-#include "common/GCM/Components/JelloComponent.h"
-#include "common/logger/Logger.h"
-#include "common/subviews/ConsoleSubView.h"
-#include "common/subviews/GameSubView.h"
-#include "common/luautils/LuaUtils.h"
-#include "common/subviews/AssetsSubView.h"
-#include "common/subviews/HierarchySubView.h"
-#include "common/subviews/InspectorSubView.h"
+#include "GCM/Scene.h"
+#include "subviews/ConsoleSubView.h"
+#include "subviews/GameSubView.h"
+#include "subviews/AssetsSubView.h"
+#include "subviews/HierarchySubView.h"
+#include "subviews/InspectorSubView.h"
 #include "sol/sol.hpp"
 
 //------------------------------------------------------------------------------------

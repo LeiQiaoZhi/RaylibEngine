@@ -7,8 +7,8 @@
 #include "Node.h"
 #include "NodeOutput.h"
 
-#include "../../common/editor/Editor.h"
-#include "../../common/utils/RaylibUtils.h"
+#include "editor/Editor.h"
+#include "utils/RaylibUtils.h"
 
 Color NodeInput::GetColor() const {
     float alpha = hovering ? 1.0f : 0.7f;

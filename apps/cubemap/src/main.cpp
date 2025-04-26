@@ -1,18 +1,12 @@
 #include "raygui.h"
 
-#define RAYGUI_IMPLEMENTATION
 #include <string>
-#include "raygui.h"
-#undef RAYGUI_IMPLEMENTATION
-
 #include "raylib.h"
-#include "../common/editor/Editor.h"
+#include "editor/Editor.h"
 #include "sol/sol.hpp"
 #include "CubemapUtils.h"
-#include "../common/editor/DropdownProperty.h"
-#include "../common/editor/FoldoutProperty.h"
-#include "../common/utils/RaylibUtils.h"
-#include "../common/utils/Utils.h"
+#include "editor/FoldoutProperty.h"
+#include "utils/RaylibUtils.h"
 
 enum class PreviewTarget {
     HDR = 0,

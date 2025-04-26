@@ -4,8 +4,8 @@
 #include <raygui.h>
 #include <sstream>
 
-#include "../common/subviews/ScrollPanelRenderer.h"
-#include "../common/editor/Editor.h"
+#include "subviews/ScrollPanelRenderer.h"
+#include "editor/Editor.h"
 #include "CodeGeneration.h"
 
 void ShaderCompilationSubView::Render(Vector2 position, Context &context) {
