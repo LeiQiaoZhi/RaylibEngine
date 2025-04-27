@@ -28,22 +28,27 @@ int main() {
 
     //--------------------------------------------------------------------------------------
 
-    // TODO: construct ui hierarchy tree
-    UIElement root = UIElement("Root", windowWidth, windowHeight);
-    root.padding = 40;
-    root.gap = 20;
-    UIElement child1a = UIElement("A", 500, 800);
-    child1a.children.reserve(2);
-    child1a.children.emplace_back("A1", 300, 200);
-    child1a.children.emplace_back("A2", 200, 300);
-    child1a.mainAxis = VERTICAL;
-    UIElement child1b = UIElement("B", 600, 500);
-    child1b.children.reserve(2);
-    child1b.children.emplace_back("B1", 300, 200);
-    child1b.children.emplace_back("B2", 200, 300);
-    root.children.reserve(2);
-    root.children.emplace_back(std::move(child1a));
-    root.children.emplace_back(std::move(child1b));
+    // construct ui hierarchy tree
+    UIElement root = UIBuilder{}.setName("Root")
+            .setSize(windowWidth, windowHeight)
+            .setPadding(40).setGap(20)
+            .setChildren({
+                UIBuilder{}.setName("A")
+                .setSize(FIT, GROW).setMainAxis(VERTICAL)
+                .setChildren({
+                    UIBuilder{}.setName("A1").setSize(300, GROW),
+                    UIBuilder{}.setName("A2").setSize(400, GROW),
+                    UIBuilder{}.setName("A3").setSize(300, GROW)
+                }),
+                UIBuilder{}.setName("B")
+                .setSize(GROW, GROW).setPadding(50)
+                .setChildren({
+                    UIBuilder{}.setName("B1").setSize(300, 400),
+                    UIBuilder{}.setName("B2").setSize(400, 300)
+                }),
+                UIBuilder{}.setName("C")
+                .setSize(GROW, GROW)
+            });
 
     std::cout << "Copy count: " << copyCount << std::endl;
     std::cout << "Move count: " << moveCount << std::endl;
@@ -55,6 +60,10 @@ int main() {
         // Update
         //----------------------------------------------------------------------------------
         // TODO: calculate layout
+        root.width = GetScreenWidth();
+        root.height = GetScreenHeight();
+        if (IsKeyPressed(KEY_SPACE))
+           CalculateLayout(root);
 
         //----------------------------------------------------------------------------------
 
@@ -66,7 +75,7 @@ int main() {
         // TODO: draw ui
         DrawUIDebug(root);
 
-        DrawFPS(windowWidth - 80, 0);
+        DrawFPS(GetScreenWidth() - 80, 0);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
