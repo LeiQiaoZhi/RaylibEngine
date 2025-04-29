@@ -13,8 +13,12 @@ message(STATUS "-------------------------------------------------------------")
 add_subdirectory(../../modules/core ${CMAKE_CURRENT_BINARY_DIR}/core_build)
 
 file(GLOB_RECURSE COMMON_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
-add_executable(${PROJECT_NAME} ${COMMON_SOURCES})
+add_executable(${PROJECT_NAME} ${COMMON_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/uilib/backend_raylib.cpp
+)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
 target_link_libraries(${PROJECT_NAME} core)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/uilib)
