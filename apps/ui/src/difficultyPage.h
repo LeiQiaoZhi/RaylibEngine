@@ -41,7 +41,8 @@ struct DifficultyInfo {
                 })
                 .children({
                     LayoutBuilder{}.name("Label").pointer(&label.layout),
-                    LayoutBuilder{}.name("Description").width(GROW).pointer(&description.layout),
+                    LayoutBuilder{}.name("Description").width(GROW)
+                    .pointer(&description.layout).maxWidth(800),
                 });
 
         InitReferencePointers(root);
@@ -86,8 +87,8 @@ struct DifficultyCard {
                 .children({
                     LayoutBuilder{}.name("Image").size(GROW, GROW)
                     .drawFn([&](LayoutElement *layout) {
-                        Color color = this->id == *this->selected ? WHITE : GRAY;
-                        DrawRectangle(layout->x, layout->y, layout->width, layout->height, color);
+                        const UI_Color color = this->id == *this->selected ? UI_WHITE : UI_GRAY;
+                        UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, color);
                     }),
                     LayoutBuilder{}.name("Label").pointer(&label.layout),
                 });
@@ -144,13 +145,13 @@ struct ButtonHints {
                     LayoutBuilder{}.name("O").size(0, GROW)
                     .sizeFn([](LayoutElement *layout) { layout->width = layout->height; })
                     .drawFn([](LayoutElement *layout) {
-                        DrawRectangle(layout->x, layout->y, layout->width, layout->height, GRAY);
+                        UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_GRAY);
                     }),
                     LayoutBuilder{}.name("Label O").pointer(&labelO.layout),
                     LayoutBuilder{}.name("X").size(100, GROW)
                     .sizeFn([](LayoutElement *layout) { layout->width = layout->height; })
                     .drawFn([](LayoutElement *layout) {
-                        DrawRectangle(layout->x, layout->y, layout->width, layout->height, GRAY);
+                        UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_GRAY);
                     }),
                     LayoutBuilder{}.name("Label X").pointer(&labelX.layout),
                 });
@@ -181,7 +182,7 @@ struct DifficultyPage {
         root = LayoutBuilder{}.name("Difficulty Page")
                 .padding(50).mainAxis(VERTICAL).alignment(CENTER, CENTER)
                 .drawFn([](LayoutElement *layout) {
-                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, BLACK);
+                    UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_BLACK);
                 })
                 .children({
                     LayoutBuilder{}.name("Title Label").size(GROW, 0)

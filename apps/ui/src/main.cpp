@@ -141,6 +141,7 @@ int main() {
 
     DifficultyPage page;
     bool drawDebug = false;
+    bool drawNormal = true;
 
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -159,6 +160,8 @@ int main() {
 
         if (IsKeyPressed(KEY_D))
             drawDebug = !drawDebug;
+        if (IsKeyPressed(KEY_F))
+            drawNormal = !drawNormal;
 
         //----------------------------------------------------------------------------------
 
@@ -168,7 +171,8 @@ int main() {
         ClearBackground(BLACK);
 
         // draw ui
-        DrawUI(page.root);
+        if (drawNormal)
+            DrawUI(page.root);
         if (drawDebug)
             DrawUIDebug(page.root);
 
