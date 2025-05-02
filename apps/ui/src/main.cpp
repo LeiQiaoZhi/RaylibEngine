@@ -3,10 +3,12 @@
 #include "sol/sol.hpp"
 
 #define LAYOUT_IMPLEMENTATION
+// #define LAYOUT_VERBOSE
 #include "layout.h"
 #undef LAYOUT_IMPLEMENTATION
 #include "ui.h"
 #include <editor/Editor.h>
+#include "difficultyPage.h"
 
 void UI_Raylib_Init();
 
@@ -18,7 +20,7 @@ inline void DrawUIDebug(LayoutElement &root) {
         LayoutElement *current = toExplore.back();
         toExplore.pop_back();
 
-        DrawRectangleLines(current->x, current->y, current->width, current->height, GRAY);
+        DrawRectangleLines(current->x, current->y, current->width, current->height, YELLOW);
 
         if (current->width > 200) {
             DrawTextEx(Editor::GetFont(),
@@ -64,64 +66,99 @@ int main() {
     const std::string windowName = "UI";
     InitWindow(windowWidth, windowHeight, windowName.c_str());
 
-    SetTargetFPS(60); // Set our game to run at 60 frames-per-second
+    // SetTargetFPS(60);
     SetWindowState(FLAG_WINDOW_RESIZABLE);
 
     //--------------------------------------------------------------------------------------
 
     // construct ui hierarchy tree
     const LayoutBuilder component = LayoutBuilder{}.name("Component").size(400, GROW)
+            .drawFn([](LayoutElement *layout) {
+                DrawRectangle(layout->x, layout->y, layout->width, layout->height, WHITE);
+            })
             .children({
-                LayoutBuilder{}.name("1").size(100, GROW),
-                LayoutBuilder{}.name("2").size(GROW, GROW),
+                LayoutBuilder{}.name("1").size(100, GROW)
+                .drawFn([](LayoutElement *layout) {
+                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, GRAY);
+                    UI::UI_DrawText("1", layout->x, layout->y, 1.0f);
+                }),
+                LayoutBuilder{}.name("2").size(GROW, GROW)
+                .drawFn([](LayoutElement *layout) {
+                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, BLACK);
+                }),
                 LayoutBuilder{}.name("3").size(100, GROW)
+                .drawFn([](LayoutElement *layout) {
+                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, GRAY);
+                }),
             });
+    UI::UI_Text text = {
+        .text =
+        "Because a raw function pointer void(*)(LayoutElement*) can only point to a free function or a non-capturing lambda whose signature exactly matches. Any lambda that closes over (captures) outside state is a unique closure type—it isn’t just a function pointer and can’t convert to DrawFn.",
+    };
     LayoutElement root = LayoutBuilder{}.name("Root")
             .size(windowWidth, windowHeight).padding(40).gap(20)
+            .drawFn([](LayoutElement *layout) {
+                DrawRectangle(layout->x, layout->y, layout->width, layout->height, GRAY);
+            })
             .children({
                 LayoutBuilder{}.name("A")
                 .size(FIT, GROW).mainAxis(VERTICAL)
                 .alignment(CENTER, END)
+                .drawFn([](LayoutElement *layout) {
+                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, BLACK);
+                })
                 .children({
                     component.copy().name("A1"),
                     component.copy().name("A2"),
                     component.copy().name("A3")
                 }),
-                LayoutBuilder{}.name("B")
-                .size(GROW, GROW).padding(50)
-                .children({
-                    LayoutBuilder{}.name("B1").size(300, 400),
-                    LayoutBuilder{}.name("B2").size(400, 300)
-                }),
+                // LayoutBuilder{}.name("B")
+                // .size(GROW, GROW).padding(50)
+                // .children({
+                //     LayoutBuilder{}.name("B1").size(300, 400),
+                //     LayoutBuilder{}.name("B2").size(400, 300)
+                // }),
                 LayoutBuilder{}.name("C")
                 .size(GROW, GROW)
                 .alignment(CENTER, CENTER).mainAxis(VERTICAL)
+                .drawFn([](LayoutElement *layout) {
+                    DrawRectangle(layout->x, layout->y, layout->width, layout->height, GREEN);
+                })
                 .children({
-                    LayoutBuilder{}.name("C1").size(300, 400),
-                    LayoutBuilder{}.name("C2").size(200, 300)
+                    LayoutBuilder{}.name("C1").size(GROW, 400)
+                    .pointer(&text.layout),
+                    LayoutBuilder{}.name("C2").size(GROW, GROW)
+                    .drawFn([](LayoutElement *layout) {
+                        DrawRectangle(layout->x, layout->y, layout->width, layout->height, BLACK);
+                    })
                 }),
             });
-
-    UI::UI_Text text = {
-        .layout = &root.children[0],
-        .text = "Hello World",
-        .scale = 1.0f
-    };
+    InitReferencePointers(root);
+    text.Link();
 
     // std::cout << "Copy count: " << copyCount << std::endl;
     // std::cout << "Move count: " << moveCount << std::endl;
 
-    CalculateLayout(root);
+    DifficultyPage page;
+    bool drawDebug = false;
+
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
         // Update
         //----------------------------------------------------------------------------------
-        // TODO: calculate layout
-        root.width = GetScreenWidth();
-        root.height = GetScreenHeight();
+        DetectInputEvents(page.root);
+
+        //  calculate layout
+        page.root.width = GetScreenWidth();
+        page.root.height = GetScreenHeight();
+#ifdef LAYOUT_VERBOSE
         if (IsKeyPressed(KEY_SPACE))
-            CalculateLayout(root);
+#endif
+        CalculateLayout(page.root);
+
+        if (IsKeyPressed(KEY_D))
+            drawDebug = !drawDebug;
 
         //----------------------------------------------------------------------------------
 
@@ -130,9 +167,10 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        // TODO: draw ui
-        text.Draw();
-        DrawUIDebug(root);
+        // draw ui
+        DrawUI(page.root);
+        if (drawDebug)
+            DrawUIDebug(page.root);
 
         DrawFPS(GetScreenWidth() - 80, 0);
 
