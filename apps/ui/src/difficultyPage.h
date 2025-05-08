@@ -7,6 +7,7 @@
 
 #include "layout.h"
 #include "ui.h"
+#include "components.h"
 
 using namespace Layout;
 using namespace UI;
@@ -58,14 +59,13 @@ struct DifficultyCard {
         .wrap = WRAP_NONE,
         .scale = 1.2
     };
+
+    // states
     const char *name;
     int id;
     int *selected;
 
-    DifficultyCard(const char *name, int id, int *selected) {
-        this->name = name;
-        this->id = id;
-        this->selected = selected;
+    DifficultyCard(const char *name, int id, int *selected): name(name), id(id), selected(selected) {
         this->label.text = name;
         root = LayoutBuilder{}.name("Card").size(GROW, GROW)
                 .alignment(CENTER, CENTER).padding(20).mainAxis(VERTICAL)
@@ -128,37 +128,16 @@ struct DifficultyCards {
 
 struct ButtonHints {
     LayoutElement root;
-    UI_Text labelO = {
-        .text = "Back",
-        .wrap = WRAP_NONE,
-        .scale = 1.0
-    };
-    UI_Text labelX = {
-        .text = "Accept",
-        .wrap = WRAP_NONE,
-        .scale = 1.0
-    };
+    InputHint backHint;
+    InputHint acceptHint;
 
-    ButtonHints() {
-        root = LayoutBuilder{}.name("Input Hints").size(GROW, FIT)
+    ButtonHints(): backHint("Back", IMAGES"/circle.png"),
+                   acceptHint("Accept", IMAGES"/cross.png") {
+        root = LayoutBuilder{}.name("Input Hints").size(GROW, FIT).padding(0)
                 .children({
-                    LayoutBuilder{}.name("O").size(0, GROW)
-                    .sizeFn([](LayoutElement *layout) { layout->width = layout->height; })
-                    .drawFn([](LayoutElement *layout) {
-                        UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_GRAY);
-                    }),
-                    LayoutBuilder{}.name("Label O").pointer(&labelO.layout),
-                    LayoutBuilder{}.name("X").size(100, GROW)
-                    .sizeFn([](LayoutElement *layout) { layout->width = layout->height; })
-                    .drawFn([](LayoutElement *layout) {
-                        UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_GRAY);
-                    }),
-                    LayoutBuilder{}.name("Label X").pointer(&labelX.layout),
+                    std::move(backHint.root),
+                    std::move(acceptHint.root),
                 });
-
-        InitReferencePointers(root);
-        labelO.Link();
-        labelX.Link();
     }
 };
 

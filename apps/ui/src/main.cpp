@@ -176,7 +176,7 @@ int main() {
         if (drawDebug)
             DrawUIDebug(page.root);
 
-        DrawFPS(GetScreenWidth() - 80, 0);
+        // DrawFPS(GetScreenWidth() - 80, 0);
 
         EndDrawing();
         //----------------------------------------------------------------------------------
