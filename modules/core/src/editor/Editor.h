@@ -23,7 +23,9 @@ public:
         static bool initialized = false;
         if (!initialized) {
             initialized = true;
-            font = LoadFont((std::string(INTERNAL_ASSET_DIR) + "/fonts/MapleMono-NF-Regular.ttf").c_str());
+            // font = LoadFont((std::string(INTERNAL_ASSET_DIR) + "/fonts/MapleMono-NF-Regular.ttf").c_str());
+            Image image = LoadImage(INTERNAL_ASSET_DIR"/fonts/font512.dds");
+            font = LoadFontFromImage(image,WHITE, 0);
         }
         return font;
     }
