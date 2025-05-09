@@ -9,6 +9,7 @@
 #include "ui.h"
 #include <editor/Editor.h>
 #include "difficultyPage.h"
+#include "mainPage.h"
 
 void UI_Raylib_Init();
 
@@ -139,7 +140,9 @@ int main() {
     // std::cout << "Copy count: " << copyCount << std::endl;
     // std::cout << "Move count: " << moveCount << std::endl;
 
-    DifficultyPage page;
+    int pageIndex = 1;
+    Pages::Difficulty::DifficultyPage difficultyPage(&pageIndex);
+    Pages::Main::MainPage mainPage(&pageIndex);
     bool drawDebug = false;
     bool drawNormal = true;
 
@@ -148,15 +151,17 @@ int main() {
     {
         // Update
         //----------------------------------------------------------------------------------
-        DetectInputEvents(page.root);
+        LayoutElement *page = pageIndex == 0 ? &mainPage.root : &difficultyPage.root;
+
+        DetectInputEvents(*page);
 
         //  calculate layout
-        page.root.width = GetScreenWidth();
-        page.root.height = GetScreenHeight();
+        page->width = GetScreenWidth();
+        page->height = GetScreenHeight();
 #ifdef LAYOUT_VERBOSE
         if (IsKeyPressed(KEY_SPACE))
 #endif
-        CalculateLayout(page.root);
+        CalculateLayout(*page);
 
         if (IsKeyPressed(KEY_D))
             drawDebug = !drawDebug;
@@ -172,9 +177,9 @@ int main() {
 
         // draw ui
         if (drawNormal)
-            DrawUI(page.root);
+            DrawUI(*page);
         if (drawDebug)
-            DrawUIDebug(page.root);
+            DrawUIDebug(*page);
 
         // DrawFPS(GetScreenWidth() - 80, 0);
 

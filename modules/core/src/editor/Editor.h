@@ -24,8 +24,10 @@ public:
         if (!initialized) {
             initialized = true;
             // font = LoadFont((std::string(INTERNAL_ASSET_DIR) + "/fonts/MapleMono-NF-Regular.ttf").c_str());
-            Image image = LoadImage(INTERNAL_ASSET_DIR"/fonts/font512.dds");
-            font = LoadFontFromImage(image,WHITE, 0);
+            Image image = LoadImage(INTERNAL_ASSET_DIR"/fonts/font512.png");
+            if (!IsImageValid(image))
+                std::cerr << "Failed to load font image" << std::endl;
+            font = LoadFontFromImage(image,WHITE, 322);
         }
         return font;
     }
