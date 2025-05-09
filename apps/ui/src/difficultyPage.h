@@ -81,10 +81,10 @@ namespace Pages::Difficulty {
                         LayoutBuilder{}.name("Back").size(FIT, GROW).padding(10)
                         .alignment(CENTER, CENTER)
                         .drawFn([](LayoutElement *layout) {
-                            UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, UI_BLACK);
+                            const UI_Color color = layout->hovering ? UI_GRAY : UI_BLACK;
+                            UI_DrawRectangle(layout->x, layout->y, layout->width, layout->height, color);
                         })
                         .onMouseClickFn([&](LayoutElement *layout) {
-                            std::cout << "Click " << layout->debugName << std::endl;
                             *this->pageIndex = 0;
                         })
                         .children({
@@ -186,23 +186,16 @@ namespace Pages::Difficulty {
     };
 
     struct DifficultyPage {
-        UI_Text titleLabel = {
-            .text = "SELECT DIFFICULTY",
-            .scale = 2
-        };
+        UI_Text titleLabel = {.text = "SELECT DIFFICULTY", .scale = 2};
         int selected = 1;
         int *pageIndex;
 
         LayoutElement root;
 
         TopBar topBar;
-
         DifficultyInfo info = DifficultyInfo(&selected);
-
         DifficultyCards cards = DifficultyCards(&selected);
-
         ButtonHints hints;
-
 
         DifficultyPage(int *pageIndex) : pageIndex(pageIndex), topBar(pageIndex) {
             root = LayoutBuilder{}.name("Difficulty Page")

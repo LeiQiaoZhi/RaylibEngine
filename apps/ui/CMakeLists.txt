@@ -14,7 +14,7 @@ add_subdirectory(../../modules/core ${CMAKE_CURRENT_BINARY_DIR}/core_build)
 
 file(GLOB_RECURSE COMMON_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 add_executable(${PROJECT_NAME} ${COMMON_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/uilib/backend_raylib.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/uilib/backends/backend_raylib.cpp
 )
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
